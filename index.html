@@ -2257,7 +2257,7 @@ Remember to:
                     </div>
                     <div class="score-label">points</div>
                     <div class="score-message" id="score-message">Great work!</div>
-                    <button class="btn btn-primary" onclick="showPage('practice')">✏️ Write Another</button>
+                    <button class="btn btn-primary" onclick="startAnotherEssay()">✏️ Write Another</button>
                 </div>
                 <div class="card">
                     <div class="card-title">📋 Criteria Breakdown</div>
@@ -3105,6 +3105,12 @@ Remember to:
             const rs = Number(remoteData?.stats?.promptCycleSeed);
             merged.stats.promptCycleSeed = Number.isFinite(rs) && Number.isFinite(ls) ? Math.max(ls, rs) : (Number.isFinite(rs) ? rs : (Number.isFinite(ls) ? ls : getDailySeedInt()));
 
+            const ltr = Number(localData?.stats?.totalReplacements);
+            const rtr = Number(remoteData?.stats?.totalReplacements);
+            if (Number.isFinite(ltr) || Number.isFinite(rtr)) {
+                merged.stats.totalReplacements = Math.max(Number.isFinite(ltr) ? ltr : 0, Number.isFinite(rtr) ? rtr : 0);
+            }
+
             // essays: append unique
             const essayKey = (e) => {
                 const d = e?.date || '';
@@ -3254,6 +3260,23 @@ Remember to:
             if (navEl) navEl.classList.add('active');
 
             state.currentPage = pageId;
+        }
+
+        function startAnotherEssay() {
+            const textarea = document.getElementById('essay-input');
+            if (textarea) textarea.value = '';
+            clearDraft();
+            resetTimer();
+            state.startTime = Date.now();
+            state.challengesUsed = 0;
+            state.flatWordsFound = [];
+            state.flatWordsReplaced = 0;
+            updateChallengeCount();
+            updateWordCount();
+            analyzeFlatWords();
+            drawStoryCoaster();
+            showPage('practice');
+            if (textarea) textarea.focus();
         }
 
         // ============ STATS ============
@@ -3419,23 +3442,71 @@ Remember to:
         }
 
         // ============ STORY COASTER ============
+        function escapeTensionRegexp(s) {
+            return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function scoreTensionForSegment(lowText) {
+            let tension = 5;
+            if (!lowText.trim()) return 5;
+
+            const apply = (list, delta) => {
+                for (const phrase of list) {
+                    const p = phrase.toLowerCase();
+                    if (p.includes(' ')) {
+                        if (lowText.includes(p)) tension += delta;
+                    } else {
+                        const re = new RegExp('\\b' + escapeTensionRegexp(p) + '\\b', 'gi');
+                        const hits = lowText.match(re);
+                        if (hits) tension += delta * hits.length;
+                    }
+                }
+            };
+            apply(TENSION_WORDS.calm, -1.5);
+            apply(TENSION_WORDS.rising, 0.5);
+            apply(TENSION_WORDS.high, 2);
+            apply(TENSION_WORDS.resolution, -1);
+
+            return Math.max(0, Math.min(10, tension));
+        }
+
         function analyzeTension(text) {
-            const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
-            if (paragraphs.length === 0) return [];
+            const raw = (text || '').trim();
+            if (!raw) return [];
 
-            return paragraphs.map(para => {
-                const words = para.toLowerCase().split(/\s+/);
-                let tension = 5; // Start at medium
+            // Prefer blank-line paragraphs; then single-newline blocks; else score per sentence
+            // so the graph has several points and reacts to vocabulary (incl. multi-word phrases).
+            let segments = raw.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
 
-                words.forEach(word => {
-                    if (TENSION_WORDS.calm.some(w => word.includes(w))) tension -= 1.5;
-                    if (TENSION_WORDS.rising.some(w => word.includes(w))) tension += 0.5;
-                    if (TENSION_WORDS.high.some(w => word.includes(w))) tension += 2;
-                    if (TENSION_WORDS.resolution.some(w => word.includes(w))) tension -= 1;
-                });
+            if (segments.length === 1) {
+                const block = segments[0];
+                const lines = block.split(/\n/).map(l => l.trim()).filter(l => l.length > 0);
+                if (lines.length >= 2) {
+                    segments = lines;
+                } else {
+                    let sentences = block
+                        .replace(/\n/g, ' ')
+                        .split(/[.!?]+/)
+                        .map(s => s.trim())
+                        .filter(s => s.length > 2);
 
-                return Math.max(0, Math.min(10, tension));
-            });
+                    if (sentences.length === 1) {
+                        const wc = sentences[0].split(/\s+/).filter(Boolean).length;
+                        if (wc > 28) {
+                            const clauses = sentences[0].split(/,\s*/).map(c => c.trim()).filter(c => c.length > 8);
+                            if (clauses.length >= 2) sentences = clauses;
+                        }
+                    }
+
+                    if (sentences.length >= 2) {
+                        segments = sentences;
+                    }
+                }
+            }
+
+            if (segments.length === 0) return [];
+
+            return segments.map(seg => scoreTensionForSegment(seg.toLowerCase()));
         }
 
         function drawStoryCoaster() {
@@ -3521,14 +3592,31 @@ Remember to:
 
         // ============ SENSORY PALETTE ============
         function analyzeFlatWords() {
-            const text = document.getElementById('essay-input').value.toLowerCase();
+            const raw = document.getElementById('essay-input').value;
+            const text = raw.toLowerCase();
+            const previousFound = Array.isArray(state.flatWordsFound) ? state.flatWordsFound.slice() : [];
+
             const found = FLAT_WORDS.filter(word => {
                 const regex = new RegExp(`\\b${word}\\b`, 'i');
                 return regex.test(text);
             });
 
+            // Count a "replacement" when a flat word disappears from the draft (user edited it out).
+            // Skip when the textarea was cleared so mass-delete doesn't inflate the count.
+            let replacementEvents = 0;
+            if (raw.trim().length > 0 && previousFound.length > 0) {
+                for (const w of previousFound) {
+                    if (!found.includes(w)) {
+                        state.flatWordsReplaced++;
+                        state.stats.totalReplacements = (Number(state.stats.totalReplacements) || 0) + 1;
+                        replacementEvents++;
+                    }
+                }
+            }
+
             state.flatWordsFound = found;
             renderFlatWords();
+            if (replacementEvents > 0) checkAchievements();
         }
 
         function renderFlatWords() {
