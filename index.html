@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-title" content="WriteBoost">
     <meta name="theme-color" content="#045490">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2304590'/%3E%3Cstop offset='1' stop-color='%23273462'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='128' height='128' rx='28' fill='url(%23g)'/%3E%3Ctext x='64' y='82' font-size='64' text-anchor='middle'%3E%E2%9C%8D%EF%B8%8F%3C/text%3E%3C/svg%3E">
-    <title>WriteBoost v2.4.0 - Narrative Writing Trainer</title>
+    <title>WriteBoost v3.0.0 - Narrative Writing Trainer</title>
     <style>
         :root {
             /* Two Pinterest palettes merged: Mediterranean blues + lemon / air surfaces */
@@ -418,11 +418,15 @@
             border-bottom: 1px solid var(--border);
             padding: 0 2rem;
             display: flex;
+            flex-wrap: nowrap;
             gap: 0.5rem;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
         }
 
         .nav-btn {
+            flex-shrink: 0;
             padding: 1rem 1.5rem;
             border: none;
             background: transparent;
@@ -1605,6 +1609,188 @@
             margin-top: 0.15rem;
         }
 
+        .coaching-cards-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .coaching-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1rem 1.25rem;
+            background: var(--bg-sidebar);
+            border-left: 4px solid var(--primary);
+        }
+
+        .coaching-card-priority {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+        }
+
+        .coaching-rule-name {
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .coaching-rule-name svg {
+            width: 1.1rem;
+            height: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .coaching-card-body {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.55;
+        }
+
+        .coaching-card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .sensory-card.sensory-deferred .sense-buttons {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .writing-stats.writing-stats-block {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.5rem;
+        }
+
+        .writing-stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem 1.5rem;
+        }
+
+        .writing-stats-subrow {
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 0.5rem;
+            margin: 0 -0.25rem;
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+        }
+
+        .draft-save-status {
+            min-width: 0;
+        }
+
+        .word-goal-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .word-goal-inline svg {
+            width: 0.95rem;
+            height: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .word-goal-select {
+            font: inherit;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.45rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text);
+        }
+
+        .word-goal-bar-wrap {
+            margin: 0 1.5rem 0.5rem;
+        }
+
+        .word-goal-bar-track {
+            height: 6px;
+            background: var(--border);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .word-goal-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 999px;
+            transition: width 0.25s ease;
+        }
+
+        .word-goal-meta {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        .challenge-session-log {
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .challenge-session-log .challenge-log-title {
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+            color: var(--text);
+        }
+
+        .challenge-session-log ul {
+            margin: 0;
+            padding-left: 1.1rem;
+        }
+
+        .challenge-session-log li {
+            margin-bottom: 0.2rem;
+        }
+
+        .results-primary-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        #online-check-status.online-check-busy {
+            opacity: 0.85;
+            animation: online-pulse 1.1s ease-in-out infinite;
+        }
+
+        @keyframes online-pulse {
+            50% { opacity: 0.45; }
+        }
+
         /* Skills Page */
         .skills-grid {
             display: grid;
@@ -1811,6 +1997,16 @@
                 padding: 0.5rem 1rem;
                 gap: 1rem;
                 font-size: 0.85rem;
+            }
+
+            .writing-stats-subrow {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .word-goal-bar-wrap {
+                margin: 0 1rem 0.5rem;
             }
 
             .writing-content {
@@ -2155,7 +2351,7 @@
         <div class="logo">
             <i data-lucide="pen-line" aria-hidden="true"></i>
             <span>WriteBoost</span>
-            <span class="version-badge" id="app-version">v2.4.0</span>
+            <span class="version-badge" id="app-version">v3.0.0</span>
         </div>
         <div class="header-stats">
             <div class="stat-item">
@@ -2195,7 +2391,7 @@
         <div id="dashboard" class="page active">
             <div class="dashboard-empty-hint" id="dashboard-empty-hint" style="display: none;">
                 <strong>Welcome!</strong> Your stats stay at 0 until you finish your first piece — that’s normal.
-                Pick a prompt below (or plant the Daily Story Seed), write at least 50 words in Practice, then submit to unlock achievements like <strong><span class="icon-btn" style="vertical-align:middle"><i data-lucide="trophy" aria-hidden="true"></i><span>First Draft</span></span></strong>.
+                Pick a prompt below (or plant the Daily Story Seed), write at least 50 words in Practice, then submit to unlock achievements like <strong><span class="icon-btn" style="vertical-align:middle"><i data-lucide="trophy" aria-hidden="true"></i><span>First Draft</span></span></strong>. In Practice you can set an optional word goal and see when your draft auto-saves; detailed feedback waits until after you submit.
                 <div class="hint-actions">
                     <button type="button" class="btn btn-primary btn-sm" onclick="showPage('practice')"><span class="icon-btn"><i data-lucide="pen-line" aria-hidden="true"></i><span>Go to Practice</span></span></button>
                     <button type="button" class="btn btn-outline btn-sm" onclick="openHelpModal()"><span class="icon-btn"><i data-lucide="circle-help" aria-hidden="true"></i><span>Quick Start</span></span></button>
@@ -2333,10 +2529,32 @@
                     <div class="help-tip" style="padding: 0 1.5rem 0.5rem;">
                         Flow: pick a prompt, write, add a challenge twist if stuck, then submit for feedback.
                     </div>
-                    <div class="writing-stats">
-                        <span><i data-lucide="file-text" aria-hidden="true"></i> <span id="word-count">0</span> words</span>
-                        <span><i data-lucide="pilcrow" aria-hidden="true"></i> <span id="paragraph-count">0</span> paragraphs</span>
-                        <span><i data-lucide="timer" aria-hidden="true"></i> <span id="time-spent">0</span> min</span>
+                    <div class="writing-stats writing-stats-block">
+                        <div class="writing-stats-row">
+                            <span><i data-lucide="file-text" aria-hidden="true"></i> <span id="word-count">0</span> words</span>
+                            <span><i data-lucide="pilcrow" aria-hidden="true"></i> <span id="paragraph-count">0</span> paragraphs</span>
+                            <span><i data-lucide="timer" aria-hidden="true"></i> <span id="time-spent">0</span> min</span>
+                        </div>
+                        <div class="writing-stats-row writing-stats-subrow">
+                            <span class="draft-save-status" id="draft-save-status">Draft saves automatically after you pause typing.</span>
+                            <label class="word-goal-inline" for="word-goal-select">
+                                <i data-lucide="target" aria-hidden="true"></i>
+                                <span class="sr-only">Word goal</span>
+                                <select id="word-goal-select" class="word-goal-select" title="Optional word goal for this device" onchange="onWordGoalChange(this.value)">
+                                    <option value="0">No goal</option>
+                                    <option value="50">50 words</option>
+                                    <option value="100">100 words</option>
+                                    <option value="200">200 words</option>
+                                    <option value="300">300 words</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="word-goal-bar-wrap" id="word-goal-bar-wrap" hidden>
+                        <div class="word-goal-bar-track">
+                            <div class="word-goal-bar-fill" id="word-goal-fill"></div>
+                        </div>
+                        <div class="word-goal-meta" id="word-goal-meta"></div>
                     </div>
                     <div class="writing-content">
                         <textarea id="essay-input" placeholder="Start your story here...
@@ -2355,6 +2573,7 @@ Remember to:
                             <!-- Will be drawn by JS -->
                         </svg>
                         <div class="challenge-count" id="challenge-count">Challenge cards used: 0</div>
+                        <div class="challenge-session-log" id="challenge-session-log" aria-live="polite"></div>
                         <div class="coaster-warning" id="coaster-warning" style="display: none;">
                             <i data-lucide="zap" aria-hidden="true"></i> Your story needs more twists! Try adding a challenge or conflict.
                         </div>
@@ -2408,10 +2627,10 @@ Remember to:
                     </div>
 
                     <!-- Sensory Palette -->
-                    <div class="card sensory-card">
+                    <div class="card sensory-card sensory-deferred" id="sensory-card">
                         <div class="card-title"><i data-lucide="palette" aria-hidden="true"></i> Sensory Palette</div>
                         <div id="flat-words-found" class="flat-words-found">
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Type to detect flat words...</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">After you submit, you’ll get word-level tips here and on Results.</span>
                         </div>
                         <div class="sense-buttons">
                             <button type="button" class="sense-btn" data-sense="sight"><span class="icon-btn"><i data-lucide="eye" aria-hidden="true"></i><span>Sight</span></span></button>
@@ -2421,7 +2640,7 @@ Remember to:
                             <button type="button" class="sense-btn" data-sense="touch"><span class="icon-btn"><i data-lucide="hand" aria-hidden="true"></i><span>Touch</span></span></button>
                         </div>
                         <div class="sensory-progress">
-                            <span id="sensory-progress-text">Replace 0 flat words</span>
+                            <span id="sensory-progress-text">Coaching unlocks after submit</span>
                             <div class="progress-bar">
                                 <div class="progress-fill" id="sensory-progress-fill" style="width: 0%"></div>
                             </div>
@@ -2645,7 +2864,10 @@ Remember to:
                     </div>
                     <div class="score-label">points</div>
                     <div class="score-message" id="score-message">Great work!</div>
-                    <button type="button" class="btn btn-primary" onclick="startAnotherEssay()"><span class="icon-btn"><i data-lucide="pen-line" aria-hidden="true"></i><span>Write Another</span></span></button>
+                    <div class="results-primary-actions">
+                        <button type="button" class="btn btn-outline" onclick="reviseDraftFromResults()"><span class="icon-btn"><i data-lucide="refresh-cw" aria-hidden="true"></i><span>Revise this draft</span></span></button>
+                        <button type="button" class="btn btn-primary" onclick="startAnotherEssay()"><span class="icon-btn"><i data-lucide="pen-line" aria-hidden="true"></i><span>Write Another</span></span></button>
+                    </div>
                 </div>
                 <div class="card">
                     <div class="card-title"><i data-lucide="clipboard-list" aria-hidden="true"></i> Criteria Breakdown</div>
@@ -2653,6 +2875,12 @@ Remember to:
                         <!-- Generated by JS -->
                     </div>
                 </div>
+            </div>
+
+            <div class="card coaching-deck-card" id="coaching-deck-section" style="margin-top: 1.5rem;">
+                <div class="card-title"><i data-lucide="graduation-cap" aria-hidden="true"></i> Coach — next revision targets</div>
+                <p class="help-tip" style="margin-top: 0; margin-bottom: 1rem;">Up to three priorities from this draft. Names are for you and your teacher to reuse in class.</p>
+                <div class="coaching-cards-grid" id="coaching-cards"></div>
             </div>
 
             <div class="card" style="margin-top: 1.5rem;">
@@ -2760,6 +2988,10 @@ Remember to:
                         <strong>5) See your past essays (History)</strong>
                         Essays are saved automatically. If you use Cloud Sync, enter the same Sync code on iPad + computer.
                     </div>
+                    <div class="help-item">
+                        <strong>6) Revise &amp; shortcuts</strong>
+                        On Results, use “Revise this draft” to keep your text and edit with sensory tools on; submit again to compare scores. In Practice, press <strong>Ctrl+Enter</strong> (Windows) or <strong>⌘+Enter</strong> (Mac) to submit. Press <strong>Esc</strong> to close a dialog.
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -2783,7 +3015,7 @@ Remember to:
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v2.4.0';
+        const APP_VERSION = 'v3.0.0';
 
         function refreshIcons() {
             if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
@@ -3210,6 +3442,8 @@ Remember to:
             const listEl = document.getElementById('online-issues-list');
             if (!statusEl || !listEl) return;
 
+            statusEl.classList.remove('online-check-busy');
+
             const n = Number.isFinite(Number(totalCount)) ? Number(totalCount) : (matches?.length || 0);
             if (!matches || !matches.length) {
                 statusEl.textContent = 'No issues found (nice!).';
@@ -3235,6 +3469,8 @@ Remember to:
             const listEl = document.getElementById('online-issues-list');
             if (!statusEl || !listEl) return;
 
+            statusEl.classList.remove('online-check-busy');
+
             if (!ONLINE_CONFIG.enabled) {
                 statusEl.textContent = 'Online check is disabled.';
                 return;
@@ -3247,6 +3483,7 @@ Remember to:
                 return;
             }
 
+            statusEl.classList.add('online-check-busy');
             statusEl.textContent = 'Checking online...';
             listEl.innerHTML = '<li style="color: var(--text-muted);">Working...</li>';
 
@@ -3254,6 +3491,7 @@ Remember to:
                 const matches = await checkTextOnline(text, 'en-US');
                 renderOnlineCheckResults(text, matches, matches.length);
             } catch (e) {
+                statusEl.classList.remove('online-check-busy');
                 statusEl.textContent = 'Online check failed (maybe offline or rate-limited).';
                 listEl.innerHTML = '<li style="color: var(--text-muted);">Could not reach the online checker. You can still submit and use the built-in scoring.</li>';
             }
@@ -3420,7 +3658,8 @@ Remember to:
                 perfectCriteria: 0,
                 unlockedAchievements: [],
                 promptCycleSeed: null,
-                usedPromptIndices: []
+                usedPromptIndices: [],
+                wordGoal: 0
             },
             character: {
                 name: '',
@@ -3434,8 +3673,13 @@ Remember to:
             flatWordsFound: [],
             flatWordsReplaced: 0,
             selectedFlatWord: null,
-            selectedSense: null
+            selectedSense: null,
+            deferPracticeFeedback: true,
+            revisionBaselineScore: null,
+            sessionChallengeTitles: []
         };
+
+        let lastCoachingCards = [];
 
         const ONBOARDING_DISMISSED_KEY = 'writeboost-onboarding-dismissed';
 
@@ -3471,6 +3715,7 @@ Remember to:
             setupEventListeners();
             setupTextareaListener();
             drawStoryCoaster();
+            analyzeFlatWords();
 
             const versionEl = document.getElementById('app-version');
             if (versionEl) versionEl.textContent = APP_VERSION;
@@ -3487,6 +3732,8 @@ Remember to:
             maybeAutoOpenQuickStart();
 
             setTimerStartLabel(false);
+            initWordGoalAndDraftUi();
+            setupModalEscape();
             refreshIcons();
         }
 
@@ -3510,6 +3757,9 @@ Remember to:
             }
             if (!Array.isArray(state.stats.usedPromptIndices)) {
                 state.stats.usedPromptIndices = [];
+            }
+            if (!Number.isFinite(Number(state.stats.wordGoal)) || Number(state.stats.wordGoal) < 0) {
+                state.stats.wordGoal = 0;
             }
             checkStreak();
         }
@@ -3546,6 +3796,9 @@ Remember to:
 
             // stats: prefer "better" numbers when possible
             merged.stats = { ...(localData?.stats || {}), ...(remoteData?.stats || {}) };
+            if (localData?.stats && Object.prototype.hasOwnProperty.call(localData.stats, 'wordGoal')) {
+                merged.stats.wordGoal = localData.stats.wordGoal;
+            }
 
             // prompt rotation: union used indices, and keep the newer cycle seed (max)
             const lu = Array.isArray(localData?.stats?.usedPromptIndices) ? localData.stats.usedPromptIndices : [];
@@ -3722,7 +3975,11 @@ Remember to:
             state.challengesUsed = 0;
             state.flatWordsFound = [];
             state.flatWordsReplaced = 0;
+            state.deferPracticeFeedback = true;
+            state.revisionBaselineScore = null;
+            state.sessionChallengeTitles = [];
             updateChallengeCount();
+            renderSessionChallengeLog();
             updateWordCount();
             analyzeFlatWords();
             drawStoryCoaster();
@@ -3825,8 +4082,14 @@ Remember to:
             state.challengesUsed = 0;
             state.flatWordsFound = [];
             state.flatWordsReplaced = 0;
+            state.deferPracticeFeedback = true;
+            state.revisionBaselineScore = null;
+            state.sessionChallengeTitles = [];
             state.startTime = Date.now();
             updateChallengeCount();
+            renderSessionChallengeLog();
+            analyzeFlatWords();
+            drawStoryCoaster();
         }
 
         // ============ TIMER ============
@@ -3884,6 +4147,12 @@ Remember to:
                 analyzeFlatWords();
                 drawStoryCoaster();
             });
+            textarea.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    submitEssay();
+                }
+            });
         }
 
         function updateWordCount() {
@@ -3896,6 +4165,108 @@ Remember to:
             document.getElementById('word-count').textContent = words;
             document.getElementById('paragraph-count').textContent = paragraphs;
             document.getElementById('time-spent').textContent = minutes;
+            updateWordGoalUi();
+        }
+
+        function onWordGoalChange(raw) {
+            const v = Math.max(0, parseInt(raw, 10) || 0);
+            state.stats.wordGoal = v;
+            saveState();
+            updateWordGoalUi();
+            refreshIcons();
+        }
+
+        function updateWordGoalUi() {
+            const g = Math.max(0, parseInt(String(state.stats.wordGoal), 10) || 0);
+            const sel = document.getElementById('word-goal-select');
+            if (sel && document.activeElement !== sel) {
+                sel.value = String(g);
+            }
+            const wrap = document.getElementById('word-goal-bar-wrap');
+            const fill = document.getElementById('word-goal-fill');
+            const meta = document.getElementById('word-goal-meta');
+            const wc = parseInt(document.getElementById('word-count')?.textContent, 10) || 0;
+            if (g <= 0) {
+                if (wrap) wrap.hidden = true;
+                if (meta) meta.textContent = '';
+                if (fill) fill.style.width = '0%';
+                return;
+            }
+            if (wrap) wrap.hidden = false;
+            const pct = Math.min(100, Math.round((wc / g) * 100));
+            if (fill) fill.style.width = pct + '%';
+            if (meta) meta.textContent = wc >= g ? 'Goal met' : `${wc} / ${g} words`;
+        }
+
+        function initWordGoalAndDraftUi() {
+            const sel = document.getElementById('word-goal-select');
+            if (sel) sel.value = String(Math.max(0, parseInt(String(state.stats.wordGoal), 10) || 0));
+            updateWordGoalUi();
+        }
+
+        function updateDraftSavedTime(d) {
+            const el = document.getElementById('draft-save-status');
+            if (el) el.textContent = 'Draft saved ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderSessionChallengeLog() {
+            const el = document.getElementById('challenge-session-log');
+            if (!el) return;
+            const list = state.sessionChallengeTitles || [];
+            if (!list.length) {
+                el.innerHTML = '';
+                return;
+            }
+            el.innerHTML = '<div class="challenge-log-title">This session</div><ul>' +
+                list.map(t => `<li>${escapeHtml(t)}</li>`).join('') + '</ul>';
+        }
+
+        function focusFirstModalControl(overlayId) {
+            setTimeout(() => {
+                let el = null;
+                if (overlayId === 'power-words-modal') {
+                    el = document.getElementById('modal-power-word');
+                } else if (overlayId === 'help-modal') {
+                    const overlay = document.getElementById('help-modal');
+                    el = overlay?.querySelector('.modal-footer .btn-primary') || overlay?.querySelector('.modal-close');
+                } else {
+                    const overlay = document.getElementById(overlayId);
+                    el = overlay?.querySelector('.modal-close') || overlay?.querySelector('button');
+                }
+                el?.focus?.();
+            }, 40);
+        }
+
+        function setupModalEscape() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Escape') return;
+                const h = document.getElementById('help-modal');
+                const c = document.getElementById('challenge-modal');
+                const p = document.getElementById('power-words-modal');
+                if (h?.classList.contains('active')) {
+                    closeHelpModal();
+                    e.preventDefault();
+                } else if (c?.classList.contains('active')) {
+                    closeChallengeModal();
+                    e.preventDefault();
+                } else if (p?.classList.contains('active')) {
+                    closePowerWordsModal();
+                    e.preventDefault();
+                }
+            });
+        }
+
+        function reviseDraftFromResults() {
+            const el = document.getElementById('final-score');
+            const n = el ? parseInt(el.textContent, 10) : NaN;
+            state.revisionBaselineScore = Number.isFinite(n) ? n : null;
+            state.deferPracticeFeedback = false;
+            showPage('practice');
+            analyzeFlatWords();
+            drawStoryCoaster();
+            document.getElementById('essay-input')?.focus();
+            showToast('Keep revising — submit again to compare scores.');
+            refreshIcons();
         }
 
         // ============ STORY COASTER ============
@@ -4006,7 +4377,8 @@ Remember to:
             const avgTension = tensions.reduce((a, b) => a + b, 0) / tensions.length;
             const isFlat = tensions.every(t => Math.abs(t - avgTension) < 1);
 
-            document.getElementById('coaster-warning').style.display = isFlat && tensions.length > 1 ? 'flex' : 'none';
+            document.getElementById('coaster-warning').style.display =
+                !state.deferPracticeFeedback && isFlat && tensions.length > 1 ? 'flex' : 'none';
 
             // Labels
             const labels = [];
@@ -4076,8 +4448,25 @@ Remember to:
             if (replacementEvents > 0) checkAchievements();
         }
 
+        function setSensoryDeferredUi(deferred) {
+            const card = document.getElementById('sensory-card');
+            if (card) card.classList.toggle('sensory-deferred', deferred);
+        }
+
         function renderFlatWords() {
             const container = document.getElementById('flat-words-found');
+            if (!container) return;
+
+            setSensoryDeferredUi(!!state.deferPracticeFeedback);
+
+            if (state.deferPracticeFeedback) {
+                container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">After you submit, word highlights and sensory questions appear here.</span>';
+                const pt = document.getElementById('sensory-progress-text');
+                const pf = document.getElementById('sensory-progress-fill');
+                if (pt) pt.textContent = 'Unlocks after you submit';
+                if (pf) pf.style.width = '0%';
+                return;
+            }
 
             if (state.flatWordsFound.length === 0) {
                 container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">No flat words detected. Keep writing!</span>';
@@ -4088,9 +4477,13 @@ Remember to:
             }
 
             const progress = Math.min(100, (state.flatWordsReplaced / 5) * 100);
-            document.getElementById('sensory-progress-fill').style.width = progress + '%';
-            document.getElementById('sensory-progress-text').textContent =
-                `Replace ${state.flatWordsReplaced} flat word${state.flatWordsReplaced !== 1 ? 's' : ''} (5 to earn badge)`;
+            const pf = document.getElementById('sensory-progress-fill');
+            const pt = document.getElementById('sensory-progress-text');
+            if (pf) pf.style.width = progress + '%';
+            if (pt) {
+                pt.textContent =
+                    `Replace ${state.flatWordsReplaced} flat word${state.flatWordsReplaced !== 1 ? 's' : ''} (5 to earn badge)`;
+            }
         }
 
         function selectFlatWord(word) {
@@ -4146,6 +4539,7 @@ Remember to:
             const modal = document.getElementById('challenge-modal');
             modal.classList.add('active');
             showRandomChallenge();
+            focusFirstModalControl('challenge-modal');
         }
 
         function closeChallengeModal() {
@@ -4171,6 +4565,11 @@ Remember to:
         function addChallengeToStory() {
             state.challengesUsed++;
             updateChallengeCount();
+            if (state.currentChallenge && state.currentChallenge.title) {
+                if (!Array.isArray(state.sessionChallengeTitles)) state.sessionChallengeTitles = [];
+                state.sessionChallengeTitles.push(state.currentChallenge.title);
+                renderSessionChallengeLog();
+            }
 
             const textarea = document.getElementById('essay-input');
             const insertion = `\n\n[Challenge — ${state.currentChallenge.title}: ${state.currentChallenge.desc}]\n`;
@@ -4195,6 +4594,7 @@ Remember to:
             document.getElementById('modal-power-results').innerHTML =
                 '<p style="color: var(--text-muted); text-align: center;">Enter a word to see alternatives</p>';
             refreshIcons();
+            focusFirstModalControl('power-words-modal');
         }
 
         function closePowerWordsModal() {
@@ -4205,6 +4605,7 @@ Remember to:
             const modal = document.getElementById('help-modal');
             if (modal) modal.classList.add('active');
             refreshIcons();
+            focusFirstModalControl('help-modal');
         }
 
         function closeHelpModal() {
@@ -4433,7 +4834,18 @@ Remember to:
                 document.getElementById('essay-input').focus();
                 showPage('practice');
                 resetTimer();
+                state.currentPromptIndex = null;
+                state.challengesUsed = 0;
+                state.flatWordsFound = [];
+                state.flatWordsReplaced = 0;
+                state.deferPracticeFeedback = true;
+                state.revisionBaselineScore = null;
+                state.sessionChallengeTitles = [];
+                updateChallengeCount();
+                renderSessionChallengeLog();
                 state.startTime = Date.now();
+                analyzeFlatWords();
+                drawStoryCoaster();
                 showToast('Story seed planted! Start writing...');
             }
         }
@@ -4474,7 +4886,16 @@ Remember to:
         function viewEssay(index) {
             const essay = state.essays[index];
             document.getElementById('essay-input').value = essay.text;
+            state.deferPracticeFeedback = true;
+            state.revisionBaselineScore = null;
+            state.sessionChallengeTitles = [];
+            state.challengesUsed = 0;
+            updateChallengeCount();
+            renderSessionChallengeLog();
             showPage('practice');
+            updateWordCount();
+            analyzeFlatWords();
+            drawStoryCoaster();
             showToast('Essay loaded from history');
         }
 
@@ -4559,7 +4980,12 @@ Remember to:
                 timeSpent: Math.round((Date.now() - state.startTime) / 60000),
                 lt: ltReport.ok
                     ? { ok: true, matchCount: (ltReport.matches || []).length, preview: ltPreview }
-                    : { ok: false, error: ltReport.error }
+                    : { ok: false, error: ltReport.error },
+                coachingSnapshot: {
+                    flatWords: [...(state.flatWordsFound || [])],
+                    challengesUsed: state.challengesUsed,
+                    hasDialogue
+                }
             };
 
             state.essays.push(essay);
@@ -4577,8 +5003,21 @@ Remember to:
             clearDraft();
             updateStats();
 
+            let revisionScoreNote = '';
+            if (Number.isFinite(state.revisionBaselineScore)) {
+                const prev = state.revisionBaselineScore;
+                const delta = totalScore - prev;
+                revisionScoreNote = delta === 0
+                    ? `Same score as your last check (${prev}).`
+                    : `Score ${delta > 0 ? 'up' : 'down'} ${Math.abs(delta)} (${prev} → ${totalScore}).`;
+                state.revisionBaselineScore = null;
+            }
+
             // Show results
             showResults(essay);
+            if (revisionScoreNote) {
+                setTimeout(() => showToast(revisionScoreNote), 650);
+            }
         }
 
         function classifyLtMatch(m) {
@@ -4704,6 +5143,158 @@ Remember to:
             return scaled;
         }
 
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function getFlatWordsInText(text) {
+            const t = (text || '').toLowerCase();
+            if (!t.trim()) return [];
+            return FLAT_WORDS.filter(word => new RegExp(`\\b${word}\\b`, 'i').test(t));
+        }
+
+        function isTensionCurveFlatForCoaching(text) {
+            const tensions = analyzeTension(text || '');
+            if (tensions.length < 2) return false;
+            const avg = tensions.reduce((a, b) => a + b, 0) / tensions.length;
+            return tensions.every(t => Math.abs(t - avg) < 1);
+        }
+
+        function getEssayCoachingContext(essay) {
+            const text = essay.text || '';
+            const snap = essay.coachingSnapshot;
+            const wordCount = text.trim() ? text.trim().split(/\s+/).filter(Boolean).length : 0;
+            const flatWords = (snap && Array.isArray(snap.flatWords) && snap.flatWords.length)
+                ? snap.flatWords.slice()
+                : getFlatWordsInText(text);
+            const challengesUsed = Number.isFinite(Number(snap?.challengesUsed)) ? Number(snap.challengesUsed) : 0;
+            const hasDialogue = typeof snap?.hasDialogue === 'boolean'
+                ? snap.hasDialogue
+                : (/"[^"]*"/.test(text) || /\u201C[^\u201D]*\u201D/.test(text));
+            return { text, flatWords, challengesUsed, hasDialogue, wordCount };
+        }
+
+        function buildCoachingCards(essay) {
+            const { text, flatWords, challengesUsed, hasDialogue, wordCount } = getEssayCoachingContext(essay);
+            const candidates = [];
+            const tensionFlat = isTensionCurveFlatForCoaching(text);
+
+            if (tensionFlat) {
+                candidates.push({
+                    priority: 100,
+                    ruleId: 'tension-arc-flat',
+                    ruleName: 'Tension arc (Story Coaster)',
+                    icon: 'activity',
+                    body: 'The tension line stays almost level, so readers feel little build or turning point. Add one clear problem, surprise, or setback in the middle before easing off.',
+                    actionLabel: 'Draw a Challenge card',
+                    actionKind: 'challenge'
+                });
+            }
+
+            if (flatWords.length > 0) {
+                const word = flatWords[0];
+                const tip = (SENSORY_SUGGESTIONS[word] && SENSORY_SUGGESTIONS[word].sight)
+                    ? SENSORY_SUGGESTIONS[word].sight
+                    : 'Try replacing it with something we can see, hear, or feel in the moment instead of naming the feeling in one plain word.';
+                candidates.push({
+                    priority: 88,
+                    ruleId: 'show-dont-tell-flatword',
+                    ruleName: 'Show, don’t tell (sensory upgrade)',
+                    icon: 'eye',
+                    body: `The draft leans on “${word}.” ${tip}`,
+                    actionLabel: 'Open Sensory Palette',
+                    actionKind: 'sensory',
+                    hintWord: word
+                });
+            }
+
+            if (!hasDialogue && wordCount >= 60) {
+                candidates.push({
+                    priority: 72,
+                    ruleId: 'dialogue-action-beats',
+                    ruleName: 'Dialogue & action beats',
+                    icon: 'message-square',
+                    body: 'There’s little or no spoken dialogue. Add one short line of speech in the busiest paragraph, with a small beat (who speaks or what they do while talking).',
+                    actionLabel: 'Revise in Practice',
+                    actionKind: 'practice'
+                });
+            }
+
+            if (!tensionFlat && challengesUsed === 0 && wordCount >= 90) {
+                candidates.push({
+                    priority: 58,
+                    ruleId: 'challenge-twist',
+                    ruleName: 'Plot twist (Challenge cards)',
+                    icon: 'dice-5',
+                    body: 'No Challenge card was used on this draft. A single random twist can wake up the plot or reveal character.',
+                    actionLabel: 'Pick a Challenge',
+                    actionKind: 'challenge'
+                });
+            }
+
+            candidates.sort((a, b) => b.priority - a.priority);
+            const out = [];
+            const seenRule = new Set();
+            for (const c of candidates) {
+                if (seenRule.has(c.ruleId)) continue;
+                seenRule.add(c.ruleId);
+                out.push(c);
+                if (out.length >= 3) break;
+            }
+            return out;
+        }
+
+        function renderCoachingCards(essay) {
+            const container = document.getElementById('coaching-cards');
+            if (!container) return;
+            lastCoachingCards = buildCoachingCards(essay);
+            if (lastCoachingCards.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.95rem;">No urgent coaching signals on this draft — nice balance. Use strengths and the outline below, or run another pass when you like.</p>';
+                return;
+            }
+            container.innerHTML = lastCoachingCards.map((c, i) => `
+                <div class="coaching-card">
+                    <div class="coaching-card-priority">Priority ${i + 1}</div>
+                    <div class="coaching-rule-name"><i data-lucide="${c.icon}" aria-hidden="true"></i> ${escapeHtml(c.ruleName)}</div>
+                    <div class="coaching-card-body">${escapeHtml(c.body)}</div>
+                    <div class="coaching-card-actions">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="runCoachingAction(${i})">${escapeHtml(c.actionLabel)}</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function runCoachingAction(index) {
+            const c = lastCoachingCards[index];
+            if (!c) return;
+            const popup = document.getElementById('suggestion-popup');
+            if (popup) popup.style.display = 'none';
+            if (c.actionKind === 'challenge') {
+                showPage('practice');
+                openChallengeModal();
+            } else if (c.actionKind === 'sensory' && c.hintWord) {
+                state.deferPracticeFeedback = false;
+                showPage('practice');
+                analyzeFlatWords();
+                requestAnimationFrame(() => {
+                    if (state.flatWordsFound.includes(c.hintWord)) {
+                        selectFlatWord(c.hintWord);
+                    } else {
+                        showToast('That wording may have changed — use Sensory Palette chips in the sidebar.');
+                    }
+                });
+            } else if (c.actionKind === 'practice') {
+                showPage('practice');
+                document.getElementById('essay-input')?.focus();
+            }
+            refreshIcons();
+        }
+
         // Need to define sensoryCount for the results function
         let sensoryCount = 0;
         function showResults(essay) {
@@ -4766,6 +5357,8 @@ Remember to:
                     </div>
                 `;
             }).join('');
+
+            renderCoachingCards(essay);
 
             // Strengths
             const strengths = [];
@@ -5033,8 +5626,11 @@ Remember to:
                             savedAt: new Date().toISOString()
                         };
                         localStorage.setItem('writeboost-draft', JSON.stringify(draft));
+                        updateDraftSavedTime(new Date());
                     } else {
                         localStorage.removeItem('writeboost-draft');
+                        const ds = document.getElementById('draft-save-status');
+                        if (ds) ds.textContent = 'Draft saves automatically after you pause typing.';
                     }
                 }, 2000);
             });
@@ -5056,8 +5652,11 @@ Remember to:
                             if (draft.promptTitle) {
                                 document.getElementById('current-prompt-title').textContent = draft.promptTitle;
                             }
+                            state.deferPracticeFeedback = true;
                             updateWordCount();
                             drawStoryCoaster();
+                            analyzeFlatWords();
+                            updateDraftSavedTime(savedAt);
                         } else {
                             localStorage.removeItem('writeboost-draft');
                         }
