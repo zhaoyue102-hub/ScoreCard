@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+134130<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,30 +6,310 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="WriteBoost">
-    <meta name="theme-color" content="#4F46E5">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234F46E5'/%3E%3Cstop offset='1' stop-color='%233730A3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='128' height='128' rx='28' fill='url(%23g)'/%3E%3Ctext x='64' y='82' font-size='64' text-anchor='middle'%3E%E2%9C%8D%EF%B8%8F%3C/text%3E%3C/svg%3E">
-    <title>WriteBoost v2.3.0 - Narrative Writing Trainer</title>
+    <meta name="theme-color" content="#045490">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2304590'/%3E%3Cstop offset='1' stop-color='%23273462'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='128' height='128' rx='28' fill='url(%23g)'/%3E%3Ctext x='64' y='82' font-size='64' text-anchor='middle'%3E%E2%9C%8D%EF%B8%8F%3C/text%3E%3C/svg%3E">
+    <title>WriteBoost v2.4.0 - Narrative Writing Trainer</title>
     <style>
         :root {
-            --primary: #4F46E5;
-            --primary-light: #818CF8;
-            --primary-dark: #3730A3;
-            --accent: #F59E0B;
-            --accent-light: #FCD34D;
+            /* Two Pinterest palettes merged: Mediterranean blues + lemon / air surfaces */
+            --color-midnight: #273462;
+            --color-smore: #045490;
+            --color-coastal: #84B7CE;
+            --color-moonstone: #519CAB;
+            --color-light-blue: #C3E7F1;
+            --color-saffron: #FFC64F;
+            --color-limoncello: #FFF08C;
+            --color-gunmetal: #20373B;
+
+            --header-start: var(--color-smore);
+            --header-end: var(--color-midnight);
+
+            --primary: var(--color-moonstone);
+            --primary-light: var(--color-coastal);
+            --primary-dark: var(--color-smore);
+
+            --accent: var(--color-saffron);
+            --accent-light: var(--color-limoncello);
+
+            --btn-primary-bg: var(--color-saffron);
+            --btn-primary-text: var(--color-gunmetal);
+            --btn-primary-hover: #E6A82E;
+
             --success: #10B981;
             --danger: #EF4444;
-            --warning: #F59E0B;
-            --bg: #F8FAFC;
+            --warning: #E6A82E;
+
+            --bg: #EAF4F8;
             --bg-card: #FFFFFF;
-            --bg-sidebar: #F1F5F9;
-            --text: #1E293B;
-            --text-light: #64748B;
-            --text-muted: #94A3B8;
-            --border: #E2E8F0;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --bg-sidebar: #E1F0F5;
+            --text: var(--color-gunmetal);
+            --text-light: #3A5660;
+            --text-muted: #6B8790;
+            --border: #B5D4DF;
+            --shadow: 0 4px 6px -1px rgba(4, 84, 144, 0.08), 0 2px 4px -1px rgba(4, 84, 144, 0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(4, 84, 144, 0.12), 0 4px 6px -2px rgba(4, 84, 144, 0.06);
             --radius: 12px;
             --radius-sm: 8px;
+        }
+
+        /* Lucide (stroke icons) */
+        .lucide {
+            flex-shrink: 0;
+        }
+
+        @keyframes lucide-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .lucide-spin {
+            animation: lucide-spin 0.85s linear infinite;
+        }
+
+        .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .icon-btn svg {
+            width: 1.1em;
+            height: 1.1em;
+        }
+
+        .nav-btn-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .nav-btn-inner svg {
+            width: 1.1rem;
+            height: 1.1rem;
+        }
+
+        .logo .lucide {
+            width: 1.75rem;
+            height: 1.75rem;
+        }
+
+        .header .header-icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header .header-icon-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .stats-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 2.75rem;
+        }
+
+        .stats-icon svg {
+            width: 2.25rem;
+            height: 2.25rem;
+            color: var(--primary);
+        }
+
+        .challenge-icon-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .challenge-icon-wrap svg {
+            width: 3.5rem;
+            height: 3.5rem;
+            color: var(--primary);
+        }
+
+        .empty-state-icon {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-icon svg {
+            width: 3.5rem;
+            height: 3.5rem;
+            color: var(--text-muted);
+        }
+
+        .achievement-badge {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.35rem;
+        }
+
+        .achievement-badge svg {
+            width: 1.35rem;
+            height: 1.35rem;
+        }
+
+        .achievement-card.unlocked .achievement-badge svg {
+            color: var(--accent);
+        }
+
+        .achievement-card.locked .achievement-badge svg {
+            color: var(--text-muted);
+        }
+
+        .achievement-icon {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .achievement-icon svg {
+            width: 3rem;
+            height: 3rem;
+            color: var(--primary);
+        }
+
+        .achievement-card.locked .achievement-icon svg {
+            color: var(--text-muted);
+        }
+
+        .skill-icon {
+            display: inline-flex;
+            vertical-align: middle;
+        }
+
+        .skill-icon svg {
+            width: 1.75rem;
+            height: 1.75rem;
+            color: var(--primary);
+        }
+
+        .modal-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-title svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .writing-toolbar .icon-btn svg,
+        .toolbar-btn .icon-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .writing-stats svg {
+            width: 1rem;
+            height: 1rem;
+            color: var(--text-light);
+        }
+
+        .card-title svg {
+            width: 1.05rem;
+            height: 1.05rem;
+            flex-shrink: 0;
+        }
+
+        .page > h1, .page > h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .page > h1 svg, .page > h2 svg {
+            width: 1.35rem;
+            height: 1.35rem;
+            flex-shrink: 0;
+        }
+
+        .history-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .history-header-row h1 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .history-header-row h1 svg {
+            width: 1.35rem;
+            height: 1.35rem;
+        }
+
+        .data-bar-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .data-bar-label svg {
+            width: 0.95rem;
+            height: 0.95rem;
+        }
+
+        .feedback-title {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .feedback-title svg {
+            width: 1.1rem;
+            height: 1.1rem;
+        }
+
+        #suggestion-header {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        #suggestion-header svg {
+            width: 1.1rem;
+            height: 1.1rem;
+        }
+
+        .seed-header .seed-label {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .seed-header .seed-label svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .prompts-section > h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .prompts-section > h2 svg {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        .dashboard-empty-hint strong {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--primary-dark);
         }
 
         * {
@@ -52,7 +332,7 @@
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--header-start) 0%, var(--header-end) 100%);
             color: white;
             padding: 1rem 2rem;
             padding-left: max(2rem, env(safe-area-inset-left));
@@ -214,12 +494,7 @@
         .stats-card.essays { border-top-color: var(--primary); }
         .stats-card.words { border-top-color: var(--success); }
         .stats-card.streak { border-top-color: var(--accent); }
-        .stats-card.score { border-top-color: #EC4899; }
-
-        .stats-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
+        .stats-card.score { border-top-color: var(--header-end); }
 
         .stats-number {
             font-size: 2.5rem;
@@ -287,12 +562,13 @@
         }
 
         .btn-primary {
-            background: var(--primary);
-            color: white;
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
         }
 
         .btn-primary:hover {
-            background: var(--primary-dark);
+            background: var(--btn-primary-hover);
+            color: var(--btn-primary-text);
             transform: translateY(-1px);
         }
 
@@ -359,7 +635,7 @@
         }
 
         .prompt-card.easy { border-left-color: #10B981; }
-        .prompt-card.medium { border-left-color: #F59E0B; }
+        .prompt-card.medium { border-left-color: var(--accent); }
         .prompt-card.hard { border-left-color: #EF4444; }
 
         .prompt-difficulty {
@@ -585,6 +861,12 @@
             gap: 0.5rem;
         }
 
+        .coaster-title svg {
+            width: 1.15rem;
+            height: 1.15rem;
+            color: var(--primary);
+        }
+
         .coaster-svg {
             width: 100%;
             height: 200px;
@@ -685,6 +967,15 @@
             border-radius: var(--radius-sm);
             cursor: pointer;
             font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .random-name-btn svg {
+            width: 1.1rem;
+            height: 1.1rem;
+            color: white;
         }
 
         .character-info {
@@ -745,6 +1036,14 @@
             cursor: pointer;
             font-size: 0.8rem;
             transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .sense-btn svg {
+            width: 1rem;
+            height: 1rem;
         }
 
         .sense-btn:hover, .sense-btn.active {
@@ -864,11 +1163,6 @@
         .challenge-card-display {
             text-align: center;
             padding: 2rem;
-        }
-
-        .challenge-emoji {
-            font-size: 4rem;
-            margin-bottom: 1rem;
         }
 
         .challenge-title {
@@ -1020,8 +1314,9 @@
             opacity: 0.6;
         }
 
-        .achievement-card.locked .achievement-icon {
+        .achievement-card.locked .achievement-icon svg {
             filter: grayscale(100%);
+            opacity: 0.82;
         }
 
         .achievement-card.unlocked {
@@ -1042,11 +1337,6 @@
         @keyframes shimmer {
             0% { transform: translateX(-100%) rotate(45deg); }
             100% { transform: translateX(100%) rotate(45deg); }
-        }
-
-        .achievement-icon {
-            font-size: 3rem;
-            margin-bottom: 0.75rem;
         }
 
         .achievement-name {
@@ -1128,6 +1418,57 @@
             font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+        }
+
+        .score-message .icon-btn svg {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        .feedback-list li .icon-btn {
+            display: inline-flex;
+            vertical-align: middle;
+            margin-right: 0.35rem;
+        }
+
+        .feedback-list li .icon-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        #online-issues-list li .icon-btn {
+            display: inline-flex;
+            vertical-align: middle;
+            margin-right: 0.35rem;
+        }
+
+        #online-issues-list li .icon-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .data-bar .btn .icon-btn svg {
+            width: 0.95rem;
+            height: 0.95rem;
+        }
+
+        .skill-example-bad,
+        .skill-example-good {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.4rem;
+        }
+
+        .skill-example-bad svg,
+        .skill-example-good svg {
+            width: 1rem;
+            height: 1rem;
+            flex-shrink: 0;
+            margin-top: 0.12rem;
         }
 
         /* Criteria Breakdown */
@@ -1252,6 +1593,16 @@
             background: #FEF3C7;
             border-radius: var(--radius-sm);
             font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.45rem;
+        }
+
+        .outline-suggestion svg {
+            width: 1.1rem;
+            height: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 0.15rem;
         }
 
         /* Skills Page */
@@ -1653,11 +2004,6 @@
             color: var(--text-light);
         }
 
-        .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
         /* Floating Guide Toggle (for iPad where sidebar-left is hidden) */
         .guide-toggle-fab {
             display: none;
@@ -1671,15 +2017,22 @@
             background: var(--primary);
             color: white;
             border: none;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(4, 84, 144, 0.35);
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
+        .guide-toggle-fab svg {
+            width: 1.35rem;
+            height: 1.35rem;
+            color: white;
+        }
+
         .guide-toggle-fab:hover {
             transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.5);
+            box-shadow: 0 6px 16px rgba(4, 84, 144, 0.42);
         }
 
         @media (min-width: 768px) and (max-width: 1200px) {
@@ -1738,6 +2091,15 @@
         .guide-overlay-header h3 {
             font-size: 1.1rem;
             color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .guide-overlay-header h3 svg {
+            width: 1.15rem;
+            height: 1.15rem;
+            flex-shrink: 0;
         }
 
         .guide-close-btn {
@@ -1767,15 +2129,33 @@
             margin-bottom: 0.5rem;
             color: var(--text);
         }
+
+        .dashboard-empty-hint {
+            margin: 0 0 1.25rem;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            border: 1px dashed var(--border);
+            background: rgba(4, 84, 144, 0.07);
+            color: var(--text);
+            font-size: 0.95rem;
+            line-height: 1.55;
+        }
+
+        .dashboard-empty-hint .hint-actions {
+            margin-top: 0.75rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
     </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="logo">
-            <span class="logo-icon">✍️</span>
+            <i data-lucide="pen-line" aria-hidden="true"></i>
             <span>WriteBoost</span>
-            <span class="version-badge" id="app-version">v2.3.0</span>
+            <span class="version-badge" id="app-version">v2.4.0</span>
         </div>
         <div class="header-stats">
             <div class="stat-item">
@@ -1795,62 +2175,70 @@
                 <div class="stat-label">Avg Score</div>
             </div>
         </div>
-        <button class="btn btn-secondary btn-sm" onclick="openHelpModal()" title="How to use" style="flex-shrink:0; margin-left: 0.5rem; font-size: 0.8rem; padding: 0.4rem 0.8rem;">❓</button>
-        <button class="btn btn-secondary btn-sm" onclick="exportData()" title="Export data backup" style="flex-shrink:0; margin-left: 0.5rem; font-size: 0.8rem; padding: 0.4rem 0.8rem;">💾</button>
+        <button class="btn btn-secondary btn-sm header-icon-btn" type="button" onclick="openHelpModal()" title="How to use" aria-label="How to use" style="flex-shrink:0; margin-left: 0.5rem; font-size: 0.8rem; padding: 0.4rem 0.8rem;"><i data-lucide="circle-help" aria-hidden="true"></i></button>
+        <button class="btn btn-secondary btn-sm header-icon-btn" type="button" onclick="exportData()" title="Export data backup" aria-label="Export data backup" style="flex-shrink:0; margin-left: 0.5rem; font-size: 0.8rem; padding: 0.4rem 0.8rem;"><i data-lucide="download" aria-hidden="true"></i></button>
     </header>
 
     <!-- Navigation -->
     <nav class="nav">
-        <button class="nav-btn active" data-page="dashboard">📊 Dashboard</button>
-        <button class="nav-btn" data-page="practice">✏️ Practice</button>
-        <button class="nav-btn" data-page="power-words">💪 Power Words</button>
-        <button class="nav-btn" data-page="achievements">🏆 Achievements</button>
-        <button class="nav-btn" data-page="skills">📚 Skills</button>
-        <button class="nav-btn" data-page="history">📜 History</button>
+        <button type="button" class="nav-btn active" data-page="dashboard"><span class="nav-btn-inner"><i data-lucide="layout-dashboard" aria-hidden="true"></i><span>Dashboard</span></span></button>
+        <button type="button" class="nav-btn" data-page="practice"><span class="nav-btn-inner"><i data-lucide="pen-line" aria-hidden="true"></i><span>Practice</span></span></button>
+        <button type="button" class="nav-btn" data-page="power-words"><span class="nav-btn-inner"><i data-lucide="dumbbell" aria-hidden="true"></i><span>Power Words</span></span></button>
+        <button type="button" class="nav-btn" data-page="achievements"><span class="nav-btn-inner"><i data-lucide="trophy" aria-hidden="true"></i><span>Achievements</span></span></button>
+        <button type="button" class="nav-btn" data-page="skills"><span class="nav-btn-inner"><i data-lucide="book-open" aria-hidden="true"></i><span>Skills</span></span></button>
+        <button type="button" class="nav-btn" data-page="history"><span class="nav-btn-inner"><i data-lucide="history" aria-hidden="true"></i><span>History</span></span></button>
     </nav>
 
     <!-- Main Content -->
     <main class="main">
         <!-- Dashboard Page -->
         <div id="dashboard" class="page active">
+            <div class="dashboard-empty-hint" id="dashboard-empty-hint" style="display: none;">
+                <strong>Welcome!</strong> Your stats stay at 0 until you finish your first piece — that’s normal.
+                Pick a prompt below (or plant the Daily Story Seed), write at least 50 words in Practice, then submit to unlock achievements like <strong><span class="icon-btn" style="vertical-align:middle"><i data-lucide="trophy" aria-hidden="true"></i><span>First Draft</span></span></strong>.
+                <div class="hint-actions">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="showPage('practice')"><span class="icon-btn"><i data-lucide="pen-line" aria-hidden="true"></i><span>Go to Practice</span></span></button>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="openHelpModal()"><span class="icon-btn"><i data-lucide="circle-help" aria-hidden="true"></i><span>Quick Start</span></span></button>
+                </div>
+            </div>
             <div class="dashboard-grid">
                 <div class="card stats-card essays">
-                    <div class="stats-icon">📝</div>
+                    <div class="stats-icon"><i data-lucide="file-pen-line" aria-hidden="true"></i></div>
                     <div class="stats-number" id="dash-essays">0</div>
                     <div class="stats-sub">Essays Written</div>
                 </div>
                 <div class="card stats-card words">
-                    <div class="stats-icon">🔤</div>
+                    <div class="stats-icon"><i data-lucide="text" aria-hidden="true"></i></div>
                     <div class="stats-number" id="dash-words">0</div>
                     <div class="stats-sub">Total Words</div>
                 </div>
                 <div class="card stats-card streak">
-                    <div class="stats-icon">🔥</div>
+                    <div class="stats-icon"><i data-lucide="flame" aria-hidden="true"></i></div>
                     <div class="stats-number" id="dash-streak">0</div>
                     <div class="stats-sub">Day Streak</div>
                 </div>
                 <div class="card stats-card score">
-                    <div class="stats-icon">⭐</div>
+                    <div class="stats-icon"><i data-lucide="star" aria-hidden="true"></i></div>
                     <div class="stats-number" id="dash-score">--</div>
                     <div class="stats-sub">Best Score</div>
                 </div>
                 <div class="card daily-seed-card">
                     <div class="seed-header">
                         <div>
-                            <div class="seed-label">🌱 Daily Story Seed</div>
+                            <div class="seed-label"><i data-lucide="sprout" aria-hidden="true"></i> Daily Story Seed</div>
                         </div>
                         <div class="seed-date" id="seed-date"></div>
                     </div>
                     <div class="seed-content" id="seed-content">
                         <!-- Generated daily -->
                     </div>
-                    <button class="btn btn-secondary" onclick="plantSeed()">🌱 Plant this seed</button>
+                    <button type="button" class="btn btn-secondary" onclick="plantSeed()"><span class="icon-btn"><i data-lucide="sprout" aria-hidden="true"></i><span>Plant this seed</span></span></button>
                     <div class="help-tip">Tip: this makes today’s seed your writing prompt.</div>
                 </div>
             </div>
 
             <div class="prompts-section">
-                <h2>📝 Choose a Writing Prompt</h2>
+                <h2><i data-lucide="file-pen-line" aria-hidden="true"></i> Choose a Writing Prompt</h2>
                 <p class="help-tip">Shows 6 unused prompts. After you submit an essay, that prompt gets replaced.</p>
                 <div class="prompts-grid" id="prompts-grid">
                     <!-- Generated dynamically -->
@@ -1864,7 +2252,7 @@
                 <!-- Left Sidebar -->
                 <div class="sidebar-left">
                     <div class="card guide-card">
-                        <div class="card-title">📋 7-Step Writing Guide</div>
+                        <div class="card-title"><i data-lucide="clipboard-list" aria-hidden="true"></i> 7-Step Writing Guide</div>
                         <div class="guide-step">
                             <div class="guide-number">1</div>
                             <div class="guide-content">
@@ -1917,7 +2305,7 @@
                     </div>
 
                     <div class="card timer-card">
-                        <div class="card-title">⏱️ Timer</div>
+                        <div class="card-title"><i data-lucide="timer" aria-hidden="true"></i> Timer</div>
                         <div class="timer-display" id="timer-display">00:00</div>
                         <div class="timer-options">
                             <button class="timer-btn" data-minutes="15">15m</button>
@@ -1926,8 +2314,8 @@
                             <button class="timer-btn" data-minutes="50">50m</button>
                         </div>
                         <div class="timer-controls">
-                            <button class="btn btn-primary btn-sm" id="timer-start" onclick="toggleTimer()">▶ Start</button>
-                            <button class="btn btn-ghost btn-sm" onclick="resetTimer()">↺ Reset</button>
+                            <button type="button" class="btn btn-primary btn-sm" id="timer-start" onclick="toggleTimer()"><span class="icon-btn"><i data-lucide="play" aria-hidden="true"></i><span>Start</span></span></button>
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="resetTimer()"><span class="icon-btn"><i data-lucide="rotate-ccw" aria-hidden="true"></i><span>Reset</span></span></button>
                         </div>
                     </div>
                 </div>
@@ -1937,18 +2325,18 @@
                     <div class="writing-header">
                         <div class="writing-title" id="current-prompt-title">Start Writing</div>
                         <div class="writing-toolbar">
-                            <button class="toolbar-btn" onclick="openChallengeModal()">🎲 Challenge</button>
-                            <button class="toolbar-btn" onclick="openPowerWordsModal()">💪 Power Words</button>
-                            <button class="btn btn-primary" id="submit-essay-btn" type="button" onclick="submitEssay()">📤 Submit</button>
+                            <button type="button" class="toolbar-btn" onclick="openChallengeModal()"><span class="icon-btn"><i data-lucide="dice-5" aria-hidden="true"></i><span>Challenge</span></span></button>
+                            <button type="button" class="toolbar-btn" onclick="openPowerWordsModal()"><span class="icon-btn"><i data-lucide="dumbbell" aria-hidden="true"></i><span>Power Words</span></span></button>
+                            <button class="btn btn-primary" id="submit-essay-btn" type="button" onclick="submitEssay()"><span class="icon-btn"><i data-lucide="upload" aria-hidden="true"></i><span>Submit</span></span></button>
                         </div>
                     </div>
                     <div class="help-tip" style="padding: 0 1.5rem 0.5rem;">
-                        Flow: pick a prompt → write → add a challenge twist if stuck → submit for feedback.
+                        Flow: pick a prompt, write, add a challenge twist if stuck, then submit for feedback.
                     </div>
                     <div class="writing-stats">
-                        <span>📝 <span id="word-count">0</span> words</span>
-                        <span>📄 <span id="paragraph-count">0</span> paragraphs</span>
-                        <span>⏱️ <span id="time-spent">0</span> min</span>
+                        <span><i data-lucide="file-text" aria-hidden="true"></i> <span id="word-count">0</span> words</span>
+                        <span><i data-lucide="pilcrow" aria-hidden="true"></i> <span id="paragraph-count">0</span> paragraphs</span>
+                        <span><i data-lucide="timer" aria-hidden="true"></i> <span id="time-spent">0</span> min</span>
                     </div>
                     <div class="writing-content">
                         <textarea id="essay-input" placeholder="Start your story here...
@@ -1962,13 +2350,13 @@ Remember to:
 
                     <!-- Story Coaster -->
                     <div class="story-coaster">
-                        <div class="coaster-title">🎢 Story Coaster - Tension Graph</div>
+                        <div class="coaster-title"><i data-lucide="activity" aria-hidden="true"></i> Story Coaster - Tension Graph</div>
                         <svg class="coaster-svg" id="story-coaster" viewBox="0 0 600 180">
                             <!-- Will be drawn by JS -->
                         </svg>
                         <div class="challenge-count" id="challenge-count">Challenge cards used: 0</div>
                         <div class="coaster-warning" id="coaster-warning" style="display: none;">
-                            ⚡ Your story needs more twists! Try adding a challenge or conflict.
+                            <i data-lucide="zap" aria-hidden="true"></i> Your story needs more twists! Try adding a challenge or conflict.
                         </div>
                     </div>
                 </div>
@@ -1977,13 +2365,13 @@ Remember to:
                 <div class="sidebar-right">
                     <!-- Character Card -->
                     <div class="card character-card">
-                        <h3>🎭 Character</h3>
+                        <h3><i data-lucide="theater" aria-hidden="true"></i> Character</h3>
                         <div class="character-form" id="character-form">
                             <div class="form-group">
                                 <label>Name</label>
                                 <div class="name-input-row">
                                     <input type="text" id="char-name" placeholder="Character name...">
-                                    <button class="random-name-btn" onclick="randomName()">🎲</button>
+                                    <button type="button" class="random-name-btn" onclick="randomName()" aria-label="Random name"><i data-lucide="shuffle" aria-hidden="true"></i></button>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -2021,16 +2409,16 @@ Remember to:
 
                     <!-- Sensory Palette -->
                     <div class="card sensory-card">
-                        <div class="card-title">🎨 Sensory Palette</div>
+                        <div class="card-title"><i data-lucide="palette" aria-hidden="true"></i> Sensory Palette</div>
                         <div id="flat-words-found" class="flat-words-found">
                             <span style="color: var(--text-muted); font-size: 0.85rem;">Type to detect flat words...</span>
                         </div>
                         <div class="sense-buttons">
-                            <button class="sense-btn" data-sense="sight">👁 Sight</button>
-                            <button class="sense-btn" data-sense="sound">👂 Sound</button>
-                            <button class="sense-btn" data-sense="smell">👃 Smell</button>
-                            <button class="sense-btn" data-sense="taste">👅 Taste</button>
-                            <button class="sense-btn" data-sense="touch">✋ Touch</button>
+                            <button type="button" class="sense-btn" data-sense="sight"><span class="icon-btn"><i data-lucide="eye" aria-hidden="true"></i><span>Sight</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="sound"><span class="icon-btn"><i data-lucide="ear" aria-hidden="true"></i><span>Sound</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="smell"><span class="icon-btn"><i data-lucide="wind" aria-hidden="true"></i><span>Smell</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="taste"><span class="icon-btn"><i data-lucide="candy" aria-hidden="true"></i><span>Taste</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="touch"><span class="icon-btn"><i data-lucide="hand" aria-hidden="true"></i><span>Touch</span></span></button>
                         </div>
                         <div class="sensory-progress">
                             <span id="sensory-progress-text">Replace 0 flat words</span>
@@ -2044,13 +2432,13 @@ Remember to:
         </div>
 
         <!-- Floating Guide Button (iPad) -->
-        <button class="guide-toggle-fab" id="guide-toggle-fab" onclick="toggleGuideOverlay()">📋</button>
+        <button type="button" class="guide-toggle-fab" id="guide-toggle-fab" onclick="toggleGuideOverlay()" aria-label="Writing guide"><i data-lucide="clipboard-list" aria-hidden="true"></i></button>
 
         <!-- Guide Overlay Panel (iPad) -->
         <div class="guide-overlay-backdrop" id="guide-overlay-backdrop" onclick="toggleGuideOverlay()"></div>
         <div class="guide-overlay" id="guide-overlay">
             <div class="guide-overlay-header">
-                <h3>📋 7-Step Writing Guide</h3>
+                <h3><i data-lucide="clipboard-list" aria-hidden="true"></i> 7-Step Writing Guide</h3>
                 <button class="guide-close-btn" onclick="toggleGuideOverlay()">&times;</button>
             </div>
             <div class="guide-step">
@@ -2106,7 +2494,7 @@ Remember to:
 
         <!-- Power Words Page -->
         <div id="power-words" class="page">
-            <h1 style="margin-bottom: 2rem;">💪 Vocabulary Power-Up</h1>
+            <h1 style="margin-bottom: 2rem;"><i data-lucide="dumbbell" aria-hidden="true"></i> Vocabulary Power-Up</h1>
             <p style="color: var(--text-light); margin-bottom: 2rem;">Type any word below to find stronger alternatives at different levels!</p>
 
             <div class="card" style="max-width: 600px;">
@@ -2119,7 +2507,7 @@ Remember to:
                 </div>
             </div>
 
-            <h2 style="margin: 2rem 0 1rem;">📚 Common Words to Upgrade</h2>
+            <h2 style="margin: 2rem 0 1rem;"><i data-lucide="library" aria-hidden="true"></i> Common Words to Upgrade</h2>
             <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                 <button class="btn btn-ghost btn-sm" onclick="quickPowerWord('walk')">walk</button>
                 <button class="btn btn-ghost btn-sm" onclick="quickPowerWord('run')">run</button>
@@ -2141,7 +2529,7 @@ Remember to:
 
         <!-- Achievements Page -->
         <div id="achievements" class="page">
-            <h1 style="margin-bottom: 2rem;">🏆 Achievements</h1>
+            <h1 style="margin-bottom: 2rem;"><i data-lucide="trophy" aria-hidden="true"></i> Achievements</h1>
             <div class="achievements-grid" id="achievements-grid">
                 <!-- Generated by JS -->
             </div>
@@ -2149,72 +2537,72 @@ Remember to:
 
         <!-- Skills Page -->
         <div id="skills" class="page">
-            <h1 style="margin-bottom: 2rem;">📚 Writing Skills</h1>
+            <h1 style="margin-bottom: 2rem;"><i data-lucide="book-open" aria-hidden="true"></i> Writing Skills</h1>
             <div class="skills-grid">
                 <div class="skill-card">
                     <div class="skill-header">
-                        <span class="skill-icon">👁️</span>
+                        <span class="skill-icon"><i data-lucide="eye" aria-hidden="true"></i></span>
                         <span class="skill-title">Show, Don't Tell</span>
                     </div>
                     <p class="skill-desc">Instead of saying "She was scared," show it: "Her hands trembled as she backed toward the door."</p>
                     <div class="skill-example">
-                        <div class="skill-example-bad">❌ He was angry.</div>
-                        <div class="skill-example-good">✓ His face turned red, and he slammed his fist on the table.</div>
+                        <div class="skill-example-bad"><i data-lucide="x-circle" aria-hidden="true"></i> He was angry.</div>
+                        <div class="skill-example-good"><i data-lucide="check" aria-hidden="true"></i> His face turned red, and he slammed his fist on the table.</div>
                     </div>
                 </div>
                 <div class="skill-card">
                     <div class="skill-header">
-                        <span class="skill-icon">🎢</span>
+                        <span class="skill-icon"><i data-lucide="activity" aria-hidden="true"></i></span>
                         <span class="skill-title">Build Tension</span>
                     </div>
                     <p class="skill-desc">Use short sentences and sensory details to create suspense and keep readers engaged.</p>
                     <div class="skill-example">
-                        <div class="skill-example-bad">❌ Then the door opened.</div>
-                        <div class="skill-example-good">✓ The door handle turned. Slowly. She held her breath.</div>
+                        <div class="skill-example-bad"><i data-lucide="x-circle" aria-hidden="true"></i> Then the door opened.</div>
+                        <div class="skill-example-good"><i data-lucide="check" aria-hidden="true"></i> The door handle turned. Slowly. She held her breath.</div>
                     </div>
                 </div>
                 <div class="skill-card">
                     <div class="skill-header">
-                        <span class="skill-icon">💬</span>
+                        <span class="skill-icon"><i data-lucide="message-square" aria-hidden="true"></i></span>
                         <span class="skill-title">Dialogue</span>
                     </div>
                     <p class="skill-desc">Use quotes for speaking characters. Add action beats to show who's speaking.</p>
                     <div class="skill-example">
-                        <div class="skill-example-bad">❌ He said he was leaving and went.</div>
-                        <div class="skill-example-good">✓ "I'm leaving," he said, grabbing his coat from the chair.</div>
+                        <div class="skill-example-bad"><i data-lucide="x-circle" aria-hidden="true"></i> He said he was leaving and went.</div>
+                        <div class="skill-example-good"><i data-lucide="check" aria-hidden="true"></i> "I'm leaving," he said, grabbing his coat from the chair.</div>
                     </div>
                 </div>
                 <div class="skill-card">
                     <div class="skill-header">
-                        <span class="skill-icon">🌟</span>
+                        <span class="skill-icon"><i data-lucide="sparkles" aria-hidden="true"></i></span>
                         <span class="skill-title">Strong Verbs</span>
                     </div>
                     <p class="skill-desc">Replace weak verbs with powerful ones. "Walked" becomes "stomped," "crept," or "marched."</p>
                     <div class="skill-example">
-                        <div class="skill-example-bad">❌ She walked into the room.</div>
-                        <div class="skill-example-good">✓ She stormed into the room, her eyes blazing.</div>
+                        <div class="skill-example-bad"><i data-lucide="x-circle" aria-hidden="true"></i> She walked into the room.</div>
+                        <div class="skill-example-good"><i data-lucide="check" aria-hidden="true"></i> She stormed into the room, her eyes blazing.</div>
                     </div>
                 </div>
                 <div class="skill-card">
                     <div class="skill-header">
-                        <span class="skill-icon">🔗</span>
+                        <span class="skill-icon"><i data-lucide="link-2" aria-hidden="true"></i></span>
                         <span class="skill-title">Transition Words</span>
                     </div>
                     <p class="skill-desc">Use words like "however," "meanwhile," "suddenly" to connect ideas smoothly.</p>
                     <div class="skill-example">
-                        <div class="skill-example-bad">❌ The sun set. The stars appeared.</div>
-                        <div class="skill-example-good">✓ As the sun set, the stars began to appear one by one.</div>
+                        <div class="skill-example-bad"><i data-lucide="x-circle" aria-hidden="true"></i> The sun set. The stars appeared.</div>
+                        <div class="skill-example-good"><i data-lucide="check" aria-hidden="true"></i> As the sun set, the stars began to appear one by one.</div>
                     </div>
                 </div>
                 <div class="skill-card">
                     <div class="skill-header">
-                        <span class="skill-icon">📍</span>
+                        <span class="skill-icon"><i data-lucide="map-pin" aria-hidden="true"></i></span>
                         <span class="skill-title">Sensory Details</span>
                     </div>
                     <p class="skill-desc">Engage all 5 senses: sight, sound, smell, taste, and touch to bring scenes to life.</p>
                     <div class="skill-example">
-                        <div class="skill-example-bad">❌ The kitchen smelled.</div>
-                        <div class="skill-example-good">✓ The kitchen smelled of fresh bread and brewing coffee.</div>
+                        <div class="skill-example-bad"><i data-lucide="x-circle" aria-hidden="true"></i> The kitchen smelled.</div>
+                        <div class="skill-example-good"><i data-lucide="check" aria-hidden="true"></i> The kitchen smelled of fresh bread and brewing coffee.</div>
                     </div>
                 </div>
             </div>
@@ -2223,18 +2611,18 @@ Remember to:
         <!-- History Page -->
         <div id="history" class="page">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
-                <h1 style="margin: 0;">📜 Essay History</h1>
+                <h1 style="margin: 0;"><i data-lucide="scroll-text" aria-hidden="true"></i> Essay History</h1>
                 <div class="data-bar">
-                    <span class="data-bar-label">💾 Data:</span>
-                    <span class="data-bar-label">☁️ Sync:</span>
+                    <span class="data-bar-label"><i data-lucide="hard-drive" aria-hidden="true"></i> Data:</span>
+                    <span class="data-bar-label"><i data-lucide="cloud" aria-hidden="true"></i> Sync:</span>
                     <input id="sync-code-input" type="text" inputmode="numeric" placeholder="Sync code (e.g. 123456)"
                            style="padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); width: 180px;">
                     <button class="btn btn-outline btn-sm" onclick="saveSyncCode()">Save</button>
                     <button class="btn btn-ghost btn-sm" onclick="syncNow()">Sync Now</button>
-                    <button class="btn btn-primary btn-sm" onclick="exportData()">📥 Export Backup</button>
-                    <button class="btn btn-outline btn-sm" onclick="document.getElementById('import-file').click()">📤 Import Backup</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="exportData()"><span class="icon-btn"><i data-lucide="download" aria-hidden="true"></i><span>Export Backup</span></span></button>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('import-file').click()"><span class="icon-btn"><i data-lucide="upload" aria-hidden="true"></i><span>Import Backup</span></span></button>
                     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
-                    <button class="btn btn-ghost btn-sm" onclick="clearAllData()" style="color: var(--danger);">🗑 Clear All</button>
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="clearAllData()" style="color: var(--danger);"><span class="icon-btn"><i data-lucide="trash-2" aria-hidden="true"></i><span>Clear All</span></span></button>
                 </div>
             </div>
             <div class="history-list" id="history-list">
@@ -2244,7 +2632,7 @@ Remember to:
 
         <!-- Results Page (hidden by default, shown after submission) -->
         <div id="results" class="page">
-            <h1 style="margin-bottom: 2rem;">📊 Your Results</h1>
+            <h1 style="margin-bottom: 2rem;"><i data-lucide="bar-chart-3" aria-hidden="true"></i> Your Results</h1>
             <div class="results-layout">
                 <div class="card score-circle-container">
                     <div class="score-circle">
@@ -2257,10 +2645,10 @@ Remember to:
                     </div>
                     <div class="score-label">points</div>
                     <div class="score-message" id="score-message">Great work!</div>
-                    <button class="btn btn-primary" onclick="startAnotherEssay()">✏️ Write Another</button>
+                    <button type="button" class="btn btn-primary" onclick="startAnotherEssay()"><span class="icon-btn"><i data-lucide="pen-line" aria-hidden="true"></i><span>Write Another</span></span></button>
                 </div>
                 <div class="card">
-                    <div class="card-title">📋 Criteria Breakdown</div>
+                    <div class="card-title"><i data-lucide="clipboard-list" aria-hidden="true"></i> Criteria Breakdown</div>
                     <div class="criteria-list" id="criteria-list">
                         <!-- Generated by JS -->
                     </div>
@@ -2268,13 +2656,13 @@ Remember to:
             </div>
 
             <div class="card" style="margin-top: 1.5rem;">
-                <div class="card-title">🧠 Online Writing Check (Spelling / Grammar)</div>
+                <div class="card-title"><i data-lucide="brain" aria-hidden="true"></i> Online Writing Check (Spelling / Grammar)</div>
                 <p style="color: var(--text-light); margin-bottom: 1.75rem;">
                     Submission scores already blend in results from the online checker when available.
                     Powered by <a href="https://languagetool.org" target="_blank" rel="noopener">LanguageTool</a>
                     (public API — please keep usage light).
                 </p>
-                <button class="btn btn-outline btn-sm" onclick="runOnlineCheck()">🔎 Run Online Check</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="runOnlineCheck()"><span class="icon-btn"><i data-lucide="search" aria-hidden="true"></i><span>Run Online Check</span></span></button>
                 <div id="online-check-status" style="margin-top: 0.75rem; color: var(--text-muted); font-size: 0.9rem;"></div>
                 <ul class="feedback-list" id="online-issues-list" style="margin-top: 0.75rem;">
                     <li style="color: var(--text-muted);">No check run yet.</li>
@@ -2283,19 +2671,19 @@ Remember to:
 
             <div class="feedback-section">
                 <div class="feedback-card">
-                    <div class="feedback-title">✨ What's Working Well</div>
+                    <div class="feedback-title"><i data-lucide="sparkles" aria-hidden="true"></i> What's Working Well</div>
                     <ul class="feedback-list" id="strengths-list">
                         <!-- Generated by JS -->
                     </ul>
                 </div>
                 <div class="feedback-card">
-                    <div class="feedback-title">📝 Areas to Improve</div>
+                    <div class="feedback-title"><i data-lucide="list-todo" aria-hidden="true"></i> Areas to Improve</div>
                     <ul class="feedback-list" id="improvements-list">
                         <!-- Generated by JS -->
                     </ul>
                 </div>
                 <div class="card outline-card">
-                    <div class="card-title">📋 Story Outline</div>
+                    <div class="card-title"><i data-lucide="list-ordered" aria-hidden="true"></i> Story Outline</div>
                     <div id="story-outline">
                         <!-- Generated by JS -->
                     </div>
@@ -2308,7 +2696,7 @@ Remember to:
     <div class="modal-overlay" id="challenge-modal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title">🎲 Challenge Card</div>
+                <div class="modal-title"><i data-lucide="dice-5" aria-hidden="true"></i> Challenge Card</div>
                 <button class="modal-close" onclick="closeChallengeModal()">×</button>
             </div>
             <div class="modal-body">
@@ -2327,7 +2715,7 @@ Remember to:
     <div class="modal-overlay" id="power-words-modal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title">💪 Power Words</div>
+                <div class="modal-title"><i data-lucide="dumbbell" aria-hidden="true"></i> Power Words</div>
                 <button class="modal-close" onclick="closePowerWordsModal()">×</button>
             </div>
             <div class="modal-body">
@@ -2347,7 +2735,7 @@ Remember to:
     <div class="modal-overlay" id="help-modal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title">❓ Quick Start</div>
+                <div class="modal-title"><i data-lucide="circle-help" aria-hidden="true"></i> Quick Start</div>
                 <button class="modal-close" onclick="closeHelpModal()">×</button>
             </div>
             <div class="modal-body">
@@ -2375,14 +2763,15 @@ Remember to:
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="closeHelpModal()">Got it</button>
+                <button type="button" class="btn btn-outline" onclick="closeHelpModal(); showPage('practice');"><span class="icon-btn"><i data-lucide="pen-line" aria-hidden="true"></i><span>Go to Practice</span></span></button>
+                <button type="button" class="btn btn-primary" onclick="closeHelpModal()">Got it</button>
             </div>
         </div>
     </div>
 
     <!-- Suggestion Popup -->
     <div class="suggestion-popup" id="suggestion-popup" style="display: none;">
-        <h4 id="suggestion-header">💡 Try instead...</h4>
+        <h4 id="suggestion-header"><i data-lucide="lightbulb" aria-hidden="true"></i> Try instead...</h4>
         <p id="suggestion-text"></p>
     </div>
 
@@ -2392,8 +2781,40 @@ Remember to:
     <!-- Confetti Container -->
     <div class="confetti" id="confetti"></div>
 
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v2.3.0';
+        const APP_VERSION = 'v2.4.0';
+
+        function refreshIcons() {
+            if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
+                lucide.createIcons();
+            }
+        }
+
+        function setTimerStartLabel(running) {
+            const btn = document.getElementById('timer-start');
+            if (!btn) return;
+            if (running) {
+                btn.innerHTML = '<span class="icon-btn"><i data-lucide="pause" aria-hidden="true"></i><span>Pause</span></span>';
+            } else {
+                btn.innerHTML = '<span class="icon-btn"><i data-lucide="play" aria-hidden="true"></i><span>Start</span></span>';
+            }
+            refreshIcons();
+        }
+
+        function setSubmitButtonIdle() {
+            const submitBtn = document.getElementById('submit-essay-btn');
+            if (!submitBtn) return;
+            submitBtn.innerHTML = '<span class="icon-btn"><i data-lucide="upload" aria-hidden="true"></i><span>Submit</span></span>';
+            refreshIcons();
+        }
+
+        function setSubmitButtonChecking() {
+            const submitBtn = document.getElementById('submit-essay-btn');
+            if (!submitBtn) return;
+            submitBtn.innerHTML = '<span class="icon-btn"><i data-lucide="loader-2" class="lucide-spin" aria-hidden="true"></i><span>Checking…</span></span>';
+            refreshIcons();
+        }
 
         // ============ DATA ============
         const WRITING_PROMPTS = [
@@ -2412,36 +2833,36 @@ Remember to:
         ];
 
         const CHALLENGE_CARDS = [
-            { emoji: "⚡", title: "Power Outage!", desc: "The power just went out!" },
-            { emoji: "💀", title: "Hidden Letter!", desc: "A character discovers a hidden letter!" },
-            { emoji: "🌧️", title: "Rain Check!", desc: "It starts raining unexpectedly!" },
-            { emoji: "🔑", title: "Lost and Found!", desc: "The main character loses something important!" },
-            { emoji: "🐭", title: "Critter Alert!", desc: "An unexpected animal appears!" },
-            { emoji: "📞", title: "Mysterious Call!", desc: "Someone receives a mysterious phone call!" },
-            { emoji: "🌀", title: "Time Twist!", desc: "Everything starts moving in reverse!" },
-            { emoji: "🎭", title: "Secret Identity!", desc: "Someone is not who they claim to be!" },
-            { emoji: "📦", title: "Locked Mystery!", desc: "They find a locked box with no key!" },
-            { emoji: "🌙", title: "Solar Surprises!", desc: "The sun suddenly sets at noon!" },
-            { emoji: "🚪", title: "Door Dilemma!", desc: "A door appears that wasn't there before!" },
-            { emoji: "👻", title: "Ghostly Encounter!", desc: "A ghostly figure makes an appearance!" },
-            { emoji: "🏃", title: "Chase Scene!", desc: "Someone starts running and won't stop!" },
-            { emoji: "🤫", title: "Secret Spotted!", desc: "Someone overhears a secret conversation!" },
-            { emoji: "🎁", title: "Unexpected Gift!", desc: "An anonymous gift arrives!" },
-            { emoji: "⏰", title: "Time Freeze!", desc: "Time suddenly stops!" },
-            { emoji: "🔥", title: "Fire Alarm!", desc: "A fire alarm goes off!" },
-            { emoji: "🌈", title: "Color Change!", desc: "Everything turns black and white!" },
-            { emoji: "🗣️", title: "Voices!", desc: "A character starts speaking in a different voice!" },
-            { emoji: "💭", title: "Mind Reading!", desc: "Someone can read minds for an hour!" },
-            { emoji: "🕵️", title: "Mystery Clue!", desc: "A crucial clue falls out of a pocket!" },
-            { emoji: "🎢", title: "Ride Gone Wrong!", desc: "Something breaks on a ride or vehicle!" },
-            { emoji: "🌋", title: "Volcano Eruption!", desc: "Something erupts unexpectedly!" },
-            { emoji: "❄️", title: "Frozen!", desc: "Everything gets covered in ice!" },
-            { emoji: "🎪", title: "Circus Chaos!", desc: "The circus arrives in town!" },
-            { emoji: "🤖", title: "Robot Awakening!", desc: "A machine suddenly comes to life!" },
-            { emoji: "🧙", title: "Magic Spell!", desc: "Someone casts an accidental spell!" },
-            { emoji: "🌊", title: "Wave Rider!", desc: "A giant wave approaches!" },
-            { emoji: "🦋", title: "Butterfly Effect!", desc: "A small change causes big results!" },
-            { emoji: "💎", title: "Jewel Heist!", desc: "Something precious goes missing!" }
+            { icon: 'zap', title: 'Power Outage!', desc: 'The power just went out!' },
+            { icon: 'mail', title: 'Hidden Letter!', desc: 'A character discovers a hidden letter!' },
+            { icon: 'cloud-rain', title: 'Rain Check!', desc: 'It starts raining unexpectedly!' },
+            { icon: 'key-round', title: 'Lost and Found!', desc: 'The main character loses something important!' },
+            { icon: 'rabbit', title: 'Critter Alert!', desc: 'An unexpected animal appears!' },
+            { icon: 'phone', title: 'Mysterious Call!', desc: 'Someone receives a mysterious phone call!' },
+            { icon: 'rotate-ccw', title: 'Time Twist!', desc: 'Everything starts moving in reverse!' },
+            { icon: 'masks-theater', title: 'Secret Identity!', desc: 'Someone is not who they claim to be!' },
+            { icon: 'package', title: 'Locked Mystery!', desc: 'They find a locked box with no key!' },
+            { icon: 'moon', title: 'Solar Surprises!', desc: 'The sun suddenly sets at noon!' },
+            { icon: 'door-open', title: 'Door Dilemma!', desc: 'A door appears that wasn\'t there before!' },
+            { icon: 'ghost', title: 'Ghostly Encounter!', desc: 'A ghostly figure makes an appearance!' },
+            { icon: 'footprints', title: 'Chase Scene!', desc: 'Someone starts running and won\'t stop!' },
+            { icon: 'ear', title: 'Secret Spotted!', desc: 'Someone overhears a secret conversation!' },
+            { icon: 'gift', title: 'Unexpected Gift!', desc: 'An anonymous gift arrives!' },
+            { icon: 'timer-off', title: 'Time Freeze!', desc: 'Time suddenly stops!' },
+            { icon: 'flame', title: 'Fire Alarm!', desc: 'A fire alarm goes off!' },
+            { icon: 'palette', title: 'Color Change!', desc: 'Everything turns black and white!' },
+            { icon: 'mic-2', title: 'Voices!', desc: 'A character starts speaking in a different voice!' },
+            { icon: 'brain', title: 'Mind Reading!', desc: 'Someone can read minds for an hour!' },
+            { icon: 'fingerprint', title: 'Mystery Clue!', desc: 'A crucial clue falls out of a pocket!' },
+            { icon: 'train-front', title: 'Ride Gone Wrong!', desc: 'Something breaks on a ride or vehicle!' },
+            { icon: 'mountain', title: 'Volcano Eruption!', desc: 'Something erupts unexpectedly!' },
+            { icon: 'snowflake', title: 'Frozen!', desc: 'Everything gets covered in ice!' },
+            { icon: 'tent', title: 'Circus Chaos!', desc: 'The circus arrives in town!' },
+            { icon: 'bot', title: 'Robot Awakening!', desc: 'A machine suddenly comes to life!' },
+            { icon: 'wand-sparkles', title: 'Magic Spell!', desc: 'Someone casts an accidental spell!' },
+            { icon: 'waves', title: 'Wave Rider!', desc: 'A giant wave approaches!' },
+            { icon: 'butterfly', title: 'Butterfly Effect!', desc: 'A small change causes big results!' },
+            { icon: 'gem', title: 'Jewel Heist!', desc: 'Something precious goes missing!' }
         ];
 
         const RANDOM_NAMES = [
@@ -2792,7 +3213,8 @@ Remember to:
             const n = Number.isFinite(Number(totalCount)) ? Number(totalCount) : (matches?.length || 0);
             if (!matches || !matches.length) {
                 statusEl.textContent = 'No issues found (nice!).';
-                listEl.innerHTML = '<li>✓ No obvious spelling/grammar issues detected.</li>';
+                listEl.innerHTML = '<li><span class="icon-btn"><i data-lucide="check" aria-hidden="true"></i></span>No obvious spelling/grammar issues detected.</li>';
+                refreshIcons();
                 return;
             }
 
@@ -2803,8 +3225,9 @@ Remember to:
                     : '';
                 const snip = snippetAt(text, m.offset, m.length);
                 const label = [m.category, m.ruleId].filter(Boolean).join(' · ');
-                return `<li>⚠️ <strong>${m.message}</strong>${label ? ` <span style="color: var(--text-muted);">(${label})</span>` : ''}<br><span style="color: var(--text-muted);">"...${snip}..."</span>${repl}</li>`;
+                return `<li><span class="icon-btn"><i data-lucide="triangle-alert" aria-hidden="true"></i></span><strong>${m.message}</strong>${label ? ` <span style="color: var(--text-muted);">(${label})</span>` : ''}<br><span style="color: var(--text-muted);">"...${snip}..."</span>${repl}</li>`;
             }).join('') + (n > 15 ? `<li style="color: var(--text-muted);">Showing first 15 issues.</li>` : '');
+            refreshIcons();
         }
 
         async function runOnlineCheck(textOverride = null) {
@@ -2958,18 +3381,18 @@ Remember to:
         };
 
         const ACHIEVEMENTS = [
-            { id: "first-draft", emoji: "✏️", name: "First Draft", condition: "Write your first essay", check: (s) => s.totalEssays >= 1 },
-            { id: "streak-3", emoji: "🔥", name: "Streak 3", condition: "Practice 3 days in a row", check: (s) => s.streak >= 3 },
-            { id: "streak-7", emoji: "🔥", name: "Streak 7", condition: "Practice 7 days in a row", check: (s) => s.streak >= 7 },
-            { id: "score-400", emoji: "🎯", name: "Score 400+", condition: "Reach 400 points", check: (s) => s.bestScore >= 400 },
-            { id: "score-450", emoji: "🎯", name: "Score 450+", condition: "Reach 450 points", check: (s) => s.bestScore >= 450 },
-            { id: "score-500", emoji: "🎯", name: "Score 500+", condition: "Reach 500 points", check: (s) => s.bestScore >= 500 },
-            { id: "bookworm", emoji: "📖", name: "Bookworm", condition: "Write 500+ words in one essay", check: (s) => s.longestEssay >= 500 },
-            { id: "drama-queen", emoji: "🎭", name: "Drama Queen", condition: "Use dialogue in 5 essays", check: (s) => s.dialogueEssays >= 5 },
-            { id: "twist-master", emoji: "🌊", name: "Twist Master", condition: "Use 3 challenge cards in one essay", check: (s) => s.maxChallenges >= 3 },
-            { id: "sensor", emoji: "🎨", name: "Sensor", condition: "Replace 5 flat words with sensory details", check: (s) => s.totalReplacements >= 5 },
-            { id: "ten-essays", emoji: "📚", name: "10 Essays", condition: "Complete 10 essays", check: (s) => s.totalEssays >= 10 },
-            { id: "perfectionist", emoji: "💎", name: "Perfectionist", condition: "Get 6/6 on any criterion", check: (s) => s.perfectCriteria >= 1 }
+            { id: 'first-draft', icon: 'pen-line', name: 'First Draft', condition: 'Write your first essay', check: (s) => s.totalEssays >= 1 },
+            { id: 'streak-3', icon: 'flame', name: 'Streak 3', condition: 'Practice 3 days in a row', check: (s) => s.streak >= 3 },
+            { id: 'streak-7', icon: 'flame', name: 'Streak 7', condition: 'Practice 7 days in a row', check: (s) => s.streak >= 7 },
+            { id: 'score-400', icon: 'target', name: 'Score 400+', condition: 'Reach 400 points', check: (s) => s.bestScore >= 400 },
+            { id: 'score-450', icon: 'target', name: 'Score 450+', condition: 'Reach 450 points', check: (s) => s.bestScore >= 450 },
+            { id: 'score-500', icon: 'target', name: 'Score 500+', condition: 'Reach 500 points', check: (s) => s.bestScore >= 500 },
+            { id: 'bookworm', icon: 'book-open', name: 'Bookworm', condition: 'Write 500+ words in one essay', check: (s) => s.longestEssay >= 500 },
+            { id: 'drama-queen', icon: 'messages-square', name: 'Drama Queen', condition: 'Use dialogue in 5 essays', check: (s) => s.dialogueEssays >= 5 },
+            { id: 'twist-master', icon: 'waves', name: 'Twist Master', condition: 'Use 3 challenge cards in one essay', check: (s) => s.maxChallenges >= 3 },
+            { id: 'sensor', icon: 'palette', name: 'Sensor', condition: 'Replace 5 flat words with sensory details', check: (s) => s.totalReplacements >= 5 },
+            { id: 'ten-essays', icon: 'library', name: '10 Essays', condition: 'Complete 10 essays', check: (s) => s.totalEssays >= 10 },
+            { id: 'perfectionist', icon: 'gem', name: 'Perfectionist', condition: 'Get 6/6 on any criterion', check: (s) => s.perfectCriteria >= 1 }
         ];
 
         // ============ STATE ============
@@ -3014,6 +3437,28 @@ Remember to:
             selectedSense: null
         };
 
+        const ONBOARDING_DISMISSED_KEY = 'writeboost-onboarding-dismissed';
+
+        function markOnboardingDismissed() {
+            try {
+                localStorage.setItem(ONBOARDING_DISMISSED_KEY, '1');
+            } catch (e) { /* private mode / storage full */ }
+        }
+
+        function shouldAutoShowQuickStart() {
+            try {
+                if (localStorage.getItem(ONBOARDING_DISMISSED_KEY)) return false;
+            } catch (e) {
+                return false;
+            }
+            return (state.essays || []).length === 0;
+        }
+
+        function maybeAutoOpenQuickStart() {
+            if (!shouldAutoShowQuickStart()) return;
+            setTimeout(() => openHelpModal(), 450);
+        }
+
         // ============ INITIALIZATION ============
         function init() {
             loadState();
@@ -3038,6 +3483,11 @@ Remember to:
             setTimeout(() => {
                 syncNow();
             }, 300);
+
+            maybeAutoOpenQuickStart();
+
+            setTimerStartLabel(false);
+            refreshIcons();
         }
 
         function loadState() {
@@ -3260,6 +3710,7 @@ Remember to:
             if (navEl) navEl.classList.add('active');
 
             state.currentPage = pageId;
+            refreshIcons();
         }
 
         function startAnotherEssay() {
@@ -3292,6 +3743,12 @@ Remember to:
             document.getElementById('dash-words').textContent = state.stats.totalWords;
             document.getElementById('dash-streak').textContent = state.stats.streak;
             document.getElementById('dash-score').textContent = state.stats.bestScore || '--';
+
+            const dashEmpty = document.getElementById('dashboard-empty-hint');
+            if (dashEmpty) {
+                const hasNoEssays = (state.essays || []).length === 0;
+                dashEmpty.style.display = hasNoEssays ? 'block' : 'none';
+            }
 
             checkAchievements();
         }
@@ -3383,13 +3840,13 @@ Remember to:
 
         function startTimer() {
             state.timerRunning = true;
-            document.getElementById('timer-start').textContent = '⏸ Pause';
+            setTimerStartLabel(true);
 
             state.timerInterval = setInterval(() => {
                 if (state.timerSeconds === 0) {
                     if (state.timerMinutes === 0) {
                         stopTimer();
-                        showToast('⏰ Time is up! Great work!');
+                        showToast('Time is up! Great work!');
                         return;
                     }
                     state.timerMinutes--;
@@ -3403,7 +3860,7 @@ Remember to:
 
         function stopTimer() {
             state.timerRunning = false;
-            document.getElementById('timer-start').textContent = '▶ Start';
+            setTimerStartLabel(false);
             clearInterval(state.timerInterval);
         }
 
@@ -3664,8 +4121,9 @@ Remember to:
 
             const suggestion = SENSORY_SUGGESTIONS[word][sense] || SENSORY_SUGGESTIONS[word].sight;
 
-            document.getElementById('suggestion-header').innerHTML = `${sense.charAt(0).toUpperCase() + sense.slice(1)} suggestion for "${word}":`;
+            document.getElementById('suggestion-header').innerHTML = `<i data-lucide="lightbulb" aria-hidden="true"></i> ${sense.charAt(0).toUpperCase() + sense.slice(1)} suggestion for "${word}":`;
             document.getElementById('suggestion-text').textContent = suggestion;
+            refreshIcons();
 
             // Position near the clicked word
             const wordEl = document.querySelector(`.flat-word[onclick*="${word}"]`);
@@ -3699,10 +4157,11 @@ Remember to:
             state.currentChallenge = challenge;
 
             document.getElementById('challenge-display').innerHTML = `
-                <div class="challenge-emoji">${challenge.emoji}</div>
+                <div class="challenge-icon-wrap"><i data-lucide="${challenge.icon}" aria-hidden="true"></i></div>
                 <div class="challenge-title">${challenge.title}</div>
                 <div class="challenge-description">${challenge.desc}</div>
             `;
+            refreshIcons();
         }
 
         function skipChallenge() {
@@ -3714,7 +4173,7 @@ Remember to:
             updateChallengeCount();
 
             const textarea = document.getElementById('essay-input');
-            const insertion = `\n\n[${state.currentChallenge.emoji} ${state.currentChallenge.title}: ${state.currentChallenge.desc}]\n`;
+            const insertion = `\n\n[Challenge — ${state.currentChallenge.title}: ${state.currentChallenge.desc}]\n`;
 
             textarea.value += insertion;
             textarea.focus();
@@ -3735,6 +4194,7 @@ Remember to:
             document.getElementById('modal-power-word').value = '';
             document.getElementById('modal-power-results').innerHTML =
                 '<p style="color: var(--text-muted); text-align: center;">Enter a word to see alternatives</p>';
+            refreshIcons();
         }
 
         function closePowerWordsModal() {
@@ -3744,11 +4204,13 @@ Remember to:
         function openHelpModal() {
             const modal = document.getElementById('help-modal');
             if (modal) modal.classList.add('active');
+            refreshIcons();
         }
 
         function closeHelpModal() {
             const modal = document.getElementById('help-modal');
             if (modal) modal.classList.remove('active');
+            markOnboardingDismissed();
         }
 
         function searchModalPowerWord() {
@@ -3912,20 +4374,21 @@ Remember to:
                 const unlocked = state.stats.unlockedAchievements.includes(ach.id);
                 return `
                     <div class="achievement-card ${unlocked ? 'unlocked' : 'locked'}">
-                        <div class="achievement-badge">${unlocked ? '🏅' : '🔒'}</div>
-                        <div class="achievement-icon">${ach.emoji}</div>
+                        <div class="achievement-badge"><i data-lucide="${unlocked ? 'award' : 'lock'}" aria-hidden="true"></i></div>
+                        <div class="achievement-icon"><i data-lucide="${ach.icon}" aria-hidden="true"></i></div>
                         <div class="achievement-name">${ach.name}</div>
                         <div class="achievement-desc">${ach.condition}</div>
                     </div>
                 `;
             }).join('');
+            refreshIcons();
         }
 
         function checkAchievements() {
             ACHIEVEMENTS.forEach(ach => {
                 if (!state.stats.unlockedAchievements.includes(ach.id) && ach.check(state.stats)) {
                     state.stats.unlockedAchievements.push(ach.id);
-                    showToast(`🏆 Achievement Unlocked: ${ach.name}!`);
+                    showToast(`Achievement unlocked: ${ach.name}!`);
                 }
             });
 
@@ -3982,11 +4445,12 @@ Remember to:
             if (state.essays.length === 0) {
                 list.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📝</div>
+                        <div class="empty-state-icon"><i data-lucide="file-text" aria-hidden="true"></i></div>
                         <h3>No essays yet</h3>
                         <p>Start writing to see your history here!</p>
                     </div>
                 `;
+                refreshIcons();
                 return;
             }
 
@@ -4004,6 +4468,7 @@ Remember to:
                     </div>
                 </div>
             `).join('');
+            refreshIcons();
         }
 
         function viewEssay(index) {
@@ -4031,7 +4496,7 @@ Remember to:
             if (ONLINE_CONFIG.enabled) {
                 if (submitBtn) {
                     submitBtn.disabled = true;
-                    submitBtn.textContent = '⏳ Online check…';
+                    setSubmitButtonChecking();
                 }
                 try {
                     const matches = await fetchLanguageToolMatches(text, 'en-US');
@@ -4042,7 +4507,7 @@ Remember to:
                 }
                 if (submitBtn) {
                     submitBtn.disabled = false;
-                    submitBtn.textContent = '📤 Submit';
+                    setSubmitButtonIdle();
                 }
             }
 
@@ -4261,12 +4726,14 @@ Remember to:
 
             // Score message
             let message = 'Keep practicing!';
-            if (essay.score >= 450) message = '🌟 Outstanding!';
-            else if (essay.score >= 400) message = '✨ Great work!';
-            else if (essay.score >= 350) message = '👍 Good effort!';
-            else if (essay.score >= 300) message = '💪 Getting there!';
+            let scoreIcon = 'pen-line';
+            if (essay.score >= 450) { message = 'Outstanding!'; scoreIcon = 'sparkles'; }
+            else if (essay.score >= 400) { message = 'Great work!'; scoreIcon = 'star'; }
+            else if (essay.score >= 350) { message = 'Good effort!'; scoreIcon = 'thumbs-up'; }
+            else if (essay.score >= 300) { message = 'Getting there!'; scoreIcon = 'dumbbell'; }
 
-            document.getElementById('score-message').textContent = message;
+            document.getElementById('score-message').innerHTML =
+                `<span class="icon-btn"><i data-lucide="${scoreIcon}" aria-hidden="true"></i><span>${message}</span></span>`;
 
             // Criteria breakdown
             const criteriaList = document.getElementById('criteria-list');
@@ -4310,7 +4777,7 @@ Remember to:
             if (sensoryCount > 0) strengths.push('Included sensory details');
 
             document.getElementById('strengths-list').innerHTML = strengths.length > 0
-                ? strengths.map(s => `<li>✓ ${s}</li>`).join('')
+                ? strengths.map(s => `<li><span class="icon-btn"><i data-lucide="check" aria-hidden="true"></i></span>${s}</li>`).join('')
                 : '<li>Keep writing to build your strengths!</li>';
 
             // Improvements
@@ -4323,7 +4790,7 @@ Remember to:
             if (state.flatWordsFound.length > 0) improvements.push('Replace flat words with sensory details');
 
             document.getElementById('improvements-list').innerHTML = improvements.length > 0
-                ? improvements.map(s => `<li>→ ${s}</li>`).join('')
+                ? improvements.map(s => `<li><span class="icon-btn"><i data-lucide="arrow-right" aria-hidden="true"></i></span>${s}</li>`).join('')
                 : '<li>You\'re doing great! Keep it up!</li>';
 
             // Story Outline
@@ -4346,6 +4813,8 @@ Remember to:
             } else {
                 setTimeout(() => runOnlineCheck(text), 50);
             }
+
+            refreshIcons();
         }
 
         function generateStoryOutline(text) {
@@ -4380,7 +4849,8 @@ Remember to:
             if (!hasClimax && paragraphs.length >= 3) {
                 outlineHtml += `
                     <div class="outline-suggestion">
-                        💡 <strong>Structure Tip:</strong> Your story seems flat. Try adding a big problem or climax in the middle, and a resolution at the end.
+                        <i data-lucide="lightbulb" aria-hidden="true"></i>
+                        <span><strong>Structure Tip:</strong> Your story seems flat. Try adding a big problem or climax in the middle, and a resolution at the end.</span>
                     </div>
                 `;
             }
@@ -4391,7 +4861,7 @@ Remember to:
         // ============ CONFETTI ============
         function launchConfetti() {
             const container = document.getElementById('confetti');
-            const colors = ['#4F46E5', '#F59E0B', '#10B981', '#EF4444', '#EC4899', '#8B5CF6'];
+            const colors = ['#519CAB', '#FFC64F', '#84B7CE', '#045490', '#FFF08C', '#273462'];
 
             for (let i = 0; i < 100; i++) {
                 const piece = document.createElement('div');
@@ -4516,9 +4986,10 @@ Remember to:
         }
 
         function clearAllData() {
-            if (confirm('⚠️ Are you sure you want to delete ALL data?\n\nThis will erase all essays, scores, achievements, and character data.\n\nTip: Export a backup first!')) {
+            if (confirm('Are you sure you want to delete ALL data?\n\nThis will erase all essays, scores, achievements, and character data.\n\nTip: Export a backup first!')) {
                 if (confirm('This action cannot be undone. Really delete everything?')) {
                     localStorage.removeItem('writeboost-v2');
+                    localStorage.removeItem(ONBOARDING_DISMISSED_KEY);
                     location.reload();
                 }
             }
