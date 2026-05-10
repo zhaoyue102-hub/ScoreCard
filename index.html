@@ -505,7 +505,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.5.3';
+var APP_VERSION = '1.5.5';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -604,6 +604,19 @@ function cloudUpdateStatusUI(errMsg) {
     return;
   }
   el.textContent = '云同步：已连接 · 家庭码「' + cloudFamilyId + '」';
+}
+
+function formatCloudFirestoreError(err) {
+  if (!err) return '未知错误';
+  var code = err.code || '';
+  var msg = err.message || '';
+  if (code === 'permission-denied') {
+    return '无读写权限（permission-denied）：请在 Firebase 控制台发布「设置」里的 family_score 规则，并确认项目与 FIREBASE_CONFIG 一致。';
+  }
+  var parts = [];
+  if (code) parts.push(code);
+  if (msg) parts.push(msg);
+  return parts.length ? parts.join(' · ') : '失败';
 }
 
 function openCloudSettings() {
@@ -711,7 +724,7 @@ function cloudAttachListener() {
     applyRemoteDoc(data);
   }, function(err) {
     console.error(err);
-    cloudUpdateStatusUI((err && err.message) ? err.message : '监听失败');
+    cloudUpdateStatusUI('监听失败：' + formatCloudFirestoreError(err));
   });
 }
 
@@ -734,9 +747,11 @@ function scheduleCloudPush(immediate) {
         stateLinden: state.linden
       }));
       lastPushedTs = payload.updatedAt;
-      db.collection('family_score').doc(cloudFamilyId).set(payload).catch(function(e) {
+      db.collection('family_score').doc(cloudFamilyId).set(payload).then(function() {
+        cloudUpdateStatusUI();
+      }).catch(function(e) {
         console.error(e);
-        cloudUpdateStatusUI('上传失败');
+        cloudUpdateStatusUI('上传失败：' + formatCloudFirestoreError(e));
       });
     });
   }
