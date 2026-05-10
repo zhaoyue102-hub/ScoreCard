@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日积分打卡</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif; background: #f4f6fb; min-height: 100vh; color: #2d3748; }
+
+.topbar { position: sticky; top: 0; z-index: 100; padding: 0 16px; height: 56px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 12px rgba(0,0,0,0.10); transition: background 0.3s; }
+.topbar-brian { background: linear-gradient(135deg, #4f86f7, #3a6fd4); }
+.topbar-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
+.topbar-title { color: white; font-size: 18px; font-weight: 800; }
+.topbar-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right; }
+.topbar-date { color: rgba(255,255,255,0.85); font-size: 12px; }
+.app-version { font-size: 10px; color: rgba(255,255,255,0.55); font-weight: 600; letter-spacing: 0.04em; }
+
+.kid-switcher { background: white; padding: 10px 16px; display: flex; gap: 10px; border-bottom: 2px solid #e2e8f0; position: sticky; top: 56px; z-index: 99; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.kid-btn { flex: 1; padding: 12px 8px; border-radius: 14px; border: 2.5px solid #e2e8f0; background: #f4f6fb; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #718096; }
+.kid-btn .avatar { font-size: 32px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
+.kid-btn .avatar.ph { font-size: 34px; }
+.kid-btn .total { font-size: 12px; font-weight: 600; }
+.kid-btn.active-brian { border-color: #4f86f7; background: #ebf2ff; color: #4f86f7; }
+.kid-btn.active-linden { border-color: #48bb78; background: #e6f7ee; color: #48bb78; }
+
+.score-banner { padding: 16px; transition: background 0.3s; }
+.score-banner-brian { background: linear-gradient(135deg, #4f86f7, #3a6fd4); }
+.score-banner-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
+.score-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; max-width: 720px; margin: 0 auto; }
+.score-card { background: rgba(255,255,255,0.18); border-radius: 14px; padding: 12px 8px; text-align: center; backdrop-filter: blur(4px); }
+.score-card .sc-label { color: rgba(255,255,255,0.8); font-size: 11px; margin-bottom: 4px; }
+.score-card .sc-val { color: white; font-size: 24px; font-weight: 800; }
+
+.week-summary { max-width: 720px; margin: 14px auto 0; padding: 12px 10px; background: rgba(255,255,255,0.14); border-radius: 14px; backdrop-filter: blur(4px); }
+.week-summary-hd { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.week-summary-title { color: rgba(255,255,255,0.95); font-size: 13px; font-weight: 800; }
+.week-summary-range { color: rgba(255,255,255,0.72); font-size: 11px; font-weight: 600; }
+.week-summary-total { color: white; font-size: 14px; font-weight: 800; }
+.week-summary-total span { font-size: 18px; margin: 0 2px; }
+.week-summary-total span.neg { color: #fecaca; }
+.week-summary-total span.pos { color: #d1fae5; }
+.week-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+.week-day { background: rgba(255,255,255,0.12); border-radius: 10px; padding: 7px 2px; min-width: 0; }
+.week-day.today { background: rgba(255,255,255,0.26); box-shadow: 0 0 0 2px rgba(255,255,255,0.4); }
+.week-day .wd-lbl { font-size: 10px; color: rgba(255,255,255,0.78); font-weight: 700; }
+.week-day .wd-val { font-size: 13px; font-weight: 800; color: white; margin-top: 3px; line-height: 1.2; }
+.week-day .wd-val.neg { color: #fecaca; }
+.week-day .wd-val.pos { color: #d1fae5; }
+.week-day .wd-val.zero { color: rgba(255,255,255,0.85); }
+
+.section-tabs { background: white; border-bottom: 2px solid #e2e8f0; position: sticky; top: 130px; z-index: 98; }
+.section-tabs-inner { max-width: 720px; margin: 0 auto; display: flex; }
+.section-tab { flex: 1; padding: 12px 6px; text-align: center; font-size: 13px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; user-select: none; }
+.section-tab.active-brian { color: #4f86f7; border-bottom-color: #4f86f7; }
+.section-tab.active-linden { color: #48bb78; border-bottom-color: #48bb78; }
+
+.main-content { max-width: 720px; margin: 0 auto; padding: 16px; }
+.sec-hdr { font-size: 12px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin: 20px 0 8px; }
+
+.task-card { background: white; border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 12px; }
+.task-card.col { flex-direction: column; align-items: stretch; }
+.task-card .row { display: flex; align-items: center; gap: 12px; }
+.t-icon { font-size: 26px; flex-shrink: 0; line-height: 1; color: #5b6bc4; display: inline-flex; align-items: center; justify-content: center; }
+.t-icon.ph { vertical-align: middle; }
+.t-icon-duo .duo-owl-svg { width: 34px; height: 34px; display: block; flex-shrink: 0; }
+.task-card .t-icon { opacity: 0.95; }
+.task-card .t-icon-duo { opacity: 1; }
+.t-info { flex: 1; min-width: 0; }
+.t-name { font-size: 15px; font-weight: 600; color: #2d3748; line-height: 1.3; }
+.t-sub { font-size: 12px; color: #718096; margin-top: 2px; line-height: 1.4; }
+
+.badge { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.badge-plus { background: #d4edda; color: #28a745; }
+.badge-minus { background: #ffe0e0; color: #e53e3e; }
+.badge-neutral { background: #e8eaf6; color: #5c6bc0; }
+.badge-warn { background: #fff3cd; color: #856404; }
+
+.check-wrap { display: flex; gap: 6px; flex-shrink: 0; }
+.chk { width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid #e2e8f0; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.18s; user-select: none; }
+.chk .ph { font-size: 18px; line-height: 1; }
+.chk.ok { background: #48bb78; border-color: #48bb78; color: white; }
+.chk.fail { background: #fc8181; border-color: #fc8181; color: white; }
+.chk.warn { background: #f6ad55; border-color: #f6ad55; color: white; font-size: 11px; font-weight: 700; }
+.chk.warn .ph { font-size: 14px; }
+
+.stepper { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.step-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #e2e8f0; background: white; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; color: #2d3748; transition: all 0.15s; user-select: none; }
+.step-btn:hover { border-color: #667eea; color: #667eea; }
+.step-val { min-width: 26px; text-align: center; font-size: 18px; font-weight: 700; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.mini-card { background: #f7fafc; border-radius: 12px; padding: 10px; text-align: center; }
+.mini-card .mc-lang { font-size: 11px; color: #718096; margin-bottom: 6px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.mini-card .mc-lang .mc-lang-ic { font-size: 15px; line-height: 1; color: #5b6bc4; }
+.mini-card .mc-lang .lang-pill { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; background: #edf2f7; color: #4a5568; letter-spacing: 0.02em; }
+.mini-card .mc-lang .lang-pill.jp { background: #fff5f5; color: #c53030; }
+.mini-card .mc-lang .lang-pill.yue { background: #ebf8ff; color: #2b6cb0; }
+.mini-card .mc-val { font-size: 22px; font-weight: 800; color: #2d3748; margin-bottom: 6px; }
+.mini-card .mc-val span { font-size: 12px; font-weight: 400; color: #718096; }
+.mini-btns { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
+.mini-btn { padding: 4px 8px; border-radius: 8px; border: 1.5px solid #e2e8f0; background: white; font-size: 12px; font-weight: 600; cursor: pointer; color: #2d3748; transition: all 0.12s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+.mini-btn .ph { font-size: 14px; line-height: 1; }
+.mini-btn:hover { border-color: #667eea; color: #667eea; }
+
+.writing-single { margin-top: 10px; }
+.writing-single .w-field { max-width: 420px; }
+.w-field { background: #f7fafc; border-radius: 12px; padding: 10px 12px; }
+.w-field label { display: block; font-size: 11px; color: #718096; font-weight: 600; margin-bottom: 6px; }
+.w-field input { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; font-size: 17px; font-weight: 700; color: #2d3748; background: white; outline: none; transition: border-color 0.2s; }
+.w-field input:focus { border-color: #667eea; }
+
+.award-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.award-opt { padding: 7px 14px; border-radius: 20px; border: 2px solid #e2e8f0; font-size: 13px; font-weight: 600; cursor: pointer; background: white; color: #718096; transition: all 0.15s; }
+.award-opt.sel-brian { border-color: #4f86f7; background: #ebf2ff; color: #4f86f7; }
+.award-opt.sel-linden { border-color: #48bb78; background: #e6f7ee; color: #48bb78; }
+
+.submit-row { padding: 16px; max-width: 720px; margin: 0 auto; position: sticky; bottom: 0; background: linear-gradient(to top, #f4f6fb 65%, transparent); padding-top: 30px; }
+.submit-btn { width: 100%; padding: 16px; border-radius: 16px; color: white; font-size: 17px; font-weight: 700; border: none; cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 20px rgba(0,0,0,0.18); }
+.submit-btn:hover { opacity: 0.9; }
+.submit-btn-brian { background: linear-gradient(135deg, #4f86f7, #3a6fd4); }
+.submit-btn-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
+
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+.overlay.show { opacity: 1; pointer-events: all; }
+.modal { background: white; border-radius: 20px 20px 0 0; padding: 24px 20px 44px; width: 100%; max-width: 720px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.overlay.show .modal { transform: translateY(0); }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+.modal-preview { border-radius: 14px; padding: 14px 16px; margin-bottom: 20px; }
+.modal-preview-brian { background: #ebf2ff; }
+.modal-preview-linden { background: #e6f7ee; }
+.m-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+.m-row:last-child { border: none; }
+.m-total { display: flex; justify-content: space-between; padding-top: 10px; margin-top: 4px; font-size: 18px; font-weight: 800; border-top: 2px solid currentColor; }
+.m-total-brian { color: #4f86f7; border-color: #4f86f7; }
+.m-total-linden { color: #48bb78; border-color: #48bb78; }
+.btn-row { display: flex; gap: 12px; }
+.btn { flex: 1; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.15s; }
+.btn:active { transform: scale(0.97); }
+.btn-cancel { background: #f0f0f0; color: #718096; }
+
+.empty { text-align: center; padding: 48px 20px; color: #718096; }
+.empty .ei { font-size: 56px; margin-bottom: 10px; line-height: 1; color: #a0aec0; display: block; }
+.empty .ei.ph { font-size: 64px; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+.hist-summary { border-radius: 16px; padding: 16px 20px; margin-bottom: 16px; color: white; }
+.hist-summary-brian { background: linear-gradient(135deg, #4f86f7, #3a6fd4); }
+.hist-summary-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
+.hist-summary .hs-label { font-size: 13px; opacity: 0.8; margin-bottom: 4px; }
+.hist-summary .hs-val { font-size: 38px; font-weight: 900; }
+.hist-day { background: white; border-radius: 16px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.hd-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; }
+.hd-date { font-size: 14px; font-weight: 700; }
+.hd-body { padding: 0 16px 12px; }
+.hi { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+.hi:last-child { border: none; }
+
+/* RULES PAGE */
+.rules-page { padding: 0; }
+.rules-card { background: white; border-radius: 16px; padding: 20px 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.rules-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.rules-card-title { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.rules-edit-btn { font-size: 13px; padding: 5px 14px; border-radius: 20px; border: 1.5px solid #e2e8f0; background: white; cursor: pointer; font-weight: 600; color: #718096; transition: all 0.15s; }
+.rules-edit-btn:hover { border-color: #4f86f7; color: #4f86f7; }
+.rules-edit-btn.editing { background: #4f86f7; border-color: #4f86f7; color: white; }
+.rules-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+.rules-row:last-child { border-bottom: none; }
+.rules-icon-cell { flex-shrink: 0; margin-top: 2px; width: 28px; display: flex; align-items: flex-start; justify-content: center; }
+.rules-icon-cell .ph { font-size: 24px; line-height: 1; color: #5b6bc4; }
+.rules-emoji { min-width: 28px; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: center; margin-top: 2px; }
+.rules-emoji .duo-owl-svg { width: 26px; height: 26px; display: block; }
+.rules-card-title .ph { font-size: 22px; line-height: 1; color: #5b6bc4; }
+.rules-edit-btn .ph { font-size: 15px; vertical-align: -2px; margin-right: 4px; }
+.rules-award-row .award-medal-ic { font-size: 22px; line-height: 1; flex-shrink: 0; }
+.rules-award-row .award-medal-ic.ph-medal { color: #b45309; }
+.rules-award-row .award-medal-ic.ph-medal-military { color: #6b7280; }
+.rules-award-row .award-medal-ic.ph-trophy { color: #ca8a04; }
+.rules-body { flex: 1; }
+.rules-name { font-size: 14px; font-weight: 600; color: #2d3748; }
+.rules-detail { font-size: 12px; color: #718096; margin-top: 2px; line-height: 1.5; }
+.rules-score { font-size: 13px; font-weight: 700; flex-shrink: 0; padding: 2px 8px; border-radius: 8px; }
+.rs-plus { background: #d4edda; color: #28a745; }
+.rs-minus { background: #ffe0e0; color: #e53e3e; }
+
+.rules-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+.rules-table th { background: #f7fafc; padding: 7px 10px; text-align: left; color: #4a5568; font-weight: 600; border: 1px solid #e2e8f0; }
+.rules-table td { padding: 6px 10px; border: 1px solid #e2e8f0; color: #2d3748; }
+.rules-table tr:nth-child(even) td { background: #f9fafb; }
+
+.rules-award-row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 10px; margin-bottom: 6px; font-size: 13px; }
+.award-bronze { background: #fef3c7; }
+.award-silver { background: #ede9fe; }
+.award-gold-bg { background: #fce7f3; }
+.rules-award-name { font-weight: 600; color: #2d3748; flex: 1; }
+.rules-award-pts { font-weight: 700; color: #6b46c1; }
+
+.rules-input { border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 4px 6px; font-size: 13px; outline: none; }
+.rules-input:focus { border-color: #4f86f7; }
+
+.sync-bar { background: linear-gradient(180deg, #eef2ff 0%, #e8ecf4 100%); border-bottom: 1px solid #c3d0e8; padding: 8px 14px; }
+.sync-bar-inner { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #4a5568; }
+.sync-bar-inner .ph-cloud { font-size: 20px; color: #4f86f7; flex-shrink: 0; }
+.sync-bar-text { flex: 1; min-width: 0; line-height: 1.35; }
+.sync-bar-btn { padding: 6px 14px; border-radius: 10px; border: 1.5px solid #4f86f7; background: white; color: #4f86f7; font-weight: 700; cursor: pointer; font-size: 12px; flex-shrink: 0; }
+.sync-bar-btn:hover { background: #ebf2ff; }
+
+.cloud-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; }
+.cloud-overlay.show { display: flex; }
+.cloud-modal { background: white; border-radius: 18px; padding: 22px; max-width: 440px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+.cloud-modal-title { font-size: 18px; font-weight: 800; margin-bottom: 10px; color: #2d3748; }
+.cloud-hint { font-size: 13px; color: #718096; margin-bottom: 14px; line-height: 1.5; }
+.cloud-modal label { display: block; font-size: 12px; font-weight: 700; color: #4a5568; margin-bottom: 6px; }
+.cloud-input { width: 100%; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 15px; margin-bottom: 14px; outline: none; }
+.cloud-input:focus { border-color: #4f86f7; }
+.cloud-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.cloud-btns button { flex: 1; min-width: 100px; padding: 10px; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; font-size: 14px; }
+.cloud-btns .btn-primary { background: #4f86f7; color: white; }
+.cloud-btns .btn-secondary { background: #edf2f7; color: #4a5568; }
+.cloud-btns .btn-disconnect { background: #fff5f5; color: #c53030; border: 1.5px solid #feb2b2; flex: 1 1 100%; }
+.cloud-setup-details { font-size: 12px; color: #4a5568; line-height: 1.55; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; background: #f7fafc; }
+.cloud-setup-details summary { cursor: pointer; font-weight: 700; color: #2d3748; }
+.cloud-setup-details ol { margin: 10px 0 0 18px; padding: 0; }
+.cloud-err { color: #c53030; font-size: 12px; margin-top: 10px; min-height: 1.2em; }
+
+@media (max-width: 420px) {
+  .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar topbar-brian" id="topbar">
+  <div class="topbar-title" id="topbar-title">Brian 的积分</div>
+  <div class="topbar-right">
+    <div class="topbar-date" id="topbar-date"></div>
+    <div class="app-version" id="app-version" title="当前页面版本"></div>
+  </div>
+</div>
+
+<div class="kid-switcher">
+  <button class="kid-btn active-brian" id="btn-brian" onclick="switchKid('brian')">
+    <span class="avatar ph ph-user-circle" aria-hidden="true"></span><span>Brian</span><span class="total" id="total-brian">共 0 分</span>
+  </button>
+  <button class="kid-btn" id="btn-linden" onclick="switchKid('linden')">
+    <span class="avatar ph ph-users" aria-hidden="true"></span><span>Linden</span><span class="total" id="total-linden">共 0 分</span>
+  </button>
+</div>
+
+<div class="sync-bar" id="sync-bar">
+  <div class="sync-bar-inner">
+    <i class="ph ph-cloud" aria-hidden="true"></i>
+    <span class="sync-bar-text" id="sync-bar-text">云同步：加载中…</span>
+    <button type="button" class="sync-bar-btn" onclick="openCloudSettings()">设置</button>
+  </div>
+</div>
+
+<div class="score-banner score-banner-brian" id="score-banner">
+  <div class="score-cards">
+    <div class="score-card"><div class="sc-label">今日加分</div><div class="sc-val" id="disp-plus">+0</div></div>
+    <div class="score-card"><div class="sc-label">今日扣分</div><div class="sc-val" id="disp-minus">0</div></div>
+    <div class="score-card"><div class="sc-label">累计总分</div><div class="sc-val" id="disp-total">0</div></div>
+  </div>
+  <div class="week-summary" id="week-summary">
+    <div class="week-summary-hd">
+      <div><div class="week-summary-title">本周汇总</div><div class="week-summary-range" id="week-range-lbl"></div></div>
+      <div class="week-summary-total">合计 <span id="week-total-val">0</span> 分</div>
+    </div>
+    <div class="week-days" id="week-days"></div>
+  </div>
+</div>
+
+<div class="section-tabs">
+  <div class="section-tabs-inner">
+    <div class="section-tab active-brian" id="tab-today" onclick="switchSection('today')">今天</div>
+    <div class="section-tab" id="tab-history" onclick="switchSection('history')">历史</div>
+    <div class="section-tab" id="tab-rules" onclick="switchSection('rules')">规则</div>
+  </div>
+</div>
+
+<!-- TODAY -->
+<div id="page-today" class="page active">
+<div class="main-content">
+  <div class="sec-hdr">必修任务</div>
+
+  <div class="task-card">
+    <i class="t-icon ph ph-books" aria-hidden="true"></i>
+    <div class="t-info"><div class="t-name" id="lbl-hw">按时完成所有作业</div><div class="t-sub" id="lbl-hw-sub">未完成 −10分</div></div>
+    <span class="badge badge-neutral" id="badge-hw">待记录</span>
+    <div class="check-wrap">
+      <button class="chk" id="chk-hw-ok" onclick="setHw(true)" title="完成"><i class="ph ph-check" aria-hidden="true"></i></button>
+      <button class="chk" id="chk-hw-fail" onclick="setHw(false)" title="未完成"><i class="ph ph-x" aria-hidden="true"></i></button>
+    </div>
+  </div>
+
+  <div class="task-card col">
+    <div class="row">
+      <i class="t-icon ph ph-book-open" aria-hidden="true"></i>
+      <div class="t-info"><div class="t-name" id="lbl-read">每天读书 1 小时</div><div class="t-sub" id="lbl-read-sub">中文30分 + 英文30分；每少10分钟 −1分</div></div>
+      <span class="badge badge-neutral" id="badge-read">0分</span>
+    </div>
+    <div class="two-col">
+      <div class="mini-card">
+        <div class="mc-lang"><i class="mc-lang-ic ph ph-article" aria-hidden="true"></i><span class="lang-pill">中文</span></div>
+        <div class="mc-val" id="disp-cn">0<span> 分钟</span></div>
+        <div class="mini-btns">
+          <button class="mini-btn" onclick="addMin('cn',-10)">−10</button>
+          <button class="mini-btn" onclick="addMin('cn',10)">+10</button>
+          <button class="mini-btn" onclick="setMin('cn',30)"><i class="ph ph-check" aria-hidden="true"></i>30</button>
+        </div>
+      </div>
+      <div class="mini-card">
+        <div class="mc-lang"><i class="mc-lang-ic ph ph-book" aria-hidden="true"></i><span class="lang-pill">英文</span></div>
+        <div class="mc-val" id="disp-en">0<span> 分钟</span></div>
+        <div class="mini-btns">
+          <button class="mini-btn" onclick="addMin('en',-10)">−10</button>
+          <button class="mini-btn" onclick="addMin('en',10)">+10</button>
+          <button class="mini-btn" onclick="setMin('en',30)"><i class="ph ph-check" aria-hidden="true"></i>30</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-card col">
+    <div class="row">
+      <span class="t-icon t-icon-duo" id="duo-icon-slot" aria-hidden="true"></span>
+      <div class="t-info"><div class="t-name" id="lbl-duo">多邻国打卡</div><div class="t-sub" id="lbl-duo-sub">日语 + 广东话各1单元；每少1单元 −2分</div></div>
+      <span class="badge badge-neutral" id="badge-duo">0分</span>
+    </div>
+    <div class="two-col">
+      <div class="mini-card">
+        <div class="mc-lang"><i class="mc-lang-ic ph ph-globe-hemisphere-east" aria-hidden="true"></i><span class="lang-pill jp">日语</span></div>
+        <div class="mc-val" id="disp-jp">0<span> 单元</span></div>
+        <div class="mini-btns">
+          <button class="mini-btn" onclick="addUnit('jp',-1)">−1</button>
+          <button class="mini-btn" onclick="addUnit('jp',1)">+1</button>
+        </div>
+      </div>
+      <div class="mini-card">
+        <div class="mc-lang"><i class="mc-lang-ic ph ph-globe" aria-hidden="true"></i><span class="lang-pill yue">粤语</span></div>
+        <div class="mc-val" id="disp-canto">0<span> 单元</span></div>
+        <div class="mini-btns">
+          <button class="mini-btn" onclick="addUnit('canto',-1)">−1</button>
+          <button class="mini-btn" onclick="addUnit('canto',1)">+1</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-card">
+    <i class="t-icon ph ph-person-simple-run" aria-hidden="true"></i>
+    <div class="t-info"><div class="t-name" id="lbl-outdoor">6点前户外活动</div><div class="t-sub" id="lbl-outdoor-sub">CCA放学晚可豁免</div></div>
+    <span class="badge badge-neutral" id="badge-outdoor">待记录</span>
+    <div class="check-wrap">
+      <button class="chk" id="chk-out-ok" onclick="setOutdoor('done')" title="完成"><i class="ph ph-check" aria-hidden="true"></i></button>
+      <button class="chk" id="chk-out-cca" onclick="setOutdoor('cca')" title="CCA豁免"><i class="ph ph-calendar-check" aria-hidden="true"></i></button>
+      <button class="chk" id="chk-out-fail" onclick="setOutdoor('fail')" title="未完成，扣分"><i class="ph ph-x" aria-hidden="true"></i></button>
+    </div>
+  </div>
+
+  <div class="task-card">
+    <i class="t-icon ph ph-fork-knife" aria-hidden="true"></i>
+    <div class="t-info"><div class="t-name" id="lbl-meal">好好吃饭</div><div class="t-sub" id="lbl-meal-sub">不把食物弄地上；掉了自己捡</div></div>
+    <span class="badge badge-neutral" id="badge-meal">待记录</span>
+    <div class="check-wrap">
+      <button class="chk" id="chk-meal-ok" onclick="setMeal(true)" title="表现好"><i class="ph ph-check" aria-hidden="true"></i></button>
+      <button class="chk" id="chk-meal-fail" onclick="setMeal(false)" title="需改进"><i class="ph ph-x" aria-hidden="true"></i></button>
+    </div>
+  </div>
+
+  <div class="sec-hdr" style="margin-top:24px">选修任务（加分项）</div>
+
+  <div class="task-card">
+    <i class="t-icon ph ph-washing-machine" aria-hidden="true"></i>
+    <div class="t-info"><div class="t-name" id="lbl-laundry">洗内裤</div><div class="t-sub">每次 +1分</div></div>
+    <span class="badge badge-plus" id="badge-laundry">+0分</span>
+    <div class="stepper">
+      <button class="step-btn" onclick="addCount('laundry',-1)">−</button>
+      <div class="step-val" id="cnt-laundry">0</div>
+      <button class="step-btn" onclick="addCount('laundry',1)">+</button>
+    </div>
+  </div>
+
+  <div class="task-card">
+    <i class="t-icon ph ph-bowl-food" aria-hidden="true"></i>
+    <div class="t-info"><div class="t-name" id="lbl-dishes">饭后收拾碗筷</div><div class="t-sub">每次 +1分</div></div>
+    <span class="badge badge-plus" id="badge-dishes">+0分</span>
+    <div class="stepper">
+      <button class="step-btn" onclick="addCount('dishes',-1)">−</button>
+      <div class="step-val" id="cnt-dishes">0</div>
+      <button class="step-btn" onclick="addCount('dishes',1)">+</button>
+    </div>
+  </div>
+
+  <div class="task-card col">
+    <div class="row">
+      <i class="t-icon ph ph-pencil-line" aria-hidden="true"></i>
+      <div class="t-info"><div class="t-name" id="lbl-write">英文写作加分</div></div>
+      <span class="badge badge-plus" id="badge-write">+0分</span>
+    </div>
+    <div class="writing-single">
+      <div class="w-field"><label><i class="ph ph-text-aa" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>英文写作（词数）</label><input type="number" id="input-enw" value="0" min="0" oninput="calcWriting()"></div>
+    </div>
+  </div>
+
+  <div class="task-card">
+    <i class="t-icon ph ph-basketball" aria-hidden="true"></i>
+    <div class="t-info"><div class="t-name" id="lbl-bball">上篮球课</div><div class="t-sub">每节 +10分</div></div>
+    <span class="badge badge-plus" id="badge-bball">+0分</span>
+    <div class="stepper">
+      <button class="step-btn" onclick="addCount('bball',-1)">−</button>
+      <div class="step-val" id="cnt-bball">0</div>
+      <button class="step-btn" onclick="addCount('bball',1)">+</button>
+    </div>
+  </div>
+
+  <div class="task-card col">
+    <div class="row">
+      <i class="t-icon ph ph-trophy" aria-hidden="true"></i>
+      <div class="t-info"><div class="t-name">比赛获奖（本周）</div></div>
+      <span class="badge badge-plus" id="badge-award">+0分</span>
+    </div>
+    <div class="award-btns">
+      <button class="award-opt" id="award-none" onclick="setAward('none')">— 无</button>
+      <button class="award-opt" id="award-gold" onclick="setAward('gold')">一等奖/金奖 +10</button>
+      <button class="award-opt" id="award-special" onclick="setAward('special')">特等奖 +15</button>
+      <button class="award-opt" id="award-top" onclick="setAward('top')">状元 +20</button>
+    </div>
+  </div>
+
+  <div style="height:100px"></div>
+</div>
+<div style="position:sticky;bottom:0;background:linear-gradient(to top,#f4f6fb 60%,transparent);padding:16px;max-width:720px;margin:0 auto;">
+  <button class="submit-btn submit-btn-brian" id="submit-btn" onclick="openModal()">提交今日记录</button>
+</div>
+</div>
+
+<!-- HISTORY -->
+<div id="page-history" class="page"><div class="main-content" id="history-content"></div></div>
+
+<!-- RULES -->
+<div id="page-rules" class="page"><div class="main-content rules-page" id="rules-content"></div></div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">确认提交</div>
+    <div class="modal-preview modal-preview-brian" id="modal-preview"></div>
+    <div class="btn-row">
+      <button class="btn btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn" id="modal-ok" style="background:#4f86f7;color:white;" onclick="confirmSubmit()">确认提交</button>
+    </div>
+  </div>
+</div>
+
+<div class="cloud-overlay" id="cloud-overlay" onclick="if(event.target===this)closeCloudSettings()">
+  <div class="cloud-modal" onclick="event.stopPropagation()">
+    <div class="cloud-modal-title">云同步（Firebase）</div>
+    <p class="cloud-hint">家长与孩子使用<strong>同一家庭码</strong>即可共用一份数据：规则、历史记录、今日未提交的草稿会实时同步（以最后写入为准）。托管在 <strong>GitHub Pages</strong> 时也是用 <code>https://…</code> 打开（不要用 <code>file://</code>）。</p>
+    <label for="cloud-family-input">家庭码（4～64 位，仅字母、数字、下划线、连字符）</label>
+    <input type="text" id="cloud-family-input" class="cloud-input" placeholder="例如 myfamily2026" autocomplete="off">
+    <div class="cloud-btns">
+      <button type="button" class="btn-secondary" onclick="closeCloudSettings()">关闭</button>
+      <button type="button" class="btn-primary" onclick="saveCloudFamilyAndConnect()">保存并连接</button>
+      <button type="button" class="btn-disconnect" onclick="disconnectCloud()">断开云同步（仅本机）</button>
+    </div>
+    <details class="cloud-setup-details">
+      <summary>家长：首次如何配置 Firebase（免费）</summary>
+      <ol>
+        <li>打开 <a href="https://console.firebase.google.com/" target="_blank" rel="noopener">Firebase 控制台</a>，创建项目（可不启用 Analytics）。</li>
+        <li>项目里添加「网页」应用，复制网页配置对象里的 <code>apiKey</code>、<code>authDomain</code>、<code>projectId</code> 等字段。</li>
+        <li>左侧打开「Firestore Database」→ 创建数据库 → 选就近区域；<strong>规则</strong>可先改为测试模式，或粘贴规则允许按文档 ID 读写（见下）。</li>
+        <li><strong>托管在 GitHub：</strong>仓库 <strong>Settings → Pages</strong> 启用站点，记下访问地址（例如 <code>https://你的用户名.github.io/仓库名/</code>）。到 Firebase <strong>项目设置 → 你的应用 → 已授权的网域</strong>，添加与地址栏一致的<strong>主机名</strong>（一般是 <code>你的用户名.github.io</code>，不要带路径）。本地调试时保留 <code>localhost</code>。</li>
+        <li>在本页源码中搜索 <code>FIREBASE_CONFIG</code>，把占位内容换成你的配置并提交到仓库（公开仓库里也会看到配置，这是 Firebase 网页应用的常态，请靠 <strong>Firestore 规则 + 保密的家庭码</strong> 保护数据）。</li>
+        <li>全家人在上方「家庭码」里填<strong>完全相同</strong>的一串字符（建议较长、勿公开）。</li>
+      </ol>
+      <p style="margin:10px 0 0;font-size:11px;word-break:break-all;background:#fff;padding:8px;border-radius:6px;border:1px solid #e2e8f0"><strong>Firestore 规则示例</strong>（控制台 → 规则）— 知道家庭码的人可读写，请把家庭码当作密码：<br><code style="user-select:all">match /family_score/{id} { allow read, write: if id.size() &gt;= 4 &amp;&amp; id.size() &lt;= 64; }</code></p>
+    </details>
+    <p class="cloud-err" id="cloud-err"></p>
+  </div>
+</div>
+
+<template id="tpl-duo-owl">
+<svg class="duo-owl-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+  <ellipse cx="32" cy="39" rx="25" ry="22" fill="#58CC02"/>
+  <ellipse cx="32" cy="44" rx="15" ry="12" fill="#89E219" opacity=".9"/>
+  <path d="M15 21L9 8l12 9z" fill="#46A302"/>
+  <path d="M49 21l6-13-12 9z" fill="#46A302"/>
+  <circle cx="24" cy="33" r="11" fill="#fff"/>
+  <circle cx="40" cy="33" r="11" fill="#fff"/>
+  <circle cx="24" cy="33" r="6" fill="#1a1a1a"/>
+  <circle cx="40" cy="33" r="6" fill="#1a1a1a"/>
+  <circle cx="26" cy="30" r="2.2" fill="#fff"/>
+  <circle cx="42" cy="30" r="2.2" fill="#fff"/>
+  <path d="M28 43.5h8l-4 7.5z" fill="#FF9600"/>
+  <ellipse cx="23" cy="56" rx="6.5" ry="3.8" fill="#FF9600"/>
+  <ellipse cx="41" cy="56" rx="6.5" ry="3.8" fill="#FF9600"/>
+</svg>
+</template>
+
+<script>
+// ============ APP ============
+/** 发布新版本时只改这一处 */
+var APP_VERSION = '1.5.1';
+
+/*
+  云同步：Firebase 控制台创建网页应用后，把下面换成你的配置。
+  若仓库在 GitHub 上公开：apiKey 等仍会出现在页面里（与所有前端一样），请用 Firestore 规则 + 足够长的家庭码；勿把家庭码写进仓库。
+*/
+var FIREBASE_CONFIG = {
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'YOUR_PROJECT.firebaseapp.com',
+  projectId: 'YOUR_PROJECT_ID',
+  storageBucket: 'YOUR_PROJECT.appspot.com',
+  messagingSenderId: '000000000000',
+  appId: '1:000000000000:web:xxxxxxxx'
+};
+
+var cloudFamilyId = localStorage.getItem('cloud_family_id') || null;
+var cloudClientId = localStorage.getItem('cloud_client_id');
+if (!cloudClientId) {
+  cloudClientId = 'c' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
+  localStorage.setItem('cloud_client_id', cloudClientId);
+}
+var cloudUnsub = null;
+var cloudPushTimer = null;
+var cloudApplyingRemote = false;
+var lastPushedTs = 0;
+var lastMergedRemoteAt = 0;
+var firebaseLoadCallbacks = [];
+
+function cloudConfigValid() {
+  if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.apiKey || !FIREBASE_CONFIG.projectId) return false;
+  if (FIREBASE_CONFIG.apiKey.indexOf('YOUR_') === 0) return false;
+  if (FIREBASE_CONFIG.projectId.indexOf('YOUR_') === 0) return false;
+  return true;
+}
+
+function ensureFirebaseLoaded(cb) {
+  if (window.__fb_ready && window.firebase && firebase.firestore) {
+    cb();
+    return;
+  }
+  firebaseLoadCallbacks.push(cb);
+  if (window.__fb_loading) return;
+  window.__fb_loading = true;
+  var s1 = document.createElement('script');
+  s1.src = 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js';
+  s1.onload = function() {
+    var s2 = document.createElement('script');
+    s2.src = 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js';
+    s2.onload = function() {
+      window.__fb_ready = true;
+      var q = firebaseLoadCallbacks.slice();
+      firebaseLoadCallbacks = [];
+      q.forEach(function(fn) { fn(); });
+    };
+    s2.onerror = function() {
+      window.__fb_loading = false;
+      alert('无法加载 Firebase Firestore 脚本，请检查网络。');
+    };
+    document.head.appendChild(s2);
+  };
+  s1.onerror = function() {
+    window.__fb_loading = false;
+    alert('无法加载 Firebase 脚本，请检查网络。');
+  };
+  document.head.appendChild(s1);
+}
+
+function cloudFirebaseReady() {
+  if (!cloudConfigValid()) return false;
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+  return true;
+}
+
+function sanitizeFamilyId(s) {
+  return String(s || '').trim().replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+}
+
+function cloudUpdateStatusUI(errMsg) {
+  var el = document.getElementById('sync-bar-text');
+  if (!el) return;
+  if (errMsg) {
+    el.textContent = '云同步：' + errMsg;
+    return;
+  }
+  if (!cloudConfigValid()) {
+    el.textContent = '云同步：未配置 Firebase（点「设置」看说明）';
+    return;
+  }
+  if (!cloudFamilyId) {
+    el.textContent = '云同步：未连接 — 点「设置」输入家庭码';
+    return;
+  }
+  el.textContent = '云同步：已连接 · 家庭码「' + cloudFamilyId + '」';
+}
+
+function openCloudSettings() {
+  document.getElementById('cloud-err').textContent = '';
+  document.getElementById('cloud-family-input').value = cloudFamilyId || '';
+  document.getElementById('cloud-overlay').classList.add('show');
+}
+
+function closeCloudSettings() {
+  document.getElementById('cloud-overlay').classList.remove('show');
+}
+
+function saveCloudFamilyAndConnect() {
+  document.getElementById('cloud-err').textContent = '';
+  var id = sanitizeFamilyId(document.getElementById('cloud-family-input').value);
+  if (id.length < 4) {
+    document.getElementById('cloud-err').textContent = '家庭码至少 4 个有效字符。';
+    return;
+  }
+  if (!cloudConfigValid()) {
+    document.getElementById('cloud-err').textContent = '请先在源码中填写 FIREBASE_CONFIG。';
+    return;
+  }
+  cloudFamilyId = id;
+  localStorage.setItem('cloud_family_id', id);
+  closeCloudSettings();
+  ensureFirebaseLoaded(function() {
+    if (!cloudFirebaseReady()) {
+      cloudUpdateStatusUI('初始化失败');
+      return;
+    }
+    try {
+      firebase.firestore().enablePersistence({ synchronizeTabs: true }).catch(function() {});
+    } catch (e) {}
+    cloudAttachListener();
+    scheduleCloudPush(true);
+    cloudUpdateStatusUI();
+  });
+}
+
+function disconnectCloud() {
+  if (cloudUnsub) {
+    cloudUnsub();
+    cloudUnsub = null;
+  }
+  cloudFamilyId = null;
+  localStorage.removeItem('cloud_family_id');
+  closeCloudSettings();
+  cloudUpdateStatusUI();
+}
+
+function replaceRFromObject(obj) {
+  var d = defaultRules();
+  if (obj && typeof obj === 'object') {
+    try {
+      var o = JSON.parse(JSON.stringify(obj));
+      delete o.writeCnThresh;
+      delete o.writeCnPts;
+      Object.assign(d, o);
+    } catch (e) {}
+  }
+  delete d.writeCnThresh;
+  delete d.writeCnPts;
+  Object.keys(R).forEach(function(k) { delete R[k]; });
+  Object.assign(R, d);
+}
+
+function applyRemoteDoc(data) {
+  cloudApplyingRemote = true;
+  try {
+    if (data.rules) replaceRFromObject(data.rules);
+    localStorage.setItem('rules_v2', JSON.stringify(R));
+    if (Array.isArray(data.histBrian)) localStorage.setItem('hist_brian', JSON.stringify(data.histBrian));
+    if (Array.isArray(data.histLinden)) localStorage.setItem('hist_linden', JSON.stringify(data.histLinden));
+    if (data.stateBrian && typeof data.stateBrian === 'object') state.brian = Object.assign(makeState(), data.stateBrian);
+    if (data.stateLinden && typeof data.stateLinden === 'object') state.linden = Object.assign(makeState(), data.stateLinden);
+    updateRuleLabels();
+    renderTodayUI();
+    renderRules();
+    refreshTotals();
+    updateBanner();
+    cloudUpdateStatusUI();
+  } catch (e) {
+    console.error(e);
+    cloudUpdateStatusUI('合并云端数据出错');
+  } finally {
+    cloudApplyingRemote = false;
+  }
+}
+
+function cloudAttachListener() {
+  if (!cloudFamilyId || !cloudFirebaseReady()) return;
+  if (cloudUnsub) {
+    cloudUnsub();
+    cloudUnsub = null;
+  }
+  var db = firebase.firestore();
+  cloudUnsub = db.collection('family_score').doc(cloudFamilyId).onSnapshot(function(snap) {
+    if (!snap.exists) return;
+    var data = snap.data();
+    if (!data || typeof data.updatedAt !== 'number') return;
+    if (data.clientId === cloudClientId && data.updatedAt === lastPushedTs) return;
+    if (data.updatedAt <= lastMergedRemoteAt) return;
+    lastMergedRemoteAt = data.updatedAt;
+    applyRemoteDoc(data);
+  }, function(err) {
+    console.error(err);
+    cloudUpdateStatusUI((err && err.message) ? err.message : '监听失败');
+  });
+}
+
+function scheduleCloudPush(immediate) {
+  if (!cloudFamilyId || cloudApplyingRemote) return;
+  if (!cloudConfigValid()) return;
+  function doPush() {
+    cloudPushTimer = null;
+    if (!cloudFamilyId || cloudApplyingRemote) return;
+    ensureFirebaseLoaded(function() {
+      if (!cloudFirebaseReady()) return;
+      var db = firebase.firestore();
+      var payload = JSON.parse(JSON.stringify({
+        updatedAt: Date.now(),
+        clientId: cloudClientId,
+        rules: R,
+        histBrian: getHistory('brian'),
+        histLinden: getHistory('linden'),
+        stateBrian: state.brian,
+        stateLinden: state.linden
+      }));
+      lastPushedTs = payload.updatedAt;
+      db.collection('family_score').doc(cloudFamilyId).set(payload).catch(function(e) {
+        console.error(e);
+        cloudUpdateStatusUI('上传失败');
+      });
+    });
+  }
+  if (immediate) {
+    clearTimeout(cloudPushTimer);
+    cloudPushTimer = null;
+    doPush();
+    return;
+  }
+  clearTimeout(cloudPushTimer);
+  cloudPushTimer = setTimeout(doPush, 1400);
+}
+
+function cloudTryAutoConnect() {
+  cloudUpdateStatusUI();
+  if (!cloudFamilyId || !cloudConfigValid()) return;
+  ensureFirebaseLoaded(function() {
+    if (!cloudFirebaseReady()) {
+      cloudUpdateStatusUI('Firebase 配置无效');
+      return;
+    }
+    try {
+      firebase.firestore().enablePersistence({ synchronizeTabs: true }).catch(function() {});
+    } catch (e) {}
+    cloudAttachListener();
+    scheduleCloudPush(false);
+  });
+}
+
+function duoIconHtml() {
+  var t = document.getElementById('tpl-duo-owl');
+  return t ? t.innerHTML : '';
+}
+function mountDuoTaskIcon() {
+  var t = document.getElementById('tpl-duo-owl');
+  var slot = document.getElementById('duo-icon-slot');
+  if (!t || !slot || slot.querySelector('svg')) return;
+  slot.appendChild(t.content.cloneNode(true));
+}
+function requiredRuleIcon(i, r) {
+  if (i === 2) { var h = duoIconHtml(); return h || r.emoji; }
+  return r.emoji;
+}
+
+// ============ STATE ============
+var KIDS = ['brian', 'linden'];
+var currentKid = 'brian';
+
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function getTodayKey() {
+  var t = new Date();
+  return t.getFullYear() + '-' + pad2(t.getMonth() + 1) + '-' + pad2(t.getDate());
+}
+function dateKeyFromDate(d) {
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+}
+function startOfWeekMonday(ref) {
+  var d = new Date(ref.getFullYear(), ref.getMonth(), ref.getDate());
+  var diff = (d.getDay() + 6) % 7;
+  d.setDate(d.getDate() - diff);
+  return d;
+}
+
+function makeState() {
+  return { hw: null, cnMin: 0, enMin: 0, jpUnit: 0, cantoUnit: 0,
+           outdoor: null, meal: null,
+           laundry: 0, dishes: 0, enWords: 0, bball: 0,
+           award: 'none' };
+}
+var state = { brian: makeState(), linden: makeState() };
+
+// ============ RULES (editable) ============
+function defaultRules() {
+  return {
+    required: [
+      { emoji: "📚", name: "按时完成所有作业", sub: "未完成 −10分", minus: 10 },
+      { emoji: "📖", name: "每天读书 1 小时", sub: "中文30分+英文30分；每少10分钟 −1分", minus: 1 },
+      { emoji: "🦜", name: "多邻国打卡", sub: "日语+广东话各1单元；每少1单元 −2分", minus: 2 },
+      { emoji: "🏃", name: "6点前户外活动", sub: "未完成（点叉）或未记录 −5分；CCA 放学晚可点豁免不计分", minus: 5 },
+      { emoji: "🍽️", name: "好好吃饭", sub: "未完成或未记录 −3分；表现好不计分", minus: 3 }
+    ],
+    optional: [
+      { emoji: "🧺", name: "洗内裤", sub: "每次 +1分", plus: 1 },
+      { emoji: "🥣", name: "饭后收拾碗筷", sub: "每次 +1分", plus: 1 },
+      { emoji: "✍️", name: "英文写作加分", sub: "按英文词数加分", plus: 0 },
+      { emoji: "🏀", name: "上篮球课", sub: "每节 +10分", plus: 10 }
+    ],
+    awardLabels: { gold: "一等奖/金奖（华夏杯/AMIO）", special: "特等奖", top: "状元" },
+    awardPts:    { gold: 10, special: 15, top: 20 },
+    awardWeeks:  { gold: 3,  special: 5,  top: 8 },
+    writeEnThresh: [50, 75, 125, 200, 300],
+    writeEnPts:    [1, 2, 3, 4, 5]
+  };
+}
+
+function loadRules() {
+  var d = defaultRules();
+  var saved = localStorage.getItem('rules_v2');
+  if (!saved) return d;
+  try {
+    var obj = JSON.parse(saved);
+    delete obj.writeCnThresh;
+    delete obj.writeCnPts;
+    return Object.assign(d, obj);
+  } catch(e) { return d; }
+}
+function saveRulesToDisk(r) {
+  localStorage.setItem('rules_v2', JSON.stringify(r));
+  scheduleCloudPush();
+}
+
+var R = loadRules();
+(function migrateOutdoorMealPenalty() {
+  if (localStorage.getItem('rules_penalty_mig_v1')) return;
+  var d = defaultRules();
+  if (!R.required || !R.required[3] || !R.required[4]) return;
+  if (R.required[3].minus === 0) {
+    R.required[3].minus = d.required[3].minus;
+    R.required[3].sub = d.required[3].sub;
+  }
+  if (R.required[4].minus === 0) {
+    R.required[4].minus = d.required[4].minus;
+    R.required[4].sub = d.required[4].sub;
+  }
+  localStorage.setItem('rules_penalty_mig_v1', '1');
+  saveRulesToDisk(R);
+})();
+var rulesEditing = false;
+
+// ============ INIT ============
+(function(){
+  document.documentElement.setAttribute('data-app-version', APP_VERSION);
+  var vm = document.createElement('meta');
+  vm.name = 'app-version';
+  vm.content = APP_VERSION;
+  document.head.appendChild(vm);
+  document.getElementById('app-version').textContent = 'v' + APP_VERSION;
+  mountDuoTaskIcon();
+  document.getElementById('topbar-date').textContent = fmtDate(new Date());
+  refreshTotals();
+  updateRuleLabels();
+  renderTodayUI();
+  renderRules();
+  updateBanner();
+  cloudTryAutoConnect();
+})();
+
+function fmtDate(d) {
+  var days = ['日','一','二','三','四','五','六'];
+  return (d.getMonth()+1) + '月' + d.getDate() + '日（周' + days[d.getDay()] + '）';
+}
+
+// ============ SWITCH KID ============
+function switchKid(kid) {
+  currentKid = kid;
+  var isB = (kid === 'brian');
+  // topbar
+  document.getElementById('topbar').className = 'topbar ' + (isB ? 'topbar-brian' : 'topbar-linden');
+  document.getElementById('topbar-title').textContent = (isB ? 'Brian' : 'Linden') + ' 的积分';
+  // buttons
+  document.getElementById('btn-brian').className = 'kid-btn' + (isB ? ' active-brian' : '');
+  document.getElementById('btn-linden').className = 'kid-btn' + (isB ? '' : ' active-linden');
+  // banner
+  document.getElementById('score-banner').className = 'score-banner ' + (isB ? 'score-banner-brian' : 'score-banner-linden');
+  // submit btn
+  document.getElementById('submit-btn').className = 'submit-btn ' + (isB ? 'submit-btn-brian' : 'submit-btn-linden');
+  // tabs
+  document.querySelectorAll('.section-tab').forEach(function(t) {
+    t.classList.remove('active-brian','active-linden');
+  });
+  var activeTab = document.querySelector('.page.active');
+  if (activeTab) {
+    var id = activeTab.id; // page-today / page-history / page-rules
+    var tabId = {'page-today':'tab-today','page-history':'tab-history','page-rules':'tab-rules'}[id];
+    if (tabId) document.getElementById(tabId).classList.add('active-' + kid);
+  }
+  renderTodayUI();
+  updateBanner();
+  if (document.getElementById('page-history').classList.contains('active')) renderHistory();
+  if (document.getElementById('page-rules').classList.contains('active')) renderRules();
+}
+
+// ============ SECTION TABS ============
+function switchSection(name) {
+  ['page-today','page-history','page-rules'].forEach(function(id) {
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById('page-' + name).classList.add('active');
+  // update tab active state
+  document.querySelectorAll('.section-tab').forEach(function(t) {
+    t.classList.remove('active-brian','active-linden');
+  });
+  document.getElementById('tab-' + name).classList.add('active-' + currentKid);
+  if (name === 'history') renderHistory();
+  if (name === 'rules') renderRules();
+}
+
+// ============ TODAY UI ============
+function get() { return state[currentKid]; }
+
+function applyRequiredTaskUI() {
+  var s = get();
+  var okH = document.getElementById('chk-hw-ok');
+  var failH = document.getElementById('chk-hw-fail');
+  okH.classList.remove('ok'); failH.classList.remove('fail');
+  var bh = document.getElementById('badge-hw');
+  var m0 = R.required[0].minus;
+  if (s.hw === true) {
+    okH.classList.add('ok');
+    bh.textContent = '✓ 完成'; bh.className = 'badge badge-plus';
+  } else if (s.hw === false) {
+    failH.classList.add('fail');
+    bh.textContent = m0 > 0 ? '−' + m0 + '分' : '未完成'; bh.className = m0 > 0 ? 'badge badge-minus' : 'badge badge-neutral';
+  } else {
+    bh.textContent = m0 > 0 ? '未记录 −' + m0 + '分' : '待记录'; bh.className = m0 > 0 ? 'badge badge-minus' : 'badge badge-neutral';
+  }
+  var okO = document.getElementById('chk-out-ok');
+  var ccaO = document.getElementById('chk-out-cca');
+  var failO = document.getElementById('chk-out-fail');
+  okO.classList.remove('ok','warn'); ccaO.classList.remove('ok','warn'); failO.classList.remove('fail');
+  var bo = document.getElementById('badge-outdoor');
+  var m3 = R.required[3].minus;
+  if (s.outdoor === 'done') {
+    okO.classList.add('ok');
+    bo.textContent = '✓ 完成'; bo.className = 'badge badge-plus';
+  } else if (s.outdoor === 'cca') {
+    ccaO.classList.add('warn');
+    bo.textContent = 'CCA豁免'; bo.className = 'badge badge-warn';
+  } else if (s.outdoor === 'fail') {
+    failO.classList.add('fail');
+    bo.textContent = m3 > 0 ? '−' + m3 + '分' : '未完成'; bo.className = m3 > 0 ? 'badge badge-minus' : 'badge badge-neutral';
+  } else {
+    bo.textContent = m3 > 0 ? '未记录 −' + m3 + '分' : '待记录'; bo.className = m3 > 0 ? 'badge badge-minus' : 'badge badge-neutral';
+  }
+  var okM = document.getElementById('chk-meal-ok');
+  var failM = document.getElementById('chk-meal-fail');
+  okM.classList.remove('ok'); failM.classList.remove('fail');
+  var bm = document.getElementById('badge-meal');
+  var m4 = R.required[4].minus;
+  if (s.meal === true) {
+    okM.classList.add('ok');
+    bm.textContent = '✓ 表现好'; bm.className = 'badge badge-plus';
+  } else if (s.meal === false) {
+    failM.classList.add('fail');
+    bm.textContent = m4 > 0 ? '−' + m4 + '分' : '需改进'; bm.className = m4 > 0 ? 'badge badge-minus' : 'badge badge-neutral';
+  } else {
+    bm.textContent = m4 > 0 ? '未记录 −' + m4 + '分' : '待记录'; bm.className = m4 > 0 ? 'badge badge-minus' : 'badge badge-neutral';
+  }
+}
+
+function renderTodayUI() {
+  var s = get();
+  applyRequiredTaskUI();
+  // reading
+  document.getElementById('disp-cn').innerHTML = s.cnMin + '<span> 分钟</span>';
+  document.getElementById('disp-en').innerHTML = s.enMin + '<span> 分钟</span>';
+  updateReadBadge();
+  // duolingo
+  document.getElementById('disp-jp').innerHTML = s.jpUnit + '<span> 单元</span>';
+  document.getElementById('disp-canto').innerHTML = s.cantoUnit + '<span> 单元</span>';
+  updateDuoBadge();
+  // counters
+  ['laundry','dishes','bball'].forEach(function(key) {
+    var pts = { laundry: R.optional[0].plus, dishes: R.optional[1].plus, bball: R.optional[3].plus };
+    document.getElementById('cnt-' + key).textContent = s[key];
+    document.getElementById('badge-' + key).textContent = '+' + (s[key] * pts[key]) + '分';
+  });
+  // writing (English only)
+  document.getElementById('input-enw').value = s.enWords || 0;
+  updateWriteBadge();
+  // award
+  setAwardUI(s.award);
+}
+
+function updateReadBadge() {
+  var sc = calcReadScore();
+  var el = document.getElementById('badge-read');
+  el.textContent = sc < 0 ? (sc + '分') : '0分';
+  el.className = 'badge ' + (sc < 0 ? 'badge-minus' : 'badge-neutral');
+}
+function calcReadScore() {
+  var missing = Math.max(0, 30 - get().cnMin) + Math.max(0, 30 - get().enMin);
+  return -Math.floor(missing / 10) * R.required[1].minus;
+}
+
+function updateDuoBadge() {
+  var sc = calcDuoScore();
+  var el = document.getElementById('badge-duo');
+  el.textContent = sc < 0 ? (sc + '分') : '0分';
+  el.className = 'badge ' + (sc < 0 ? 'badge-minus' : 'badge-neutral');
+}
+function calcDuoScore() {
+  return -(Math.max(0, 1 - get().jpUnit) + Math.max(0, 1 - get().cantoUnit)) * R.required[2].minus;
+}
+
+// ============ ACTIONS ============
+function setHw(val) {
+  get().hw = val;
+  applyRequiredTaskUI();
+  updateBanner();
+}
+
+function addMin(lang, delta) {
+  if (lang === 'cn') get().cnMin = Math.max(0, get().cnMin + delta);
+  else get().enMin = Math.max(0, get().enMin + delta);
+  document.getElementById('disp-' + lang).innerHTML = get()[lang + 'Min'] + '<span> 分钟</span>';
+  updateReadBadge(); updateBanner();
+}
+function setMin(lang, val) {
+  get()[lang + 'Min'] = val;
+  document.getElementById('disp-' + lang).innerHTML = val + '<span> 分钟</span>';
+  updateReadBadge(); updateBanner();
+}
+
+function addUnit(lang, delta) {
+  if (lang === 'jp') get().jpUnit = Math.max(0, get().jpUnit + delta);
+  else get().cantoUnit = Math.max(0, get().cantoUnit + delta);
+  var prop = lang === 'jp' ? 'jpUnit' : 'cantoUnit';
+  document.getElementById('disp-' + lang).innerHTML = get()[prop] + '<span> 单元</span>';
+  updateDuoBadge(); updateBanner();
+}
+
+function setOutdoor(val) {
+  get().outdoor = val;
+  applyRequiredTaskUI();
+  updateBanner();
+}
+
+function setMeal(val) {
+  get().meal = val;
+  applyRequiredTaskUI();
+  updateBanner();
+}
+
+function addCount(key, delta) {
+  get()[key] = Math.max(0, get()[key] + delta);
+  var ptsMap = { laundry: R.optional[0].plus, dishes: R.optional[1].plus, bball: R.optional[3].plus };
+  document.getElementById('cnt-' + key).textContent = get()[key];
+  document.getElementById('badge-' + key).textContent = '+' + (get()[key] * ptsMap[key]) + '分';
+  updateBanner();
+}
+
+function calcWriting() {
+  get().enWords = parseInt(document.getElementById('input-enw').value) || 0;
+  updateWriteBadge(); updateBanner();
+}
+function calcWriteScore() {
+  var s = 0, en = get().enWords;
+  var enT = R.writeEnThresh, enP = R.writeEnPts;
+  for (var i = enT.length - 1; i >= 0; i--) { if (en > enT[i]) { s += enP[i]; break; } }
+  return s;
+}
+function updateWriteBadge() {
+  document.getElementById('badge-write').textContent = '+' + calcWriteScore() + '分';
+}
+
+function setAward(val) {
+  get().award = val;
+  setAwardUI(val);
+  updateBanner();
+}
+function setAwardUI(val) {
+  ['none','gold','special','top'].forEach(function(v) {
+    var el = document.getElementById('award-' + v);
+    el.classList.remove('sel-brian','sel-linden');
+    if (v === val) el.classList.add('sel-' + currentKid);
+  });
+  document.getElementById('badge-award').textContent = '+' + (R.awardPts[val] || 0) + '分';
+}
+
+// ============ BANNER ============
+function updateBanner() {
+  var res = calcToday();
+  document.getElementById('disp-plus').textContent = '+' + res.plus;
+  document.getElementById('disp-minus').textContent = res.minus;
+  var hist = getHistory(currentKid);
+  var past = 0; hist.forEach(function(d) { past += (d.net || 0); });
+  document.getElementById('disp-total').textContent = past + res.net;
+  updateWeekSummary();
+  scheduleCloudPush();
+}
+function calcToday() {
+  var s = get();
+  var plus = 0, ded = 0;
+  var m0 = R.required[0].minus, m3 = R.required[3].minus, m4 = R.required[4].minus;
+  if (s.hw !== true && m0 > 0) ded += m0;
+  var r = calcReadScore(); if (r < 0) ded += Math.abs(r);
+  var d = calcDuoScore(); if (d < 0) ded += Math.abs(d);
+  if (s.outdoor !== 'done' && s.outdoor !== 'cca' && m3 > 0) ded += m3;
+  if (s.meal !== true && m4 > 0) ded += m4;
+  var pts = { laundry: R.optional[0].plus, dishes: R.optional[1].plus, bball: R.optional[3].plus };
+  plus += s.laundry * pts.laundry + s.dishes * pts.dishes + calcWriteScore() + s.bball * pts.bball;
+  plus += (R.awardPts[s.award] || 0);
+  return { plus: plus, minus: ded, net: plus - ded };
+}
+
+function calcTodayForKid(kid) {
+  if (kid === currentKid) return calcToday();
+  var saved = currentKid;
+  currentKid = kid;
+  var res = calcToday();
+  currentKid = saved;
+  return res;
+}
+
+function historyNetForDay(kid, key) {
+  var hist = getHistory(kid);
+  for (var i = 0; i < hist.length; i++) if (hist[i].date === key) return hist[i].net || 0;
+  return null;
+}
+
+function netForKidDay(kid, key) {
+  if (key === getTodayKey()) return calcTodayForKid(kid).net;
+  var h = historyNetForDay(kid, key);
+  return h === null ? 0 : h;
+}
+
+function updateWeekSummary() {
+  var now = new Date();
+  var mon = startOfWeekMonday(now);
+  var sun = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + 6);
+  document.getElementById('week-range-lbl').textContent =
+    (mon.getMonth() + 1) + '/' + mon.getDate() + '（一）— ' + (sun.getMonth() + 1) + '/' + sun.getDate() + '（日）';
+  var labels = ['一', '二', '三', '四', '五', '六', '日'];
+  var tkey = getTodayKey();
+  var total = 0;
+  var html = '';
+  for (var i = 0; i < 7; i++) {
+    var dt = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i);
+    var key = dateKeyFromDate(dt);
+    var net = netForKidDay(currentKid, key);
+    total += net;
+    var isToday = key === tkey;
+    var cls = 'zero';
+    if (net > 0) cls = 'pos';
+    if (net < 0) cls = 'neg';
+    var txt = net === 0 ? '0' : (net > 0 ? '+' + net : String(net));
+    html += '<div class="week-day' + (isToday ? ' today' : '') + '"><div class="wd-lbl">' + labels[i] + '</div><div class="wd-val ' + cls + '">' + txt + '</div></div>';
+  }
+  document.getElementById('week-days').innerHTML = html;
+  var tv = document.getElementById('week-total-val');
+  tv.textContent = (total >= 0 ? '+' : '') + total;
+  tv.className = total < 0 ? 'neg' : (total > 0 ? 'pos' : '');
+}
+
+// ============ STORAGE ============
+function getHistory(kid) {
+  var raw = localStorage.getItem('hist_' + kid);
+  if (!raw) return [];
+  try { return JSON.parse(raw); } catch(e) { return []; }
+}
+function saveHistory(kid, arr) {
+  localStorage.setItem('hist_' + kid, JSON.stringify(arr));
+  scheduleCloudPush();
+}
+function refreshTotals() {
+  KIDS.forEach(function(kid) {
+    var hist = getHistory(kid);
+    var total = 0; hist.forEach(function(d) { total += (d.net || 0); });
+    document.getElementById('total-' + kid).textContent = '共 ' + total + ' 分';
+  });
+}
+
+// ============ MODAL ============
+function buildItems() {
+  var s = get();
+  var items = [];
+  var m0 = R.required[0].minus, m3 = R.required[3].minus, m4 = R.required[4].minus;
+  if (s.hw !== true && m0 > 0) {
+    items.push({ name: R.required[0].name + (s.hw === false ? '（未完成）' : '（未记录）'), score: -m0 });
+  }
+  var r = calcReadScore(); if (r !== 0) items.push({ name: '读书（中' + s.cnMin + '+英' + s.enMin + '分）', score: r });
+  var d = calcDuoScore(); if (d !== 0) items.push({ name: '多邻国（日' + s.jpUnit + '+粤' + s.cantoUnit + '）', score: d });
+  if (s.outdoor !== 'done' && s.outdoor !== 'cca' && m3 > 0) {
+    items.push({ name: R.required[3].name + (s.outdoor === 'fail' ? '（未完成）' : '（未记录）'), score: -m3 });
+  }
+  if (s.meal !== true && m4 > 0) {
+    items.push({ name: R.required[4].name + (s.meal === false ? '（需改进）' : '（未记录）'), score: -m4 });
+  }
+  if (s.laundry > 0) items.push({ name: R.optional[0].name + '×' + s.laundry, score: s.laundry * R.optional[0].plus });
+  if (s.dishes > 0) items.push({ name: R.optional[1].name + '×' + s.dishes, score: s.dishes * R.optional[1].plus });
+  var ws = calcWriteScore(); if (ws > 0) items.push({ name: '英文写作（' + s.enWords + ' 词）', score: ws });
+  if (s.bball > 0) items.push({ name: R.optional[3].name + '×' + s.bball, score: s.bball * R.optional[3].plus });
+  if (s.award !== 'none') items.push({ name: '获奖：' + R.awardLabels[s.award], score: R.awardPts[s.award] });
+  var net = 0; items.forEach(function(it) { net += it.score; });
+  return { items: items, net: net };
+}
+
+function openModal() {
+  var res = buildItems();
+  document.getElementById('modal-title').textContent = (currentKid === 'brian' ? 'Brian' : 'Linden') + ' 今日积分确认';
+  var html = '';
+  res.items.forEach(function(it) {
+    var color = it.score >= 0 ? '#28a745' : '#e53e3e';
+    html += '<div class="m-row"><span>' + it.name + '</span><span style="font-weight:700;color:' + color + ';">' + (it.score>=0?'+':'') + it.score + '分</span></div>';
+  });
+  if (!res.items.length) html = '<div style="color:#aaa;padding:8px 0">今日无记录</div>';
+  html += '<div class="m-total m-total-' + currentKid + '"><span>今日合计</span><span>' + (res.net>=0?'+':'') + res.net + '分</span></div>';
+  document.getElementById('modal-preview').innerHTML = html;
+  document.getElementById('modal-preview').className = 'modal-preview modal-preview-' + currentKid;
+  document.getElementById('modal-ok').style.background = currentKid === 'brian' ? '#4f86f7' : '#48bb78';
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal() { document.getElementById('overlay').classList.remove('show'); }
+
+function confirmSubmit() {
+  var res = buildItems();
+  var hist = getHistory(currentKid);
+  // remove today if exists
+  hist = hist.filter(function(d) { return d.date !== getTodayKey(); });
+  hist.unshift({ date: getTodayKey(), net: res.net, items: res.items });
+  saveHistory(currentKid, hist);
+  closeModal();
+  refreshTotals();
+  updateBanner();
+  scheduleCloudPush(true);
+  var name = currentKid === 'brian' ? 'Brian' : 'Linden';
+  alert('✅ ' + name + ' 今日积分已保存！\n净得分：' + (res.net>=0?'+':'') + res.net + '分');
+}
+
+// ============ HISTORY ============
+function renderHistory() {
+  var hist = getHistory(currentKid);
+  var container = document.getElementById('history-content');
+  var name = currentKid === 'brian' ? 'Brian' : 'Linden';
+  if (!hist.length) {
+    container.innerHTML = '<div class="empty"><div class="ei">📅</div><p>' + name + ' 暂无记录</p></div>';
+    return;
+  }
+  var total = 0; hist.forEach(function(d) { total += (d.net || 0); });
+  var html = '<div class="hist-summary hist-summary-' + currentKid + '"><div class="hs-label">' + name + ' 累计总分</div><div class="hs-val">' + (total>=0?'+':'') + total + ' 分</div></div>';
+  hist.forEach(function(day) {
+    var dt = new Date(day.date + 'T00:00:00');
+    var col = day.net >= 0 ? (currentKid === 'brian' ? '#4f86f7' : '#48bb78') : '#e53e3e';
+    var rows = '';
+    (day.items || []).forEach(function(it) {
+      rows += '<div class="hi"><span>' + it.name + '</span><span style="font-weight:700;color:' + (it.score>=0?'#28a745':'#e53e3e') + '">' + (it.score>=0?'+':'') + it.score + '分</span></div>';
+    });
+    if (!rows) rows = '<div style="color:#aaa;font-size:13px;padding:6px 0">无详细记录</div>';
+    html += '<div class="hist-day"><div class="hd-header"><span class="hd-date">' + fmtDate(dt) + '</span><span class="hd-score" style="color:' + col + '">' + (day.net>=0?'+':'') + day.net + '分</span></div><div class="hd-body">' + rows + '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ============ RULES PAGE ============
+function renderRules() {
+  var container = document.getElementById('rules-content');
+  var html = '';
+
+  // Required
+  html += '<div class="rules-card"><div class="rules-card-header"><div class="rules-card-title">📋 必修任务</div>';
+  html += '<button class="rules-edit-btn' + (rulesEditing ? ' editing' : '') + '" onclick="toggleRulesEdit()">' + (rulesEditing ? '✅ 保存' : '✏️ 编辑') + '</button></div>';
+  R.required.forEach(function(r, i) {
+    if (rulesEditing) {
+      html += '<div class="rules-row" style="background:#fffbeb;border-radius:8px;padding:8px;">';
+      html += '<div class="rules-emoji">' + requiredRuleIcon(i, r) + '</div>';
+      html += '<div class="rules-body">';
+      html += '名称：<input class="rules-input" id="re-name-' + i + '" value="' + r.name + '" style="width:90%;margin-bottom:4px;display:block;">';
+      html += '说明：<input class="rules-input" id="re-sub-' + i + '" value="' + r.sub + '" style="width:90%;margin-bottom:4px;display:block;">';
+      html += '扣分：<input class="rules-input" id="re-minus-' + i + '" type="number" min="0" value="' + r.minus + '" style="width:60px;"> 分（0=不扣）';
+      html += '</div></div>';
+    } else {
+      html += '<div class="rules-row"><div class="rules-emoji">' + requiredRuleIcon(i, r) + '</div><div class="rules-body"><div class="rules-name">' + r.name + '</div><div class="rules-detail">' + r.sub + '</div></div>';
+      html += '<span class="rules-score ' + (r.minus > 0 ? 'rs-minus' : 'rs-plus') + '">' + (r.minus > 0 ? '−' + r.minus + '分' : '不扣分') + '</span></div>';
+    }
+  });
+  html += '</div>';
+
+  // Optional
+  html += '<div class="rules-card"><div class="rules-card-header"><div class="rules-card-title">⭐ 选修任务</div></div>';
+  R.optional.forEach(function(o, i) {
+    if (rulesEditing) {
+      html += '<div class="rules-row" style="background:#fffbeb;border-radius:8px;padding:8px;">';
+      html += '<div class="rules-emoji">' + o.emoji + '</div>';
+      html += '<div class="rules-body">';
+      html += '名称：<input class="rules-input" id="oe-name-' + i + '" value="' + o.name + '" style="width:90%;margin-bottom:4px;display:block;">';
+      html += '说明：<input class="rules-input" id="oe-sub-' + i + '" value="' + o.sub + '" style="width:90%;margin-bottom:4px;display:block;">';
+      if (o.plus > 0) html += '每次加分：<input class="rules-input" id="oe-plus-' + i + '" type="number" value="' + o.plus + '" style="width:50px;"> 分/次';
+      html += '</div></div>';
+    } else {
+      html += '<div class="rules-row"><div class="rules-emoji">' + o.emoji + '</div><div class="rules-body"><div class="rules-name">' + o.name + '</div><div class="rules-detail">' + o.sub + '</div></div>';
+      html += '<span class="rules-score rs-plus">' + (o.plus > 0 ? '+' + o.plus + '分/次' : '') + '</span></div>';
+    }
+  });
+  html += '</div>';
+
+  // Writing table (English only)
+  html += '<div class="rules-card"><div class="rules-card-header"><div class="rules-card-title">✍️ 英文写作加分标准</div>';
+  html += '</div>';
+  html += '<table class="rules-table"><tr><th>英文（词数）</th><th>加分</th></tr>';
+  var maxR = R.writeEnThresh.length;
+  for (var i = 0; i < maxR; i++) {
+    html += '<tr>';
+    if (rulesEditing) {
+      html += '<td>> <input class="rules-input" id="wt-en-' + i + '" type="number" value="' + (R.writeEnThresh[i]||'') + '" style="width:60px;"> 词</td>';
+      html += '<td><input class="rules-input" id="wt-en-pt-' + i + '" type="number" value="' + (R.writeEnPts[i]||'') + '" style="width:40px;"> 分</td>';
+    } else {
+      html += '<td>> ' + (R.writeEnThresh[i]||'—') + ' 词</td>';
+      html += '<td style="color:#28a745;font-weight:700;">' + (R.writeEnPts[i] ? '+' + R.writeEnPts[i] + '分' : '') + '</td>';
+    }
+    html += '</tr>';
+  }
+  html += '</table></div>';
+
+  // Awards
+  html += '<div class="rules-card"><div class="rules-card-header"><div class="rules-card-title">🏆 比赛获奖加分</div>';
+  if (rulesEditing) html += '<button class="rules-edit-btn" onclick="editAwards()">✏️ 修改</button>';
+  html += '</div>';
+  ['gold','special','top'].forEach(function(key) {
+    var bg = { gold:'award-bronze', special:'award-silver', top:'award-gold-bg' }[key];
+    var emoji = { gold:'🥉', special:'🥈', top:'🥇' }[key];
+    if (rulesEditing) {
+      html += '<div class="rules-award-row" style="background:#fffbeb;">';
+      html += '<span>' + emoji + '</span>';
+      html += '<input class="rules-input" id="ae-label-' + key + '" value="' + R.awardLabels[key] + '" style="flex:1;">';
+      html += '持续 <input class="rules-input" id="ae-weeks-' + key + '" type="number" value="' + R.awardWeeks[key] + '" style="width:40px;"> 周';
+      html += '每周 + <input class="rules-input" id="ae-pts-' + key + '" type="number" value="' + R.awardPts[key] + '" style="width:40px;"> 分';
+      html += '</div>';
+    } else {
+      html += '<div class="rules-award-row ' + bg + '">';
+      html += '<span>' + emoji + '</span>';
+      html += '<span class="rules-award-name">' + R.awardLabels[key] + '</span>';
+      html += '<span class="rules-award-pts">持续' + R.awardWeeks[key] + '周 每周+' + R.awardPts[key] + '分</span>';
+      html += '</div>';
+    }
+  });
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function toggleRulesEdit() {
+  if (!rulesEditing) {
+    rulesEditing = true;
+    renderRules();
+  } else {
+    // save
+    R.required.forEach(function(r, i) {
+      r.name = document.getElementById('re-name-' + i).value;
+      r.sub = document.getElementById('re-sub-' + i).value;
+      var elM = document.getElementById('re-minus-' + i);
+      if (elM) { var v = parseFloat(elM.value); if (!isNaN(v) && v >= 0) r.minus = v; }
+    });
+    R.optional.forEach(function(o, i) {
+      o.name = document.getElementById('oe-name-' + i).value;
+      o.sub = document.getElementById('oe-sub-' + i).value;
+      if (o.plus > 0) { var v = parseFloat(document.getElementById('oe-plus-' + i).value); if (!isNaN(v)) o.plus = v; }
+    });
+    // writing thresholds (English only)
+    R.writeEnThresh = []; R.writeEnPts = [];
+    for (var wi = 0; ; wi++) {
+      var elT = document.getElementById('wt-en-' + wi);
+      var elP = document.getElementById('wt-en-pt-' + wi);
+      if (!elT && !elP) break;
+      if (elT) { var vt = parseFloat(elT.value); if (!isNaN(vt)) R.writeEnThresh[wi] = vt; }
+      if (elP) { var vp = parseFloat(elP.value); if (!isNaN(vp)) R.writeEnPts[wi] = vp; }
+    }
+    // awards
+    ['gold','special','top'].forEach(function(key) {
+      R.awardLabels[key] = document.getElementById('ae-label-' + key).value;
+      var w = parseInt(document.getElementById('ae-weeks-' + key).value); if (!isNaN(w)) R.awardWeeks[key] = w;
+      var p = parseInt(document.getElementById('ae-pts-' + key).value); if (!isNaN(p)) R.awardPts[key] = p;
+    });
+    saveRulesToDisk(R);
+    rulesEditing = false;
+    renderRules();
+    // update labels in today page
+    updateRuleLabels();
+    applyRequiredTaskUI();
+    updateBanner();
+    scheduleCloudPush(true);
+    alert('✅ 规则已保存！');
+  }
+}
+
+function updateRuleLabels() {
+  document.getElementById('lbl-hw').textContent = R.required[0].name;
+  document.getElementById('lbl-hw-sub').textContent = R.required[0].sub;
+  document.getElementById('lbl-read').textContent = R.required[1].name;
+  document.getElementById('lbl-read-sub').textContent = R.required[1].sub;
+  document.getElementById('lbl-duo').textContent = R.required[2].name;
+  document.getElementById('lbl-duo-sub').textContent = R.required[2].sub;
+  document.getElementById('lbl-outdoor').textContent = R.required[3].name;
+  document.getElementById('lbl-outdoor-sub').textContent = R.required[3].sub;
+  document.getElementById('lbl-meal').textContent = R.required[4].name;
+  document.getElementById('lbl-meal-sub').textContent = R.required[4].sub;
+  document.getElementById('lbl-laundry').textContent = R.optional[0].name;
+  document.getElementById('lbl-dishes').textContent = R.optional[1].name;
+  document.getElementById('lbl-write').textContent = R.optional[2].name;
+  document.getElementById('lbl-bball').textContent = R.optional[3].name;
+}
+</script>
+</body>
+</html>
