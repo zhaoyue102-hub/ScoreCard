@@ -505,7 +505,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.5.6';
+var APP_VERSION = '1.5.7';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -724,42 +724,73 @@ function applyRemoteDoc(data) {
   }
 }
 
+function cloudSubscribeDocChanges(ref, familyAtStart) {
+  if (cloudFamilyId !== familyAtStart) return;
+  if (cloudUnsub) {
+    try { cloudUnsub(); } catch (e) {}
+    cloudUnsub = null;
+  }
+  cloudUnsub = ref.onSnapshot(function(snap) {
+    if (cloudFamilyId !== familyAtStart) return;
+    if (!snap.exists) return;
+    var data = snap.data();
+    if (!data || typeof data.updatedAt !== 'number') return;
+    if (data.clientId === cloudClientId && data.updatedAt === lastPushedTs) {
+      lastMergedRemoteAt = Math.max(lastMergedRemoteAt, data.updatedAt);
+      return;
+    }
+    if (data.updatedAt <= lastMergedRemoteAt) return;
+    lastMergedRemoteAt = data.updatedAt;
+    applyRemoteDoc(data);
+  }, function(err) {
+    console.error(err);
+    cloudUpdateStatusUI('监听失败：' + formatCloudFirestoreError(err));
+  });
+}
+
+/** Apply one snapshot from an authoritative read (server get) before any upload. */
+function cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap) {
+  if (cloudFamilyId !== familyAtStart) return;
+  if (snap.exists) {
+    var data = snap.data();
+    if (data && typeof data.updatedAt === 'number') {
+      if (data.clientId === cloudClientId && data.updatedAt === lastPushedTs) {
+        lastMergedRemoteAt = Math.max(lastMergedRemoteAt, data.updatedAt);
+      } else if (data.updatedAt > lastMergedRemoteAt) {
+        lastMergedRemoteAt = data.updatedAt;
+        applyRemoteDoc(data);
+      }
+    } else if (data && typeof data === 'object') {
+      lastMergedRemoteAt = Math.max(lastMergedRemoteAt, data.updatedAt || 0);
+      applyRemoteDoc(data);
+    }
+  }
+  cloudServerSynced = true;
+  cloudAfterInitialHydrate();
+  cloudSubscribeDocChanges(ref, familyAtStart);
+}
+
 function cloudAttachListener() {
   if (!cloudFamilyId || !cloudFirebaseReady()) return;
   if (cloudUnsub) {
-    cloudUnsub();
+    try { cloudUnsub(); } catch (e) {}
     cloudUnsub = null;
   }
   cloudServerSynced = false;
   var db = firebase.firestore();
-  cloudUnsub = db.collection('family_score').doc(cloudFamilyId).onSnapshot(function(snap) {
-    // With persistence, the first callback may be cache-only (!exists) while the doc exists on server — pushing then would wipe the cloud.
-    if (!cloudServerSynced && snap.metadata.fromCache) return;
+  var ref = db.collection('family_score').doc(cloudFamilyId);
+  var familyAtStart = cloudFamilyId;
 
-    var isInitial = !cloudServerSynced;
-    if (isInitial) cloudServerSynced = true;
-
-    if (!snap.exists) {
-      if (isInitial) cloudAfterInitialHydrate();
-      return;
-    }
-    var data = snap.data();
-    if (!data || typeof data.updatedAt !== 'number') {
-      if (isInitial) cloudAfterInitialHydrate();
-      return;
-    }
-    if (data.clientId === cloudClientId && data.updatedAt === lastPushedTs) {
-      lastMergedRemoteAt = Math.max(lastMergedRemoteAt, data.updatedAt);
-      if (isInitial) cloudAfterInitialHydrate();
-      return;
-    }
-    if (!isInitial && data.updatedAt <= lastMergedRemoteAt) return;
-    lastMergedRemoteAt = data.updatedAt;
-    applyRemoteDoc(data);
-    if (isInitial) cloudAfterInitialHydrate();
-  }, function(err) {
-    console.error(err);
-    cloudUpdateStatusUI('监听失败：' + formatCloudFirestoreError(err));
+  ref.get({ source: 'server' }).then(function(snap) {
+    cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap);
+  }).catch(function(err) {
+    console.warn('Firestore get(server) failed, falling back to default', err);
+    ref.get().then(function(snap) {
+      cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap);
+    }).catch(function(e2) {
+      console.error(e2);
+      cloudUpdateStatusUI('拉取云端失败：' + formatCloudFirestoreError(e2));
+    });
   });
 }
 
