@@ -87,6 +87,10 @@
             gap: 0.4rem;
         }
 
+        .nav-text-short {
+            display: none;
+        }
+
         .nav-btn-inner svg {
             width: 1.1rem;
             height: 1.1rem;
@@ -3585,6 +3589,74 @@
             }
         }
 
+        /* Narrow phones: tab bar in two rows (4 + 3) — readable labels, no horizontal squeeze */
+        @media (max-width: 640px) {
+            .nav {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 0.35rem 0.3rem;
+                padding: 0.42rem max(0.5rem, env(safe-area-inset-left)) 0.48rem max(0.5rem, env(safe-area-inset-right));
+                overflow-x: visible;
+                -webkit-overflow-scrolling: auto;
+            }
+
+            .nav-btn {
+                flex-shrink: 1;
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                padding: 0.4rem 0.18rem;
+                font-size: 0.72rem;
+                font-weight: 600;
+                line-height: 1.12;
+                white-space: normal;
+                border-bottom: none;
+                border-radius: var(--radius-sm);
+                border: 1px solid transparent;
+                min-height: 2.8rem;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-btn:hover {
+                background: var(--bg-sidebar);
+            }
+
+            .nav-btn.active {
+                border-color: var(--primary);
+                background: rgba(81, 156, 171, 0.16);
+                color: var(--primary);
+            }
+
+            .nav-btn-inner {
+                flex-direction: column;
+                gap: 0.1rem;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .nav-btn-inner svg {
+                width: 1.05rem;
+                height: 1.05rem;
+            }
+
+            .nav-btn-inner > span:last-child {
+                display: block;
+                max-width: 100%;
+            }
+
+            .nav-text-full {
+                display: none;
+            }
+
+            .nav-text-short {
+                display: block;
+            }
+        }
+
         /* Empty States */
         .empty-state {
             text-align: center;
@@ -3827,7 +3899,7 @@
                 <span class="logo-title">WriteBoost</span>
                 <span class="logo-tagline">Narrative writing</span>
             </div>
-            <span class="version-badge" id="app-version">v4.2.5</span>
+            <span class="version-badge" id="app-version">v4.2.6</span>
         </div>
         <div class="header-stats" role="toolbar" aria-label="Your writing stats — tap a number to open Progress and Data">
             <div class="stat-item header-stat-clickable" role="button" tabindex="0" title="Essays — open essay library"
@@ -3869,8 +3941,8 @@
         <button type="button" class="nav-btn" data-page="sentence-practice"><span class="nav-btn-inner"><i data-lucide="sparkles" aria-hidden="true"></i><span>Drills</span></span></button>
         <button type="button" class="nav-btn" data-page="practice"><span class="nav-btn-inner"><i data-lucide="pen-line" aria-hidden="true"></i><span>Write</span></span></button>
         <button type="button" class="nav-btn" data-page="learn"><span class="nav-btn-inner"><i data-lucide="book-open" aria-hidden="true"></i><span>Learn</span></span></button>
-        <button type="button" class="nav-btn" data-page="progress"><span class="nav-btn-inner"><i data-lucide="trending-up" aria-hidden="true"></i><span>Progress and Data</span></span></button>
-        <button type="button" class="nav-btn" data-page="achievements"><span class="nav-btn-inner"><i data-lucide="trophy" aria-hidden="true"></i><span>Achievements</span></span></button>
+        <button type="button" class="nav-btn" data-page="progress" aria-label="Progress and Data"><span class="nav-btn-inner"><i data-lucide="trending-up" aria-hidden="true"></i><span class="nav-text-full">Progress and Data</span><span class="nav-text-short" aria-hidden="true">Progress</span></span></button>
+        <button type="button" class="nav-btn" data-page="achievements" aria-label="Achievements"><span class="nav-btn-inner"><i data-lucide="trophy" aria-hidden="true"></i><span class="nav-text-full">Achievements</span><span class="nav-text-short" aria-hidden="true">Badges</span></span></button>
     </nav>
 
     <!-- Main Content -->
@@ -4730,7 +4802,7 @@
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.2.5';
+        const APP_VERSION = 'v4.2.6';
 
         let suggestionPopupHideTimer = null;
 
