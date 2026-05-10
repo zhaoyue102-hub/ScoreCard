@@ -108,19 +108,6 @@
             height: 1rem;
         }
 
-        .stats-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 2.75rem;
-        }
-
-        .stats-icon svg {
-            width: 2.25rem;
-            height: 2.25rem;
-            color: var(--primary);
-        }
-
         .challenge-icon-wrap {
             display: flex;
             justify-content: center;
@@ -447,12 +434,32 @@
 
         .header-stats {
             display: flex;
-            gap: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem 1.35rem;
             align-items: center;
+            justify-content: flex-end;
+            max-width: min(52rem, 100%);
         }
 
         .stat-item {
             text-align: center;
+        }
+
+        .stat-item.header-stat-clickable {
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            padding: 0.2rem 0.35rem;
+            margin: -0.2rem -0.35rem;
+            transition: background 0.15s ease;
+        }
+
+        .stat-item.header-stat-clickable:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .stat-item.header-stat-clickable:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.85);
+            outline-offset: 2px;
         }
 
         .stat-value {
@@ -517,13 +524,6 @@
         }
 
         /* Dashboard */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 1.25rem;
-        }
-
         .dashboard-flow {
             margin: 0 0 1rem;
             padding: 0.55rem 0.85rem;
@@ -537,28 +537,6 @@
 
         .dashboard-flow strong {
             color: var(--text);
-        }
-
-        .dashboard-progress {
-            margin-top: 2rem;
-            padding-top: 1.25rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .dashboard-progress-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text);
-            margin: 0 0 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .dashboard-progress-title svg {
-            width: 1rem;
-            height: 1rem;
-            color: var(--primary);
         }
 
         .card {
@@ -579,62 +557,67 @@
             gap: 0.5rem;
         }
 
-        /* Stats Cards */
-        .stats-card {
-            text-align: center;
-            border-top: 4px solid var(--primary);
-        }
-
-        .stats-card.essays { border-top-color: var(--primary); }
-        .stats-card.words { border-top-color: var(--success); }
-        .stats-card.streak { border-top-color: var(--accent); }
-        .stats-card.score { border-top-color: var(--header-end); }
-
-        .stats-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--text);
-        }
-
-        .stats-sub {
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
-
-        /* Dashboard: compact stats so prompts and writing stay primary */
-        .dashboard-grid .stats-card {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            grid-template-rows: auto auto;
-            column-gap: 0.65rem;
-            row-gap: 0.05rem;
+        .history-fav-btn {
+            display: inline-flex;
             align-items: center;
-            text-align: left;
-            padding: 0.75rem 1rem;
-            border-top-width: 3px;
+            justify-content: center;
+            margin-right: 0.35rem;
+            padding: 0.15rem;
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-sm);
+            color: #ca8a04;
+            cursor: pointer;
+            vertical-align: middle;
         }
 
-        .dashboard-grid .stats-icon {
-            grid-row: 1 / -1;
-            min-height: 0;
-            justify-content: flex-start;
+        .history-fav-btn:hover {
+            background: rgba(202, 138, 4, 0.12);
         }
 
-        .dashboard-grid .stats-icon svg {
-            width: 1.35rem;
-            height: 1.35rem;
+        .history-fav-btn.is-off {
+            color: var(--text-muted);
         }
 
-        .dashboard-grid .stats-number {
-            font-size: 1.25rem;
-            font-weight: 700;
-            line-height: 1.15;
+        .history-fav-btn.is-off:hover {
+            color: #ca8a04;
         }
 
-        .dashboard-grid .stats-sub {
-            font-size: 0.72rem;
-            line-height: 1.25;
-            margin: 0;
+        .results-favorite-on {
+            border-color: #ca8a04 !important;
+            background: #fffbeb !important;
+        }
+
+        .sp-saved-line-item {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.75rem;
+            background: var(--bg-card);
+        }
+
+        .sp-saved-line-item blockquote {
+            margin: 0 0 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text);
+            line-height: 1.45;
+        }
+
+        .sp-saved-line-meta {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-saved-lines-block {
+            margin-bottom: 2rem;
+        }
+
+        .history-info h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -2213,6 +2196,7 @@
         /* Revision comparison (after re-submit from Revise) */
         .revision-compare-card {
             margin-top: 1.5rem;
+            border: 2px solid var(--border);
         }
 
         .revision-compare-intro {
@@ -2268,6 +2252,72 @@
         .rev-delta.up { color: var(--success); }
         .rev-delta.down { color: var(--danger); }
         .rev-delta.flat { color: var(--text-muted); }
+
+        .rev-compare-banner {
+            padding: 0.85rem 1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.35;
+            border: 2px solid var(--border);
+        }
+
+        .rev-compare-banner.up {
+            background: rgba(34, 197, 94, 0.14);
+            border-color: var(--success);
+        }
+
+        .rev-compare-banner.down {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: var(--danger);
+        }
+
+        .rev-compare-banner.flat {
+            background: var(--bg-sidebar);
+            color: var(--text-muted);
+        }
+
+        .rev-compare-note {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            padding: 0.65rem 0.75rem;
+            background: var(--bg-sidebar);
+            border-radius: var(--radius-sm);
+            border: 1px dashed var(--border);
+        }
+
+        .rev-delta-pill {
+            display: inline-block;
+            padding: 0.12rem 0.45rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .rev-delta-pill.up {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .rev-delta-pill.down {
+            background: rgba(239, 68, 68, 0.18);
+            color: var(--danger);
+        }
+
+        .rev-delta-pill.flat {
+            background: var(--bg-sidebar);
+            color: var(--text-muted);
+        }
+
+        .rev-compare-table tr.rev-row-up td {
+            background: rgba(34, 197, 94, 0.08);
+        }
+
+        .rev-compare-table tr.rev-row-down td {
+            background: rgba(239, 68, 68, 0.07);
+        }
 
         .rev-compare-table-wrap {
             overflow-x: auto;
@@ -3039,33 +3089,6 @@
         }
 
         /* ===== Skills Progress ===== */
-        .skills-progress-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .sp-stat-card {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 1.25rem;
-            box-shadow: var(--shadow);
-            text-align: center;
-        }
-
-        .sp-stat-card .sp-stat-value {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .sp-stat-card .sp-stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
         .skill-bar-item {
             display: flex;
             align-items: center;
@@ -3324,10 +3347,6 @@
                 -webkit-appearance: none;
             }
 
-            .dashboard-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
             .prompts-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -3521,10 +3540,6 @@
                 padding: 1rem;
             }
 
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
             .practice-layout {
                 grid-template-columns: 1fr;
             }
@@ -3716,6 +3731,54 @@
             font-weight: 600;
         }
 
+        /* Progress & Data: in-page TOC (long page) */
+        .progress-page-nav {
+            position: sticky;
+            top: 4.75rem;
+            z-index: 60;
+            margin: 0 0 1.35rem;
+            padding: 0.65rem 0.85rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .progress-page-nav-label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-muted);
+            margin-bottom: 0.45rem;
+        }
+
+        .progress-page-nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            align-items: center;
+        }
+
+        .progress-nav-btn {
+            font-size: 0.8rem !important;
+            padding: 0.35rem 0.65rem !important;
+        }
+
+        .progress-anchor-target {
+            scroll-margin-top: 7.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .progress-page-nav {
+                top: 4.25rem;
+            }
+            .progress-anchor-target {
+                scroll-margin-top: 7rem;
+            }
+        }
+
         .empty-state h3 {
             margin-bottom: 0.5rem;
             color: var(--text);
@@ -3764,24 +3827,33 @@
                 <span class="logo-title">WriteBoost</span>
                 <span class="logo-tagline">Narrative writing</span>
             </div>
-            <span class="version-badge" id="app-version">v4.2.0</span>
+            <span class="version-badge" id="app-version">v4.2.5</span>
         </div>
-        <div class="header-stats">
-            <div class="stat-item">
+        <div class="header-stats" role="toolbar" aria-label="Your writing stats — tap a number to open Progress and Data">
+            <div class="stat-item header-stat-clickable" role="button" tabindex="0" title="Essays — open essay library"
+                 onclick="openProgressToEssayLibrary()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProgressToEssayLibrary();}">
                 <div class="stat-value" id="total-essays">0</div>
                 <div class="stat-label">Essays</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item header-stat-clickable" role="button" tabindex="0" title="Words — open essay library"
+                 onclick="openProgressToEssayLibrary()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProgressToEssayLibrary();}">
                 <div class="stat-value" id="total-words">0</div>
                 <div class="stat-label">Words</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item header-stat-clickable" role="button" tabindex="0" title="Streak — skill trends"
+                 onclick="openProgressToTrends()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProgressToTrends();}">
                 <div class="stat-value" id="current-streak">0</div>
-                <div class="stat-label">Day Streak</div>
+                <div class="stat-label">Streak</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item header-stat-clickable" role="button" tabindex="0" title="Average score — skill breakdown"
+                 onclick="openProgressToSkillBreakdown()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProgressToSkillBreakdown();}">
                 <div class="stat-value" id="avg-score">--</div>
-                <div class="stat-label">Avg Score</div>
+                <div class="stat-label">Avg</div>
+            </div>
+            <div class="stat-item header-stat-clickable" role="button" tabindex="0" title="Best score — skill breakdown"
+                 onclick="openProgressToSkillBreakdown()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProgressToSkillBreakdown();}">
+                <div class="stat-value" id="best-score">--</div>
+                <div class="stat-label">Best</div>
             </div>
         </div>
         <div class="header-actions" role="toolbar" aria-label="Help and backup">
@@ -3818,7 +3890,7 @@
                 </div>
             </div>
 
-            <p class="dashboard-flow" role="navigation" aria-label="How to start"><strong>Start here:</strong> (1) Choose one prompt card → (2) Open <strong>Write</strong> from the nav → (3) Submit when you’re ready. Scroll down after that to see your progress stats.</p>
+            <p class="dashboard-flow" role="navigation" aria-label="How to start"><strong>Start here:</strong> (1) Choose one prompt card → (2) Open <strong>Write</strong> from the nav → (3) Submit when you’re ready. Counts and scores live in the <strong>header</strong> — tap <strong>Essays</strong> or <strong>Words</strong> for your library, <strong>Avg</strong> or <strong>Best</strong> for skill breakdown, <strong>Streak</strong> for trends.</p>
 
             <div class="prompts-section">
                 <div class="prompts-section-header">
@@ -3830,32 +3902,6 @@
                     <!-- Generated dynamically -->
                 </div>
             </div>
-
-            <section class="dashboard-progress" aria-label="Your writing stats on this device">
-                <h2 class="dashboard-progress-title"><i data-lucide="trending-up" aria-hidden="true"></i> Your progress</h2>
-                <div class="dashboard-grid">
-                    <div class="card stats-card essays">
-                        <div class="stats-icon"><i data-lucide="file-pen-line" aria-hidden="true"></i></div>
-                        <div class="stats-number" id="dash-essays">0</div>
-                        <div class="stats-sub">Essays Written</div>
-                    </div>
-                    <div class="card stats-card words">
-                        <div class="stats-icon"><i data-lucide="text" aria-hidden="true"></i></div>
-                        <div class="stats-number" id="dash-words">0</div>
-                        <div class="stats-sub">Total Words</div>
-                    </div>
-                    <div class="card stats-card streak">
-                        <div class="stats-icon"><i data-lucide="flame" aria-hidden="true"></i></div>
-                        <div class="stats-number" id="dash-streak">0</div>
-                        <div class="stats-sub">Day Streak</div>
-                    </div>
-                    <div class="card stats-card score">
-                        <div class="stats-icon"><i data-lucide="star" aria-hidden="true"></i></div>
-                        <div class="stats-number" id="dash-score">--</div>
-                        <div class="stats-sub">Best Score</div>
-                    </div>
-                </div>
-            </section>
         </div>
 
         <!-- Practice Page -->
@@ -4386,29 +4432,52 @@
                 <span>Completed: <strong id="sp-completed" style="color: var(--text);">0</strong></span>
                 <span>Best Streak: <strong id="sp-best-streak" style="color: var(--text);">0</strong></span>
             </div>
+            <div class="card" style="margin-top: 2rem;">
+                <div class="card-title"><i data-lucide="notebook-pen" aria-hidden="true"></i> My good lines</div>
+                <p class="help-tip" style="margin-top: 0;">After a strong drill score (4–5), tap <strong>Save to My good lines</strong> on your result. Lines are stored on this device and included in backup / sync.</p>
+                <div id="sp-saved-lines-list"></div>
+            </div>
         </div>
 
         <!-- Progress and Data: skill trends + essay history & backup (single page) -->
         <div id="progress" class="page">
             <h1 style="margin-bottom: 0.75rem;"><i data-lucide="trending-up" aria-hidden="true"></i> Progress and Data</h1>
-            <p style="color: var(--text-light); margin-bottom: 1.25rem;">Skill trends and your essay library — including sync &amp; backup. Badges live on the <strong>Achievements</strong> tab.</p>
-            <div id="progress-panel-trends" class="progress-panel">
+            <p style="color: var(--text-light); margin-bottom: 1rem;">Skill trends and your essay library — including sync &amp; backup. Badges live on the <strong>Achievements</strong> tab.</p>
+            <nav class="progress-page-nav" id="progress-page-nav" aria-label="On this page">
+                <span class="progress-page-nav-label">On this page</span>
+                <div class="progress-page-nav-buttons">
+                    <button type="button" class="btn btn-outline btn-sm progress-nav-btn" onclick="scrollToProgressSection('progress-panel-trends')"><span class="icon-btn"><i data-lucide="bar-chart-2" aria-hidden="true"></i><span>Skills &amp; trends</span></span></button>
+                    <button type="button" class="btn btn-outline btn-sm progress-nav-btn" onclick="openProgressToSkillBreakdown()"><span class="icon-btn"><i data-lucide="layout-list" aria-hidden="true"></i><span>Skill breakdown</span></span></button>
+                    <button type="button" class="btn btn-outline btn-sm progress-nav-btn" onclick="scrollToProgressSection('progress-section-lines')"><span class="icon-btn"><i data-lucide="notebook-pen" aria-hidden="true"></i><span>Good lines</span></span></button>
+                    <button type="button" class="btn btn-outline btn-sm progress-nav-btn" onclick="scrollToProgressSection('progress-section-essays')"><span class="icon-btn"><i data-lucide="scroll-text" aria-hidden="true"></i><span>Essays &amp; backup</span></span></button>
+                    <button type="button" class="btn btn-ghost btn-sm progress-nav-btn" onclick="scrollToProgressSection('progress-page-top')" title="Back to top of this page"><span class="icon-btn"><i data-lucide="arrow-up" aria-hidden="true"></i><span>Top</span></span></button>
+                </div>
+            </nav>
+            <div id="progress-page-top" class="progress-anchor-target" aria-hidden="true"></div>
+            <div id="progress-panel-trends" class="progress-panel progress-anchor-target">
 <div id="skills-progress-empty" style="text-align: center; padding: 3rem; color: var(--text-muted);">
                 <div style="font-size: 3rem; margin-bottom: 1rem;"><i data-lucide="bar-chart-2" aria-hidden="true"></i></div>
                 <p>Write and submit at least 3 essays to see your skill progress!</p>
                 <button class="btn btn-primary" onclick="showPage('practice')" style="margin-top: 1rem;"><span class="icon-btn"><i data-lucide="pen-line" aria-hidden="true"></i><span>Write an Essay</span></span></button>
             </div>
             <div id="skills-progress-charts" style="display: none;">
-                <div class="skills-progress-summary" id="skills-progress-summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;"></div>
+                <p class="help-tip" style="margin: 0 0 1rem;">Essay count, words, streak, average, and best (0–100) stay in the <strong>header</strong> — tap <strong>Avg</strong> or <strong>Best</strong> here for this breakdown.</p>
+                <div id="progress-section-breakdown" class="progress-anchor-target">
                 <div class="skills-progress-weakest" id="skills-progress-weakest" style="background: #FEF3C7; border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;"></div>
                 <h2 style="margin-bottom: 1rem;">Skill Breakdown</h2>
                 <div id="skill-bars-container"></div>
                 <h2 style="margin: 2rem 0 1rem;">Recent Essays</h2>
                 <div id="skills-essay-history"></div>
+                </div>
             </div>
             </div>
             <div id="progress-panel-essays" class="progress-panel" style="margin-top: 2.5rem;">
-<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+                <div class="card progress-saved-lines-block progress-anchor-target" id="progress-section-lines">
+                    <div class="card-title"><i data-lucide="notebook-pen" aria-hidden="true"></i> Good lines (from Drills)</div>
+                    <p class="help-tip" style="margin-top: 0;">Same notebook as on the <strong>Drills</strong> tab — handy when you’re reviewing data.</p>
+                    <div id="progress-saved-lines-list"></div>
+                </div>
+<div id="progress-section-essays" class="progress-anchor-target" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
                 <h2 style="margin: 0; font-size: 1.35rem;"><i data-lucide="scroll-text" aria-hidden="true"></i> Essay History</h2>
                 <div class="data-bar">
                     <span class="data-bar-label"><i data-lucide="hard-drive" aria-hidden="true"></i> Data:</span>
@@ -4450,12 +4519,14 @@
                         </svg>
                         <div class="score-value" id="final-score">0</div>
                     </div>
-                    <div class="score-label">points</div>
+                    <div class="score-label">out of 100</div>
                     <div class="score-message" id="score-message">Great work!</div>
                     <div class="results-primary-actions">
+                        <button type="button" class="btn btn-outline" id="results-favorite-btn" onclick="toggleFavoriteCurrentEssay()" title="Save this draft to favorites"><span class="icon-btn"><i data-lucide="star" aria-hidden="true"></i><span id="results-favorite-label">Favorite</span></span></button>
                         <button type="button" class="btn btn-outline" onclick="reviseDraftFromResults()"><span class="icon-btn"><i data-lucide="refresh-cw" aria-hidden="true"></i><span>Revise this draft</span></span></button>
                         <button type="button" class="btn btn-primary" onclick="startAnotherEssay()"><span class="icon-btn"><i data-lucide="pen-line" aria-hidden="true"></i><span>Write Another</span></span></button>
                     </div>
+                    <p class="help-tip" style="margin-top: 0.75rem; margin-bottom: 0;">Favorites are starred in <strong>Essay History</strong> (Progress and Data). Use them for pieces you’re proud of or want to re-read.</p>
                 </div>
                 <div class="card">
                     <div class="card-title"><i data-lucide="clipboard-list" aria-hidden="true"></i> Criteria Breakdown</div>
@@ -4579,7 +4650,7 @@
                     </div>
                     <div class="help-item">
                         <strong>Top tabs (this build)</strong>
-                        Left to right: <strong>Home</strong> (pick a prompt, then your stats) → <strong>Plan</strong> (story template) → <strong>Drills</strong> → <strong>Write</strong> → <strong>Learn</strong> → <strong>Progress and Data</strong> → <strong>Achievements</strong>. On <strong>Learn</strong>, use the large <em>section switcher</em> under the title (three stacked rows on narrow phones, three columns on wider screens).
+                        Left to right: <strong>Home</strong> (pick a prompt; live stats in the <strong>header</strong>) → <strong>Plan</strong> (story template) → <strong>Drills</strong> → <strong>Write</strong> → <strong>Learn</strong> → <strong>Progress and Data</strong> → <strong>Achievements</strong>. On <strong>Learn</strong>, use the large <em>section switcher</em> under the title (three stacked rows on narrow phones, three columns on wider screens).
                     </div>
                     <div class="help-item">
                         <strong>1) Start on Home</strong>
@@ -4599,7 +4670,7 @@
                     </div>
                     <div class="help-item">
                         <strong>5) Progress and Data</strong>
-                        Skill charts and recent-essay trends are at the top; essay history, export/import, sync code, and clear-all are below on the same page. Open <strong>Achievements</strong> for badges.
+                        Skill charts and recent-essay trends are at the top; essay history, export/import, sync code, and clear-all are below on the same page. Tap header <strong>Avg</strong> or <strong>Best</strong> to jump to skill breakdown; <strong>Essays</strong> / <strong>Words</strong> for the library. Open <strong>Achievements</strong> for badges.
                     </div>
                     <div class="help-item">
                         <strong>6) Shortcuts</strong>
@@ -4634,7 +4705,7 @@
                     <label><input type="checkbox" id="sr-ending"> Ending — Resolves the conflict or shows what was learned?</label>
                 </div>
                 <div style="margin-top: 1.25rem;">
-                    <label style="font-size: 0.9rem;">My estimated score: <input type="number" id="sr-estimate" min="200" max="500" step="5" style="width: 75px; padding: 0.45rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; text-align: center;"></label>
+                    <label style="font-size: 0.9rem;">My estimated score (0-100): <input type="number" id="sr-estimate" min="0" max="100" step="1" style="width: 75px; padding: 0.45rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; text-align: center;"></label>
                     <span id="sr-estimate-hint" style="color: var(--text-muted); font-size: 0.8rem; margin-left: 0.5rem;"></span>
                 </div>
             </div>
@@ -4659,7 +4730,7 @@
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.2.0';
+        const APP_VERSION = 'v4.2.5';
 
         let suggestionPopupHideTimer = null;
 
@@ -5596,10 +5667,10 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             { id: 'streak-5', icon: 'flame', name: 'Steady Flame', condition: 'Practice 5 days in a row', check: (s) => s.streak >= 5 },
             { id: 'streak-7', icon: 'flame', name: 'Streak 7', condition: 'Practice 7 days in a row', check: (s) => s.streak >= 7 },
             { id: 'streak-14', icon: 'flame', name: 'Two-Week Streak', condition: 'Practice 14 days in a row', check: (s) => s.streak >= 14 },
-            { id: 'score-350', icon: 'target', name: 'Score 350+', condition: 'Reach 350 points on one essay', check: (s) => s.bestScore >= 350 },
-            { id: 'score-400', icon: 'target', name: 'Score 400+', condition: 'Reach 400 points', check: (s) => s.bestScore >= 400 },
-            { id: 'score-450', icon: 'target', name: 'Score 450+', condition: 'Reach 450 points', check: (s) => s.bestScore >= 450 },
-            { id: 'score-500', icon: 'target', name: 'Score 500+', condition: 'Reach 500 points', check: (s) => s.bestScore >= 500 },
+            { id: 'score-350', icon: 'target', name: 'Solid draft', condition: 'Reach 60/100 on one essay', check: (s) => s.bestScore >= 60 },
+            { id: 'score-400', icon: 'target', name: 'Strong draft', condition: 'Reach 70/100 on one essay', check: (s) => s.bestScore >= 70 },
+            { id: 'score-450', icon: 'target', name: 'Excellent draft', condition: 'Reach 80/100 on one essay', check: (s) => s.bestScore >= 80 },
+            { id: 'score-500', icon: 'target', name: 'Outstanding draft', condition: 'Reach 90/100 on one essay', check: (s) => s.bestScore >= 90 },
             { id: 'bookworm', icon: 'book-open', name: 'Bookworm', condition: 'Write 500+ words in one essay', check: (s) => s.longestEssay >= 500 },
             { id: 'marathon-writer', icon: 'scroll-text', name: 'Marathon Draft', condition: 'Write one essay of 750+ words', check: (s) => s.longestEssay >= 750 },
             { id: 'drama-queen', icon: 'messages-square', name: 'Drama Queen', condition: 'Use dialogue in 5 essays', check: (s) => s.dialogueEssays >= 5 },
@@ -5620,7 +5691,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
 
         /** Tier ladders: one merged card per group (lower steps collapse into steps, not separate tiles). */
         const ACHIEVEMENT_TIER_GROUPS = [
-            { id: 'ladder-scores', title: 'Score milestones', description: 'Best score on any single essay.', icon: 'target', tiers: ['score-350', 'score-400', 'score-450', 'score-500'], labels: ['350+', '400+', '450+', '500+'] },
+            { id: 'ladder-scores', title: 'Score milestones', description: 'Best overall score on any essay (0-100).', icon: 'target', tiers: ['score-350', 'score-400', 'score-450', 'score-500'], labels: ['60+', '70+', '80+', '90+'] },
             { id: 'ladder-streaks', title: 'Daily streaks', description: 'Consecutive days with practice.', icon: 'flame', tiers: ['streak-3', 'streak-5', 'streak-7', 'streak-14'], labels: ['3d', '5d', '7d', '14d'] },
             { id: 'ladder-essays', title: 'Essay library', description: 'Total essays completed.', icon: 'library', tiers: ['ten-essays', 'twenty-essays', 'fifty-essays'], labels: ['10', '20', '50'] },
             { id: 'ladder-words', title: 'Total words', description: 'All-time word count across essays.', icon: 'text', tiers: ['wordsmith-10k', 'wordsmith-25k'], labels: ['10K', '25K'] },
@@ -5691,11 +5762,11 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             },
             {
                 title: 'March Momentum',
-                blurb: 'Submit 2 essays scoring 320+ this month.',
-                check: (essays, stats, now) => essaysInMonthList(essays, now).filter(e => (Number(e.score) || 0) >= 320).length >= 2,
+                blurb: 'Submit 2 essays scoring 62+/100 this month.',
+                check: (essays, stats, now) => essaysInMonthList(essays, now).filter(e => (Number(e.score) || 0) >= 62).length >= 2,
                 progressLines: (essays, stats, now) => {
-                    const n = essaysInMonthList(essays, now).filter(e => (Number(e.score) || 0) >= 320).length;
-                    return [`${n} / 2 essays at 320+`];
+                    const n = essaysInMonthList(essays, now).filter(e => (Number(e.score) || 0) >= 62).length;
+                    return [`${n} / 2 essays at 62+`];
                 }
             },
             {
@@ -5727,11 +5798,11 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             },
             {
                 title: 'August Peak',
-                blurb: 'Hit 380+ points on at least one essay this month.',
-                check: (essays, stats, now) => essaysInMonthList(essays, now).some(e => (Number(e.score) || 0) >= 380),
+                blurb: 'Hit 76+/100 on at least one essay this month.',
+                check: (essays, stats, now) => essaysInMonthList(essays, now).some(e => (Number(e.score) || 0) >= 76),
                 progressLines: (essays, stats, now) => {
                     const best = essaysInMonthList(essays, now).reduce((m, e) => Math.max(m, Number(e.score) || 0), 0);
-                    return [best >= 380 ? `Best this month: ${best} (goal met)` : `Best this month: ${best} (need 380+)`];
+                    return [best >= 76 ? `Best this month: ${best} (goal met)` : `Best this month: ${best} (need 76+)`];
                 }
             },
             {
@@ -5887,7 +5958,8 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 },
                 selfReviewAccuracy: [],
                 examEssaysCount: 0,
-                acerExamScores: []
+                acerExamScores: [],
+                savedDrillLines: []
             },
             character: {
                 name: '',
@@ -5979,6 +6051,8 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             initSentencePractice();
             loadTemplateDraft();
             renderSkillsProgress();
+            renderSavedDrillLines('sp-saved-lines-list');
+            renderSavedDrillLines('progress-saved-lines-list');
 
             requestAnimationFrame(() => adjustEssayTextareaHeight());
             refreshIcons();
@@ -6002,6 +6076,13 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 } catch (e) {
                     console.warn('Failed to load saved state, starting fresh:', e);
                     localStorage.removeItem('writeboost-v2');
+                }
+            }
+            migrateLegacyEssayScoresTo100Scale();
+            if (!Array.isArray(state.stats.savedDrillLines)) state.stats.savedDrillLines = [];
+            for (const e of state.essays || []) {
+                if (e && !e.id) {
+                    e.id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('e' + Date.now() + '-' + Math.random().toString(36).slice(2, 10));
                 }
             }
             // Backfill derived stats for older saves
@@ -6106,11 +6187,31 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             };
         }
 
+        function mergeSavedDrillLinesArrays(a, b) {
+            const out = [];
+            const seen = new Set();
+            for (const row of ([]).concat(a || []).concat(b || [])) {
+                if (!row || typeof row !== 'object') continue;
+                const t = String(row.text || '').trim();
+                if (!t) continue;
+                if (seen.has(t)) continue;
+                seen.add(t);
+                out.push({
+                    text: t,
+                    boringSource: String(row.boringSource || ''),
+                    drillScore: row.drillScore != null ? Number(row.drillScore) : null,
+                    date: row.date || new Date().toISOString()
+                });
+            }
+            return out.slice(-200);
+        }
+
         function mergeState(localData, remoteData) {
             const merged = { ...(localData || {}) };
 
             // stats: prefer "better" numbers when possible
             merged.stats = { ...(localData?.stats || {}), ...(remoteData?.stats || {}) };
+            merged.stats.savedDrillLines = mergeSavedDrillLinesArrays(localData?.stats?.savedDrillLines, remoteData?.stats?.savedDrillLines);
             if (localData?.stats && Object.prototype.hasOwnProperty.call(localData.stats, 'wordGoal')) {
                 merged.stats.wordGoal = localData.stats.wordGoal;
             }
@@ -6201,6 +6302,8 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                     state.stats = { ...state.stats, ...(merged.stats || {}) };
                     state.essays = merged.essays || [];
                     state.character = { ...state.character, ...(merged.character || {}) };
+                    migrateLegacyEssayScoresTo100Scale();
+                    reconcileEssayAggregatesWithList();
                     saveState();
                     updateStats();
                     renderHistory();
@@ -6284,7 +6387,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             }
         }
 
-        function showPage(pageId) {
+        function showPage(pageId, scrollAnchorId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
@@ -6308,9 +6411,19 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             if (pageId === 'progress') {
                 renderSkillsProgress();
                 renderHistory();
+                renderSavedDrillLines('progress-saved-lines-list');
+                if (scrollAnchorId) {
+                    requestAnimationFrame(() => {
+                        const el = document.getElementById(scrollAnchorId);
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                }
             }
             if (pageId === 'achievements') {
                 renderAchievements();
+            }
+            if (pageId === 'sentence-practice') {
+                renderSavedDrillLines('sp-saved-lines-list');
             }
             if (pageId === 'practice') {
                 analyzeFlatWords();
@@ -6318,6 +6431,33 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 requestAnimationFrame(() => adjustEssayTextareaHeight());
             }
             refreshIcons();
+        }
+
+        function openProgressToEssayLibrary() {
+            showPage('progress', 'progress-section-essays');
+        }
+
+        function openProgressToTrends() {
+            showPage('progress', 'progress-panel-trends');
+        }
+
+        function openProgressToSkillBreakdown() {
+            showPage('progress');
+            requestAnimationFrame(() => {
+                const charts = document.getElementById('skills-progress-charts');
+                const breakdown = document.getElementById('progress-section-breakdown');
+                const chartsOn = charts && window.getComputedStyle(charts).display !== 'none';
+                const target = chartsOn && breakdown ? breakdown : document.getElementById('progress-panel-trends');
+                target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                refreshIcons();
+            });
+        }
+
+        function scrollToProgressSection(elementId) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            requestAnimationFrame(() => refreshIcons());
         }
 
         function startAnotherEssay() {
@@ -6351,11 +6491,8 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             document.getElementById('avg-score').textContent = state.stats.totalEssays > 0
                 ? Math.round((state.stats.totalScore || 0) / state.stats.totalEssays) || '--'
                 : '--';
-
-            document.getElementById('dash-essays').textContent = state.stats.totalEssays;
-            document.getElementById('dash-words').textContent = state.stats.totalWords;
-            document.getElementById('dash-streak').textContent = state.stats.streak;
-            document.getElementById('dash-score').textContent = state.stats.bestScore || '--';
+            const bestEl = document.getElementById('best-score');
+            if (bestEl) bestEl.textContent = state.stats.totalEssays > 0 ? (state.stats.bestScore ?? '--') : '--';
 
             const dashEmpty = document.getElementById('dashboard-empty-hint');
             if (dashEmpty) {
@@ -6733,16 +6870,20 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
 
         function reviseDraftFromResults() {
             const ctx = state.resultsContextEssay;
-            if (ctx && Number.isFinite(ctx.score) && ctx.criteria) {
+            const cur = state.currentEssay;
+            const essay = (ctx && ctx.criteria) ? ctx : (cur && cur.criteria) ? cur : null;
+            if (essay && essay.criteria) {
                 state.revisionBaseline = {
-                    score: ctx.score,
-                    criteria: { ...ctx.criteria },
-                    wordCount: ctx.wordCount
+                    score: essayTotalScoreFromCriteria(essay.criteria),
+                    criteria: { ...essay.criteria },
+                    wordCount: Number.isFinite(essay.wordCount) ? essay.wordCount : null
                 };
             } else {
                 const el = document.getElementById('final-score');
                 const n = el ? parseInt(el.textContent, 10) : NaN;
-                state.revisionBaseline = Number.isFinite(n) ? { score: n, criteria: null, wordCount: null } : null;
+                let score = Number.isFinite(n) ? n : NaN;
+                if (Number.isFinite(score) && score > 100) score = Math.min(100, Math.round(score / 10));
+                state.revisionBaseline = Number.isFinite(score) ? { score, criteria: null, wordCount: null } : null;
             }
             showPage('practice');
             analyzeFlatWords();
@@ -7440,6 +7581,42 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         }
 
         // ============ HISTORY ============
+        function ensureEssayId(e) {
+            if (!e || e.id) return;
+            e.id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('e' + Date.now() + '-' + Math.random().toString(36).slice(2, 10));
+        }
+
+        function toggleFavoriteEssayAtIndex(index, ev) {
+            if (ev) ev.stopPropagation();
+            const e = state.essays[index];
+            if (!e) return;
+            ensureEssayId(e);
+            e.favorite = !e.favorite;
+            saveState();
+            renderHistory();
+            if (state.currentEssay === e) updateResultsFavoriteButton(e);
+            showToast(e.favorite ? 'Marked favorite' : 'Removed from favorites');
+        }
+
+        function toggleFavoriteCurrentEssay() {
+            const e = state.currentEssay;
+            if (!e) return;
+            const idx = state.essays.indexOf(e);
+            if (idx < 0) return;
+            toggleFavoriteEssayAtIndex(idx);
+        }
+
+        function updateResultsFavoriteButton(essay) {
+            const btn = document.getElementById('results-favorite-btn');
+            const lab = document.getElementById('results-favorite-label');
+            if (!btn || !lab) return;
+            const on = !!(essay && essay.favorite);
+            btn.classList.toggle('results-favorite-on', on);
+            lab.textContent = on ? 'Favorited' : 'Favorite';
+            btn.title = on ? 'Remove from favorites' : 'Favorite this draft';
+            refreshIcons();
+        }
+
         function renderHistory() {
             const list = document.getElementById('history-list');
 
@@ -7455,20 +7632,24 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 return;
             }
 
-            list.innerHTML = state.essays.slice().reverse().map((essay, i) => `
-                <div class="history-item" onclick="viewEssay(${state.essays.length - 1 - i})">
+            list.innerHTML = state.essays.slice().reverse().map((essay, i) => {
+                const idx = state.essays.length - 1 - i;
+                const favCls = essay.favorite ? 'history-fav-btn' : 'history-fav-btn is-off';
+                const favLabel = essay.favorite ? 'Remove favorite' : 'Mark favorite';
+                return `
+                <div class="history-item" onclick="viewEssay(${idx})">
                     <div class="history-info">
-                        <h4>${essay.prompt ? essay.prompt.substring(0, 50) + '...' : 'Free Write'}</h4>
+                        <h4><button type="button" class="${favCls}" title="${favLabel}" aria-label="${favLabel}" aria-pressed="${essay.favorite ? 'true' : 'false'}" onclick="toggleFavoriteEssayAtIndex(${idx}, event)"><i data-lucide="star" aria-hidden="true"></i></button>${essay.prompt ? essay.prompt.substring(0, 50) + '...' : 'Free Write'}</h4>
                         <div class="history-meta">
                             ${essay.wordCount} words | ${essay.date} | Score: ${essay.score}
                         </div>
                     </div>
                     <div class="history-score">
                         <div class="history-score-value">${essay.score}</div>
-                        <div class="history-score-label">points</div>
+                        <div class="history-score-label">/ 100</div>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
             refreshIcons();
         }
 
@@ -7631,6 +7812,60 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 scaled[key] = Math.round(Math.min(100, scaled[key] * sf));
             }
             return scaled;
+        }
+
+        /** Overall essay score 0–100 = average of criterion scores (each 0–100). */
+        function essayTotalScoreFromCriteria(criteria) {
+            if (!criteria || typeof criteria !== 'object') return 0;
+            const vals = Object.values(criteria).map((v) => Number(v)).filter(Number.isFinite);
+            if (!vals.length) return 0;
+            const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+            return Math.min(100, Math.max(0, Math.round(avg)));
+        }
+
+        /** Older builds stored total as sum of criteria (~0–1000). Normalize essays and related stats. */
+        function migrateLegacyEssayScoresTo100Scale() {
+            const normEssayScore = (score, criteria) => {
+                const s = Number(score) || 0;
+                if (s > 100) {
+                    if (criteria && typeof criteria === 'object' && Object.keys(criteria).length) {
+                        return essayTotalScoreFromCriteria(criteria);
+                    }
+                    return Math.min(100, Math.max(0, Math.round(s / 10)));
+                }
+                return Math.min(100, Math.max(0, Math.round(s)));
+            };
+            const normRevCmp = (rc) => {
+                if (!rc || typeof rc !== 'object') return;
+                if (Number(rc.prevScore) > 100) {
+                    rc.prevScore = Math.min(100, Math.max(0, Math.round(rc.prevScore / 10)));
+                }
+                if (Number(rc.nextScore) > 100) {
+                    rc.nextScore = Math.min(100, Math.max(0, Math.round(rc.nextScore / 10)));
+                }
+                if (Number.isFinite(rc.prevScore) && Number.isFinite(rc.nextScore)) {
+                    rc.deltaScore = rc.nextScore - rc.prevScore;
+                }
+            };
+            for (const e of state.essays || []) {
+                if (!e) continue;
+                const ns = normEssayScore(e.score, e.criteria);
+                if (ns !== Number(e.score)) e.score = ns;
+                normRevCmp(e.revisionCompare);
+            }
+            if (Array.isArray(state.stats.acerExamScores)) {
+                state.stats.acerExamScores = state.stats.acerExamScores.map((x) => {
+                    const s = Number(x) || 0;
+                    return s > 100 ? Math.min(100, Math.round(s / 10)) : s;
+                });
+            }
+            if (Array.isArray(state.stats.selfReviewAccuracy)) {
+                for (const row of state.stats.selfReviewAccuracy) {
+                    if (!row || typeof row !== 'object') continue;
+                    const est = Number(row.estimate);
+                    if (est > 100) row.estimate = Math.min(100, Math.max(0, Math.round(est / 10)));
+                }
+            }
         }
 
         function escapeHtml(str) {
@@ -7827,11 +8062,23 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             sec.hidden = false;
 
             const scoreDeltaClass = revisionDeltaClass(rc.deltaScore);
+            let bannerText;
+            if (!Number.isFinite(rc.deltaScore) || rc.deltaScore === 0) {
+                bannerText = 'Overall score is unchanged from your last check (0–100 scale).';
+            } else if (rc.deltaScore > 0) {
+                const d = formatRevisionDelta(rc.deltaScore);
+                bannerText = `Overall score improved by ${d} point${Math.abs(rc.deltaScore) === 1 ? '' : 's'} on the 0–100 scale.`;
+            } else {
+                const n = Math.abs(rc.deltaScore);
+                bannerText = `Overall score dropped by ${n} point${n === 1 ? '' : 's'} on the 0–100 scale.`;
+            }
+
             const wordsLine = Number.isFinite(rc.deltaWords)
                 ? `<div class="rev-delta ${revisionDeltaClass(rc.deltaWords)}">${formatRevisionDelta(rc.deltaWords)} words vs last check</div>`
                 : '';
 
             let tableHtml = '';
+            let criteriaNote = '';
             if (rc.criteria && rc.criteria.length) {
                 tableHtml = `
                     <div class="rev-compare-table-wrap">
@@ -7846,25 +8093,29 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                                 ${rc.criteria.map((row) => {
                                     const lab = WRITING_CRITERIA_LABELS[row.key] || row.key;
                                     const dc = revisionDeltaClass(row.delta);
+                                    const rr = !Number.isFinite(row.delta) || row.delta === 0 ? 'rev-row-flat' : row.delta > 0 ? 'rev-row-up' : 'rev-row-down';
                                     return `
-                                        <tr>
+                                        <tr class="${rr}">
                                             <td class="name">${escapeHtml(lab)}</td>
                                             <td class="num">${row.prev}</td>
                                             <td class="num">${row.next}</td>
-                                            <td class="num"><span class="rev-delta ${dc}">${formatRevisionDelta(row.delta)}</span></td>
+                                            <td class="num"><span class="rev-delta-pill rev-delta ${dc}">${formatRevisionDelta(row.delta)}</span></td>
                                         </tr>`;
                                 }).join('')}
                             </tbody>
                         </table>
                     </div>`;
+            } else {
+                criteriaNote = '<p class="rev-compare-note">Per-criterion changes aren’t shown for this comparison (open results from a full scored draft, then use &ldquo;Revise this draft&rdquo;, or the previous check had no saved breakdown). Total and word count still compare above.</p>';
             }
 
             body.innerHTML = `
+                <div class="rev-compare-banner ${scoreDeltaClass}">${escapeHtml(bannerText)}</div>
                 <div class="rev-compare-highlight">
                     <div class="rev-compare-stat">
-                        <div class="rev-compare-stat-label">Total score</div>
+                        <div class="rev-compare-stat-label">Total score (0–100)</div>
                         <div class="rev-compare-stat-value">${rc.prevScore} → ${rc.nextScore}</div>
-                        <div class="rev-delta ${scoreDeltaClass}">${formatRevisionDelta(rc.deltaScore)} points</div>
+                        <div class="rev-delta ${scoreDeltaClass}">${formatRevisionDelta(rc.deltaScore)} vs last check</div>
                     </div>
                     <div class="rev-compare-stat">
                         <div class="rev-compare-stat-label">Story words</div>
@@ -7872,6 +8123,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                         ${wordsLine}
                     </div>
                 </div>
+                ${criteriaNote}
                 ${tableHtml}
             `;
         }
@@ -7894,7 +8146,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             // Animate score
             const scoreCircle = document.getElementById('score-circle-fill');
             const circumference = 534;
-            const offset = circumference - (essay.score / 500) * circumference;
+            const offset = circumference - (Math.min(100, Math.max(0, essay.score)) / 100) * circumference;
 
             setTimeout(() => {
                 scoreCircle.style.strokeDashoffset = offset;
@@ -7905,10 +8157,10 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             // Score message
             let message = 'Keep practicing!';
             let scoreIcon = 'pen-line';
-            if (essay.score >= 450) { message = 'Outstanding!'; scoreIcon = 'sparkles'; }
-            else if (essay.score >= 400) { message = 'Great work!'; scoreIcon = 'star'; }
-            else if (essay.score >= 350) { message = 'Good effort!'; scoreIcon = 'thumbs-up'; }
-            else if (essay.score >= 300) { message = 'Getting there!'; scoreIcon = 'dumbbell'; }
+            if (essay.score >= 90) { message = 'Outstanding!'; scoreIcon = 'sparkles'; }
+            else if (essay.score >= 80) { message = 'Great work!'; scoreIcon = 'star'; }
+            else if (essay.score >= 70) { message = 'Good effort!'; scoreIcon = 'thumbs-up'; }
+            else if (essay.score >= 60) { message = 'Getting there!'; scoreIcon = 'dumbbell'; }
 
             document.getElementById('score-message').innerHTML =
                 `<span class="icon-btn"><i data-lucide="${scoreIcon}" aria-hidden="true"></i><span>${message}</span></span>`;
@@ -7965,7 +8217,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             generateStoryOutline(text);
 
             // Confetti!
-            if (essay.score >= 400) {
+            if (essay.score >= 80) {
                 launchConfetti();
             }
 
@@ -7983,6 +8235,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             }
 
             renderRevisionCompareSection(essay);
+            updateResultsFavoriteButton(essay);
             refreshIcons();
         }
 
@@ -8129,9 +8382,12 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                     }
 
                     // Merge stats (take the better values)
+                    const prevDrill = merged.stats?.savedDrillLines;
                     if (data.stats) {
                         merged.stats = { ...merged.stats, ...data.stats };
                     }
+                    merged.stats = merged.stats || {};
+                    merged.stats.savedDrillLines = mergeSavedDrillLinesArrays(prevDrill, data.stats?.savedDrillLines);
 
                     // Merge character
                     if (data.character) {
@@ -8258,7 +8514,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 if (submitBtn) { submitBtn.disabled = false; setSubmitButtonIdle(); }
             }
             const criteria = calculateCriteria(text, wordCount, paragraphCount, hasDialogue, ltReport);
-            const totalScore = Math.round(Object.values(criteria).reduce((a, b) => a + b, 0));
+            const totalScore = essayTotalScoreFromCriteria(criteria);
             saveSkillScoresFromEssay(criteria);
             if (state.examModeActive) {
                 state.stats.examEssaysCount++;
@@ -8285,7 +8541,9 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             state.stats.totalReplacements = (state.stats.totalReplacements || 0) + (state.flatWordsReplaced || 0);
             if (paragraphCount >= 5) state.stats.perfectCriteria++;
             const essay = {
-                text, prompt: state.currentPrompt ? state.currentPrompt.text : '', promptTitle: state.currentPrompt ? state.currentPrompt.title || state.currentPrompt.text : '', wordCount, score: totalScore, criteria, date: new Date().toISOString(), lt: ltReport, coachingSnapshot: null, revisionBaseline: state.revisionBaseline, challengesUsed: state.challengesUsed
+                id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('e' + Date.now() + '-' + Math.random().toString(36).slice(2, 10)),
+                text, prompt: state.currentPrompt ? state.currentPrompt.text : '', promptTitle: state.currentPrompt ? state.currentPrompt.title || state.currentPrompt.text : '', wordCount, score: totalScore, criteria, date: new Date().toISOString(), lt: ltReport, coachingSnapshot: null, revisionBaseline: state.revisionBaseline, challengesUsed: state.challengesUsed,
+                favorite: false
             };
             if (state.revisionBaseline) {
                 const base = state.revisionBaseline;
@@ -8615,6 +8873,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         // ============ SENTENCE PRACTICE ============
         let sentencePracticeState = { streak: 0, completed: 0, bestStreak: 0, currentIndex: 0 };
         let sentencePracticeAwaitingNext = false;
+        let lastDrillScoreForSave = null;
 
         function escapeHtmlSp(text) {
             if (!text) return '';
@@ -8663,6 +8922,11 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
 
         function buildSentencePracticeSuccessHtml(input, origLen, hasSensory, hasAction, score, reference) {
             const minLen = origLen + 15;
+            const saveBlock = score >= 4
+                ? '<div style="margin-top:1rem;display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">' +
+                '<button type="button" class="btn btn-outline btn-sm" onclick="saveDrillLineToNotebook()"><span class="icon-btn"><i data-lucide="bookmark-plus" aria-hidden="true"></i><span>Save to My good lines</span></span></button>' +
+                '<span style="font-size:0.82rem;color:var(--text-muted);">Keeps your rewrite in the notebook below (and in backups).</span></div>'
+                : '';
             return buildDrillScoreBlock(score) +
                 '<p class="sp-feedback-lead"><strong>Nice work — you showed instead of told.</strong></p>' +
                 '<ul class="sp-feedback-list">' +
@@ -8673,6 +8937,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 buildDrillReferenceBlock(reference) +
                 '<p class="sp-feedback-sub">Your line</p>' +
                 '<blockquote class="sp-feedback-quote">' + escapeHtmlSp(input) + '</blockquote>' +
+                saveBlock +
                 '<p class="sp-feedback-next-hint">Read the score, checklist, and example, then tap <strong>Next challenge</strong> when you are ready (your streak is already saved).</p>' +
                 '<button type="button" class="btn btn-primary btn-sm sp-next-challenge-btn" onclick="advanceSentenceChallenge()"><span class="icon-btn"><i data-lucide="arrow-right" aria-hidden="true"></i><span>Next challenge</span></span></button>';
         }
@@ -8727,6 +8992,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             if (hintEl) hintEl.textContent = challenge.hint;
             if (inputEl) inputEl.value = '';
             if (feedbackEl) feedbackEl.innerHTML = '';
+            lastDrillScoreForSave = null;
             if (checkBtn) checkBtn.disabled = false;
             if (skipBtn) skipBtn.disabled = false;
             refreshIcons();
@@ -8769,6 +9035,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             const score = computeDrillScore(input, origLen, isLonger, hasSensory, hasAction, isGood);
             const reference = challenge.reference || '';
             if (isGood) {
+                lastDrillScoreForSave = score;
                 sentencePracticeState.streak++;
                 sentencePracticeState.completed++;
                 if (sentencePracticeState.streak > sentencePracticeState.bestStreak) sentencePracticeState.bestStreak = sentencePracticeState.streak;
@@ -8778,6 +9045,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 showSpFeedback(buildSentencePracticeSuccessHtml(input, origLen, hasSensory, hasAction, score, reference), 'success');
                 updateSentencePracticeUI();
             } else {
+                lastDrillScoreForSave = null;
                 sentencePracticeState.streak = 0;
                 showSpFeedback(buildSentencePracticeFailHtml(input, origLen, isLonger, hasSensory, hasAction, score, reference), 'warn');
                 updateSentencePracticeUI();
@@ -8806,11 +9074,73 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             }));
         }
 
+        function saveDrillLineToNotebook() {
+            const text = (document.getElementById('sp-input')?.value || '').trim();
+            const boringSource = (document.getElementById('sp-boring')?.textContent || '').trim();
+            if (!text) {
+                showToast('Nothing to save yet.');
+                return;
+            }
+            if (lastDrillScoreForSave == null || lastDrillScoreForSave < 4) {
+                showToast('Earn drill score 4 or 5 first, then save.');
+                return;
+            }
+            if (!Array.isArray(state.stats.savedDrillLines)) state.stats.savedDrillLines = [];
+            if (state.stats.savedDrillLines.some((row) => row && String(row.text).trim() === text)) {
+                showToast('Already in My good lines.');
+                return;
+            }
+            state.stats.savedDrillLines.unshift({
+                text,
+                boringSource,
+                drillScore: lastDrillScoreForSave,
+                date: new Date().toISOString()
+            });
+            if (state.stats.savedDrillLines.length > 200) state.stats.savedDrillLines.length = 200;
+            saveState();
+            renderSavedDrillLines('sp-saved-lines-list');
+            renderSavedDrillLines('progress-saved-lines-list');
+            showToast('Saved to My good lines!');
+            refreshIcons();
+        }
+
+        function removeSavedDrillLine(index) {
+            if (!Array.isArray(state.stats.savedDrillLines)) return;
+            if (index < 0 || index >= state.stats.savedDrillLines.length) return;
+            state.stats.savedDrillLines.splice(index, 1);
+            saveState();
+            renderSavedDrillLines('sp-saved-lines-list');
+            renderSavedDrillLines('progress-saved-lines-list');
+            showToast('Removed from notebook');
+            refreshIcons();
+        }
+
+        function renderSavedDrillLines(targetId) {
+            const id = targetId || 'sp-saved-lines-list';
+            const root = document.getElementById(id);
+            if (!root) return;
+            const rows = state.stats.savedDrillLines || [];
+            if (rows.length === 0) {
+                root.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;margin:0;">No saved lines yet. Score 4–5 on a drill, then tap <strong>Save to My good lines</strong>.</p>';
+                return;
+            }
+            root.innerHTML = rows.map((row, idx) => {
+                const when = row.date ? new Date(row.date).toLocaleString() : '';
+                const from = row.boringSource ? `<div class="sp-saved-line-meta">From drill: “${escapeHtml(row.boringSource)}”${row.drillScore != null ? ` · score ${row.drillScore}/5` : ''}${when ? ` · ${escapeHtml(when)}` : ''}</div>` : '';
+                return `
+                <div class="sp-saved-line-item">
+                    <blockquote>“${escapeHtml(row.text)}”</blockquote>
+                    ${from}
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="removeSavedDrillLine(${idx})"><span class="icon-btn"><i data-lucide="trash-2" aria-hidden="true"></i><span>Remove</span></span></button>
+                </div>`;
+            }).join('');
+            refreshIcons();
+        }
+
         // ============ SKILLS PROGRESS ============
         function renderSkillsProgress() {
             const empty = document.getElementById('skills-progress-empty');
             const charts = document.getElementById('skills-progress-charts');
-            const summaries = document.getElementById('skills-progress-summary');
             const weakest = document.getElementById('skills-progress-weakest');
             const bars = document.getElementById('skill-bars-container');
             const history = document.getElementById('skills-essay-history');
@@ -8825,15 +9155,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             }
             empty.style.display = 'none';
             charts.style.display = 'block';
-            // Summary cards
-            const avgScore = totalEssays > 0 ? Math.round(essays.reduce((a, e) => a + (e.score || 0), 0) / totalEssays) : 0;
-            const best = essays.reduce((a, e) => Math.max(a, e.score || 0), 0);
-            summaries.innerHTML = `
-                <div class="sp-stat-card"><div class="sp-stat-value">${totalEssays}</div><div class="sp-stat-label">Essays</div></div>
-                <div class="sp-stat-card"><div class="sp-stat-value">${avgScore}</div><div class="sp-stat-label">Avg Score</div></div>
-                <div class="sp-stat-card"><div class="sp-stat-value">${best}</div><div class="sp-stat-label">Best Score</div></div>
-                <div class="sp-stat-card"><div class="sp-stat-value">${state.stats.totalWords}</div><div class="sp-stat-label">Total Words</div></div>
-            `;
             // Skill bars
             const skillColors = { vocabulary: '#10B981', structure: '#3B82F6', sensory: '#8B5CF6', cohesion: '#F59E0B', convention: '#EF4444', dialogue: '#EC4899', character: '#06B6D4' };
             const skillNames = { vocabulary: 'Vocabulary', structure: 'Structure', sensory: 'Sensory', cohesion: 'Cohesion', convention: 'Conventions', dialogue: 'Dialogue', character: 'Characters' };
