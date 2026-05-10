@@ -295,17 +295,6 @@
             height: 1.1rem;
         }
 
-        .seed-header .seed-label {
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        .seed-header .seed-label svg {
-            width: 1rem;
-            height: 1rem;
-        }
-
         .prompts-section-header {
             display: flex;
             align-items: center;
@@ -532,7 +521,44 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .dashboard-flow {
+            margin: 0 0 1rem;
+            padding: 0.55rem 0.85rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--bg-sidebar);
+            font-size: 0.84rem;
+            line-height: 1.5;
+            color: var(--text-light);
+        }
+
+        .dashboard-flow strong {
+            color: var(--text);
+        }
+
+        .dashboard-progress {
+            margin-top: 2rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .dashboard-progress-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0 0 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .dashboard-progress-title svg {
+            width: 1rem;
+            height: 1rem;
+            color: var(--primary);
         }
 
         .card {
@@ -575,46 +601,40 @@
             font-size: 0.875rem;
         }
 
-        /* Daily Seed Card */
-        .daily-seed-card {
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-            color: white;
-            grid-column: span 2;
+        /* Dashboard: compact stats so prompts and writing stay primary */
+        .dashboard-grid .stats-card {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto auto;
+            column-gap: 0.65rem;
+            row-gap: 0.05rem;
+            align-items: center;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-top-width: 3px;
         }
 
-        .seed-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
+        .dashboard-grid .stats-icon {
+            grid-row: 1 / -1;
+            min-height: 0;
+            justify-content: flex-start;
         }
 
-        .seed-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.9;
+        .dashboard-grid .stats-icon svg {
+            width: 1.35rem;
+            height: 1.35rem;
         }
 
-        .seed-date {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        .seed-content {
+        .dashboard-grid .stats-number {
             font-size: 1.25rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-
-        .seed-part {
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-
-        .seed-part-label {
             font-weight: 700;
-            opacity: 0.9;
+            line-height: 1.15;
+        }
+
+        .dashboard-grid .stats-sub {
+            font-size: 0.72rem;
+            line-height: 1.25;
+            margin: 0;
         }
 
         .btn {
@@ -839,8 +859,8 @@
         /* Practice Page Layout */
         .practice-layout {
             display: grid;
-            grid-template-columns: 300px 1fr 280px;
-            gap: 1.5rem;
+            grid-template-columns: minmax(260px, 300px) 1fr minmax(188px, 220px);
+            gap: 1.25rem;
             align-items: start;
         }
 
@@ -850,14 +870,48 @@
             }
         }
 
-        /* Left Sidebar */
+        /* Left Sidebar (character, sensory, coaster) */
         .sidebar-left {
             position: sticky;
             top: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
         }
 
         .guide-card {
-            margin-bottom: 1.5rem;
+            margin-bottom: 0;
+        }
+
+        .sidebar-right .guide-card {
+            padding: 1rem 1.1rem;
+        }
+
+        /* Match Character card hierarchy: title + label-sized subheads + body text */
+        .sidebar-right .guide-side-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 0 0.75rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .sidebar-right .guide-side-heading svg {
+            width: 1.1rem;
+            height: 1.1rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .guide-side-note {
+            margin: 0 0 0.65rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text-light);
+            opacity: 0.95;
         }
 
         .guide-step {
@@ -869,6 +923,11 @@
 
         .guide-step:last-child {
             border-bottom: none;
+        }
+
+        .sidebar-right .guide-step {
+            gap: 0.5rem;
+            padding: 0.5rem 0;
         }
 
         .guide-number {
@@ -885,6 +944,12 @@
             flex-shrink: 0;
         }
 
+        .sidebar-right .guide-number {
+            width: 1.5rem;
+            height: 1.5rem;
+            font-size: 0.65rem;
+        }
+
         .guide-content h4 {
             font-size: 0.9rem;
             margin-bottom: 0.25rem;
@@ -893,6 +958,19 @@
         .guide-content p {
             font-size: 0.8rem;
             color: var(--text-light);
+        }
+
+        .sidebar-right .guide-content h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            color: var(--text);
+        }
+
+        .sidebar-right .guide-content p {
+            font-size: 0.875rem;
+            line-height: 1.45;
+            color: var(--text-muted);
         }
 
         /* Timer */
@@ -1121,21 +1199,37 @@
             gap: 1rem;
         }
 
-        /* Compact timer strip under the writing header (was tall/centered). */
-        .writing-area > .writing-timer-section.card {
+        /* Timer: under story structure in sidebar; duplicate strip in writing column when sidebar is hidden (tablet). */
+        .sidebar-right .writing-timer-section.card {
+            border-radius: var(--radius-sm);
+            padding: 0.45rem 0.75rem 0.55rem;
+            margin: 0;
+            text-align: left;
+        }
+
+        .writing-timer-fallback.card {
+            display: none;
             border-radius: 0;
             box-shadow: none;
             background: var(--bg-sidebar);
-            padding: 0.45rem 1rem 0.5rem;
+            padding: 0.35rem 0.85rem 0.42rem;
             border-bottom: 1px solid var(--border);
             margin: 0;
             text-align: left;
         }
 
-        .writing-area > .writing-timer-section .card-title {
-            font-size: 0.68rem;
-            margin-bottom: 0.28rem;
+        @media (min-width: 768px) and (max-width: 1200px) {
+            .writing-timer-fallback.card {
+                display: block;
+            }
+        }
+
+        .sidebar-right .writing-timer-section .card-title,
+        .writing-timer-fallback .card-title {
+            font-size: 0.62rem;
+            margin-bottom: 0.2rem;
             letter-spacing: 0.06em;
+            opacity: 0.9;
         }
 
         .timer-quick-row {
@@ -1145,55 +1239,64 @@
             gap: 0.35rem 0.55rem;
         }
 
-        .writing-area > .writing-timer-section .timer-quick-row .timer-display {
-            font-size: 1.5rem;
+        .sidebar-right .writing-timer-section .timer-quick-row .timer-display,
+        .writing-timer-fallback .timer-quick-row .timer-display {
+            font-size: 1.1rem;
             font-weight: 800;
             line-height: 1;
             min-width: 4.5ch;
         }
 
-        .writing-area > .writing-timer-section .timer-quick-row .timer-options {
+        .sidebar-right .writing-timer-section .timer-quick-row .timer-options,
+        .writing-timer-fallback .timer-quick-row .timer-options {
             margin: 0;
             flex: 1 1 auto;
             justify-content: flex-start;
-            gap: 0.3rem;
+            gap: 0.22rem;
         }
 
-        .writing-area > .writing-timer-section .timer-btn {
-            padding: 0.28rem 0.45rem;
+        .sidebar-right .writing-timer-section .timer-btn,
+        .writing-timer-fallback .timer-btn {
+            padding: 0.2rem 0.38rem;
+            font-size: 0.62rem;
+        }
+
+        .sidebar-right .writing-timer-section .timer-quick-row .timer-controls,
+        .writing-timer-fallback .timer-quick-row .timer-controls {
+            margin: 0;
+            gap: 0.28rem;
+        }
+
+        .sidebar-right .writing-timer-section .timer-controls .btn-sm,
+        .writing-timer-fallback .timer-controls .btn-sm {
+            padding: 0.24rem 0.45rem;
             font-size: 0.68rem;
         }
 
-        .writing-area > .writing-timer-section .timer-quick-row .timer-controls {
-            margin: 0;
-            gap: 0.35rem;
-        }
-
-        .writing-area > .writing-timer-section .timer-controls .btn-sm {
-            padding: 0.32rem 0.55rem;
-            font-size: 0.75rem;
-        }
-
-        .writing-area > .writing-timer-section .timer-custom-row {
-            margin: 0.28rem 0 0;
+        .sidebar-right .writing-timer-section .timer-custom-row,
+        .writing-timer-fallback .timer-custom-row {
+            margin: 0.2rem 0 0;
             justify-content: flex-start;
-            font-size: 0.78rem;
-            gap: 0.3rem 0.45rem;
+            font-size: 0.7rem;
+            gap: 0.25rem 0.38rem;
         }
 
-        .writing-area > .writing-timer-section .timer-custom-input {
-            width: 3.5rem;
-            padding: 0.28rem 0.35rem;
-            font-size: 0.8rem;
+        .sidebar-right .writing-timer-section .timer-custom-input,
+        .writing-timer-fallback .timer-custom-input {
+            width: 3.1rem;
+            padding: 0.22rem 0.3rem;
+            font-size: 0.72rem;
         }
 
-        .writing-area > .writing-timer-section .timer-exam-row {
-            margin-top: 0.35rem;
+        .sidebar-right .writing-timer-section .timer-exam-row,
+        .writing-timer-fallback .timer-exam-row {
+            margin-top: 0.28rem;
             text-align: left;
         }
 
-        .writing-area > .writing-timer-section .exam-mode-toggle {
-            font-size: 0.78rem;
+        .sidebar-right .writing-timer-section .exam-mode-toggle,
+        .writing-timer-fallback .exam-mode-toggle {
+            font-size: 0.68rem;
             justify-content: flex-start;
             margin-top: 0;
         }
@@ -1249,15 +1352,28 @@
             padding: 1.5rem;
         }
 
+        .writing-column-hint {
+            margin: 0;
+            padding: 0.35rem 1.5rem 0.5rem;
+            font-size: 0.72rem;
+            line-height: 1.45;
+            color: var(--text-muted);
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border);
+        }
+
         #essay-input {
             width: 100%;
-            min-height: 400px;
+            min-height: 7.5rem;
+            max-height: min(65vh, 36rem);
             border: none;
-            resize: vertical;
+            resize: none;
+            overflow-y: hidden;
             font-family: inherit;
             font-size: 1rem;
             line-height: 1.8;
             outline: none;
+            box-sizing: border-box;
         }
 
         #essay-input::placeholder {
@@ -3160,14 +3276,14 @@
             }
 
             .practice-layout {
-                grid-template-columns: 1fr 300px;
-            }
-
-            .sidebar-left {
-                display: none;
+                grid-template-columns: minmax(240px, 280px) 1fr;
             }
 
             .sidebar-right {
+                display: none;
+            }
+
+            .sidebar-left {
                 position: sticky;
                 top: 90px;
             }
@@ -3196,18 +3312,20 @@
                 padding: 1rem;
             }
 
+            .writing-column-hint {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
             #essay-input {
-                min-height: 350px;
+                min-height: 6.5rem;
+                max-height: min(58vh, 32rem);
                 font-size: 1rem;
                 -webkit-appearance: none;
             }
 
             .dashboard-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-
-            .daily-seed-card {
-                grid-column: span 2;
             }
 
             .prompts-grid {
@@ -3240,11 +3358,16 @@
         /* iPad Landscape (1025px - 1200px) */
         @media (min-width: 1025px) and (max-width: 1200px) {
             .practice-layout {
-                grid-template-columns: 1fr 280px;
+                grid-template-columns: minmax(240px, 270px) 1fr;
+            }
+
+            .sidebar-right {
+                display: none;
             }
 
             .sidebar-left {
-                display: none;
+                position: sticky;
+                top: 90px;
             }
         }
 
@@ -3269,7 +3392,7 @@
                 min-width: 52px;
             }
 
-            .writing-area > .writing-timer-section .timer-btn {
+            .writing-timer-section .timer-btn {
                 min-height: 36px;
                 min-width: 2.5rem;
             }
@@ -3282,7 +3405,7 @@
                 min-height: 44px;
             }
 
-            .guide-step {
+            .guide-overlay .guide-step {
                 padding: 1rem 0;
             }
 
@@ -3402,10 +3525,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .daily-seed-card {
-                grid-column: span 1;
-            }
-
             .practice-layout {
                 grid-template-columns: 1fr;
             }
@@ -3424,6 +3543,8 @@
             }
 
             #essay-input {
+                min-height: 6rem;
+                max-height: min(55vh, 28rem);
                 -webkit-appearance: none;
             }
 
@@ -3435,7 +3556,7 @@
                 grid-template-columns: 1fr;
             }
 
-            /* Mobile: writing guide collapsible */
+            /* Mobile: writing first, tools column, then guide */
             .sidebar-left {
                 order: 1;
             }
@@ -3456,7 +3577,7 @@
             color: var(--text-light);
         }
 
-        /* Floating Guide Toggle (for iPad where sidebar-left is hidden) */
+        /* Floating guide when the right column (7-step) is hidden on mid-width screens */
         .guide-toggle-fab {
             display: none;
             position: fixed;
@@ -3554,6 +3675,24 @@
             flex-shrink: 0;
         }
 
+        .guide-overlay .guide-content h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            color: var(--text);
+        }
+
+        .guide-overlay .guide-content p {
+            font-size: 0.875rem;
+            line-height: 1.45;
+            color: var(--text-muted);
+        }
+
+        .guide-overlay > .guide-side-note {
+            font-weight: 400;
+            margin-top: -0.35rem;
+        }
+
         .guide-close-btn {
             background: none;
             border: none;
@@ -3625,7 +3764,7 @@
                 <span class="logo-title">WriteBoost</span>
                 <span class="logo-tagline">Narrative writing</span>
             </div>
-            <span class="version-badge" id="app-version">v4.1.5</span>
+            <span class="version-badge" id="app-version">v4.2.0</span>
         </div>
         <div class="header-stats">
             <div class="stat-item">
@@ -3672,67 +3811,205 @@
             </p>
             <div class="dashboard-empty-hint" id="dashboard-empty-hint" style="display: none;">
                 <strong>Welcome!</strong> Your stats stay at 0 until you finish your first piece — that’s normal.
-                Pick a prompt below (or plant the Daily Story Seed), write at least 50 words in Practice, then submit to unlock achievements like <strong><span class="icon-btn" style="vertical-align:middle"><i data-lucide="trophy" aria-hidden="true"></i><span>First Draft</span></span></strong>. In Practice you can set an optional word goal and see when your draft auto-saves; detailed feedback waits until after you submit.
+                <strong>Step 1:</strong> pick any prompt below. <strong>Step 2:</strong> write at least 50 words on the Write page. <strong>Step 3:</strong> submit to unlock achievements like <strong><span class="icon-btn" style="vertical-align:middle"><i data-lucide="trophy" aria-hidden="true"></i><span>First Draft</span></span></strong>. Optional word goals and auto-save live on Write; detailed feedback comes after submit.
                 <div class="hint-actions">
                     <button type="button" class="btn btn-primary btn-sm" onclick="showPage('practice')"><span class="icon-btn"><i data-lucide="pen-line" aria-hidden="true"></i><span>Go to Write</span></span></button>
                     <button type="button" class="btn btn-outline btn-sm" onclick="openHelpModal()"><span class="icon-btn"><i data-lucide="circle-help" aria-hidden="true"></i><span>Quick Start</span></span></button>
                 </div>
             </div>
-            <div class="dashboard-grid">
-                <div class="card stats-card essays">
-                    <div class="stats-icon"><i data-lucide="file-pen-line" aria-hidden="true"></i></div>
-                    <div class="stats-number" id="dash-essays">0</div>
-                    <div class="stats-sub">Essays Written</div>
-                </div>
-                <div class="card stats-card words">
-                    <div class="stats-icon"><i data-lucide="text" aria-hidden="true"></i></div>
-                    <div class="stats-number" id="dash-words">0</div>
-                    <div class="stats-sub">Total Words</div>
-                </div>
-                <div class="card stats-card streak">
-                    <div class="stats-icon"><i data-lucide="flame" aria-hidden="true"></i></div>
-                    <div class="stats-number" id="dash-streak">0</div>
-                    <div class="stats-sub">Day Streak</div>
-                </div>
-                <div class="card stats-card score">
-                    <div class="stats-icon"><i data-lucide="star" aria-hidden="true"></i></div>
-                    <div class="stats-number" id="dash-score">--</div>
-                    <div class="stats-sub">Best Score</div>
-                </div>
-                <div class="card daily-seed-card">
-                    <div class="seed-header">
-                        <div>
-                            <div class="seed-label"><i data-lucide="sprout" aria-hidden="true"></i> Daily Story Seed</div>
-                        </div>
-                        <div class="seed-date" id="seed-date"></div>
-                    </div>
-                    <div class="seed-content" id="seed-content">
-                        <!-- Generated daily -->
-                    </div>
-                    <button type="button" class="btn btn-secondary" onclick="plantSeed()"><span class="icon-btn"><i data-lucide="sprout" aria-hidden="true"></i><span>Plant this seed</span></span></button>
-                    <div class="help-tip">Tip: this makes today’s seed your writing prompt.</div>
-                </div>
-            </div>
+
+            <p class="dashboard-flow" role="navigation" aria-label="How to start"><strong>Start here:</strong> (1) Choose one prompt card → (2) Open <strong>Write</strong> from the nav → (3) Submit when you’re ready. Scroll down after that to see your progress stats.</p>
 
             <div class="prompts-section">
                 <div class="prompts-section-header">
-                    <h2><i data-lucide="file-pen-line" aria-hidden="true"></i> Choose a Writing Prompt</h2>
+                    <h2><i data-lucide="file-pen-line" aria-hidden="true"></i> Step 1 — Pick a prompt</h2>
                     <button type="button" class="btn btn-outline btn-sm" onclick="refreshPromptDeck()" title="Shuffle six new choices from the pool"><span class="icon-btn"><i data-lucide="refresh-cw" aria-hidden="true"></i><span>Refresh</span></span></button>
                 </div>
-                <p class="help-tip">Six prompts from the unused pool. The one you pick hides until you start a new story or refresh. Submitting still marks it as used for rotation.</p>
+                <p class="help-tip">Six ideas at a time from the unused pool. Tap a card to load it into Write. Your pick hides until you start a new story or refresh.</p>
                 <div class="prompts-grid" id="prompts-grid">
                     <!-- Generated dynamically -->
                 </div>
             </div>
+
+            <section class="dashboard-progress" aria-label="Your writing stats on this device">
+                <h2 class="dashboard-progress-title"><i data-lucide="trending-up" aria-hidden="true"></i> Your progress</h2>
+                <div class="dashboard-grid">
+                    <div class="card stats-card essays">
+                        <div class="stats-icon"><i data-lucide="file-pen-line" aria-hidden="true"></i></div>
+                        <div class="stats-number" id="dash-essays">0</div>
+                        <div class="stats-sub">Essays Written</div>
+                    </div>
+                    <div class="card stats-card words">
+                        <div class="stats-icon"><i data-lucide="text" aria-hidden="true"></i></div>
+                        <div class="stats-number" id="dash-words">0</div>
+                        <div class="stats-sub">Total Words</div>
+                    </div>
+                    <div class="card stats-card streak">
+                        <div class="stats-icon"><i data-lucide="flame" aria-hidden="true"></i></div>
+                        <div class="stats-number" id="dash-streak">0</div>
+                        <div class="stats-sub">Day Streak</div>
+                    </div>
+                    <div class="card stats-card score">
+                        <div class="stats-icon"><i data-lucide="star" aria-hidden="true"></i></div>
+                        <div class="stats-number" id="dash-score">--</div>
+                        <div class="stats-sub">Best Score</div>
+                    </div>
+                </div>
+            </section>
         </div>
 
         <!-- Practice Page -->
         <div id="practice" class="page">
             <div class="practice-layout">
-                <!-- Left Sidebar -->
+                <!-- Left: character & sensory helpers -->
                 <div class="sidebar-left">
+                    <div class="card character-card">
+                        <h3><i data-lucide="theater" aria-hidden="true"></i> Character</h3>
+                        <div class="character-form" id="character-form">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <div class="name-input-row">
+                                    <input type="text" id="char-name" placeholder="Character name...">
+                                    <button type="button" class="random-name-btn" onclick="randomName()" aria-label="Random name"><i data-lucide="shuffle" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Age</label>
+                                <input type="text" id="char-age" placeholder="e.g., 12">
+                            </div>
+                            <div class="form-group">
+                                <label>Personality</label>
+                                <select id="char-personality">
+                                    <option value="">Choose...</option>
+                                    <option value="Brave">Brave</option>
+                                    <option value="Shy">Shy</option>
+                                    <option value="Funny">Funny</option>
+                                    <option value="Mysterious">Mysterious</option>
+                                    <option value="Kind">Kind</option>
+                                    <option value="Stubborn">Stubborn</option>
+                                    <option value="Clever">Clever</option>
+                                    <option value="Rebellious">Rebellious</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Special Quirk</label>
+                                <input type="text" id="char-quirk" placeholder="e.g., Always loses things">
+                            </div>
+                            <div class="form-group">
+                                <label>Best Friend</label>
+                                <input type="text" id="char-friend" placeholder="Best friend's name">
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="saveCharacter()">Save Character</button>
+                        </div>
+                        <div class="character-info" id="character-info" style="display: none;">
+                            <!-- Shown when character is saved -->
+                        </div>
+                    </div>
+
+                    <div class="card sensory-card" id="sensory-card">
+                        <div class="card-title"><i data-lucide="palette" aria-hidden="true"></i> Sensory Palette</div>
+                        <div id="flat-words-found" class="flat-words-found">
+                            <span style="color: var(--text-muted); font-size: 0.85rem;" title="We scan your draft for common plain words. Matching words show up here as chips you can click.">Flat words in your draft appear here — click one, then pick a sense for ideas.</span>
+                        </div>
+                        <div class="sense-buttons">
+                            <button type="button" class="sense-btn" data-sense="sight" title="Select a word chip first. Opens sight-focused coaching questions in a bubble." aria-label="Sight: coaching questions for visual detail. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="eye" aria-hidden="true"></i><span>Sight</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="sound" title="Select a word chip first. Opens sound and silence prompts in a bubble." aria-label="Sound: coaching questions for what can be heard. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="ear" aria-hidden="true"></i><span>Sound</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="smell" title="Select a word chip first. Opens smell-related prompts in a bubble." aria-label="Smell: coaching questions for scents. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="wind" aria-hidden="true"></i><span>Smell</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="taste" title="Select a word chip first. Opens taste and mouth-feel prompts in a bubble." aria-label="Taste: coaching questions for taste and texture. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="candy" aria-hidden="true"></i><span>Taste</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="touch" title="Select a word chip first. Opens touch, temperature, and body-feel prompts in a bubble." aria-label="Touch: coaching questions for touch and physical sensation. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="hand" aria-hidden="true"></i><span>Touch</span></span></button>
+                        </div>
+                        <p class="sensory-coach-hint">After you pick a word above, each button opens <strong>coaching questions</strong> for that sense (a bubble near the chip) so you can rewrite with show-don&rsquo;t-tell detail.</p>
+                        <div class="sensory-progress">
+                            <span id="sensory-progress-text">Replacements count toward your Sensor badge</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="sensory-progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Writing Area -->
+                <div class="writing-area">
+                    <div class="writing-header">
+                        <div class="writing-title" id="current-prompt-title">Start Writing</div>
+                        <div class="writing-toolbar">
+                            <button type="button" class="toolbar-btn" onclick="openChallengeModal()"><span class="icon-btn"><i data-lucide="dice-5" aria-hidden="true"></i><span>Challenge</span></span></button>
+                            <button type="button" class="toolbar-btn" onclick="openPowerWordsModal()"><span class="icon-btn"><i data-lucide="dumbbell" aria-hidden="true"></i><span>Power Words</span></span></button>
+                            <button class="btn btn-primary" id="submit-essay-btn" type="button" onclick="submitEssay()"><span class="icon-btn"><i data-lucide="upload" aria-hidden="true"></i><span>Submit</span></span></button>
+                        </div>
+                    </div>
+                    <div class="card timer-card writing-timer-section writing-timer-fallback" aria-label="Timer">
+                        <div class="card-title"><i data-lucide="timer" aria-hidden="true"></i> Timer</div>
+                        <div class="timer-quick-row">
+                            <div class="timer-display js-timer-face">00:00</div>
+                            <div class="timer-options">
+                                <button type="button" class="timer-btn" data-minutes="15">15m</button>
+                                <button type="button" class="timer-btn active" data-minutes="25">25m</button>
+                                <button type="button" class="timer-btn" data-minutes="40">40m</button>
+                                <button type="button" class="timer-btn" data-minutes="50">50m</button>
+                            </div>
+                            <div class="timer-controls">
+                                <button type="button" class="btn btn-primary btn-sm js-timer-start" onclick="toggleTimer()"><span class="icon-btn"><i data-lucide="play" aria-hidden="true"></i><span>Start</span></span></button>
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="resetTimer()"><span class="icon-btn"><i data-lucide="rotate-ccw" aria-hidden="true"></i><span>Reset</span></span></button>
+                            </div>
+                        </div>
+                        <div class="timer-custom-row">
+                            <span class="timer-custom-label">Custom</span>
+                            <input type="number" class="timer-custom-input js-timer-custom" min="1" max="180" step="1" value="25" inputmode="numeric" aria-label="Custom timer length in minutes">
+                            <span class="timer-custom-suffix" aria-hidden="true">min</span>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="applyCustomTimerMinutes()">Set</button>
+                        </div>
+                    </div>
+                    <p class="writing-column-hint">Use this column to type and for <strong>tools</strong> (Challenge, Power Words, goals). Story structure and the timer are on the right.</p>
+                    <div class="writing-stats writing-stats-block">
+                        <div class="writing-stats-row">
+                            <span><i data-lucide="file-text" aria-hidden="true"></i> <span id="word-count">0</span> words</span>
+                            <span><i data-lucide="pilcrow" aria-hidden="true"></i> <span id="paragraph-count">0</span> paragraphs</span>
+                            <span><i data-lucide="timer" aria-hidden="true"></i> <span id="time-spent">0</span> min</span>
+                        </div>
+                        <div class="writing-stats-row writing-stats-subrow">
+                            <span class="draft-save-status" id="draft-save-status">Draft saves automatically after you pause typing.</span>
+                            <label class="word-goal-inline" for="word-goal-select">
+                                <i data-lucide="target" aria-hidden="true"></i>
+                                <span class="sr-only">Word goal</span>
+                                <select id="word-goal-select" class="word-goal-select" title="Optional word goal for this device" onchange="onWordGoalChange(this.value)">
+                                    <option value="0">No goal</option>
+                                    <option value="50">50 words</option>
+                                    <option value="100">100 words</option>
+                                    <option value="200">200 words</option>
+                                    <option value="300">300 words</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="word-goal-bar-wrap" id="word-goal-bar-wrap" hidden>
+                        <div class="word-goal-bar-track">
+                            <div class="word-goal-bar-fill" id="word-goal-fill"></div>
+                        </div>
+                        <div class="word-goal-meta" id="word-goal-meta"></div>
+                    </div>
+                    <div class="writing-content">
+                        <textarea id="essay-input" placeholder="Write your story here. The box starts small and grows as you type."></textarea>
+                    </div>
+
+                    <div class="story-coaster">
+                        <div class="coaster-title"><i data-lucide="activity" aria-hidden="true"></i> Story Coaster — tension graph</div>
+                        <svg class="coaster-svg" id="story-coaster" viewBox="0 0 600 180">
+                            <!-- Will be drawn by JS -->
+                        </svg>
+                        <div class="challenge-count" id="challenge-count">Challenge cards used: 0</div>
+                        <div class="challenge-session-log" id="challenge-session-log" aria-live="polite"></div>
+                        <div class="coaster-warning" id="coaster-warning" style="display: none;">
+                            <i data-lucide="zap" aria-hidden="true"></i> Your story needs more twists! Try adding a challenge or conflict.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: story-structure outline only (not writing tools) -->
+                <div class="sidebar-right">
                     <div class="card guide-card">
-                        <div class="card-title"><i data-lucide="clipboard-list" aria-hidden="true"></i> 7-Step Writing Guide</div>
+                        <h3 class="guide-side-heading"><i data-lucide="clipboard-list" aria-hidden="true"></i> Story structure</h3>
+                        <p class="guide-side-note">Glance at these beats while you draft. Buttons you use are in the middle column.</p>
                         <div class="guide-step">
                             <div class="guide-number">1</div>
                             <div class="guide-content">
@@ -3783,36 +4060,25 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Center Writing Area -->
-                <div class="writing-area">
-                    <div class="writing-header">
-                        <div class="writing-title" id="current-prompt-title">Start Writing</div>
-                        <div class="writing-toolbar">
-                            <button type="button" class="toolbar-btn" onclick="openChallengeModal()"><span class="icon-btn"><i data-lucide="dice-5" aria-hidden="true"></i><span>Challenge</span></span></button>
-                            <button type="button" class="toolbar-btn" onclick="openPowerWordsModal()"><span class="icon-btn"><i data-lucide="dumbbell" aria-hidden="true"></i><span>Power Words</span></span></button>
-                            <button class="btn btn-primary" id="submit-essay-btn" type="button" onclick="submitEssay()"><span class="icon-btn"><i data-lucide="upload" aria-hidden="true"></i><span>Submit</span></span></button>
-                        </div>
-                    </div>
-                    <div class="card timer-card writing-timer-section">
+                    <div class="card timer-card writing-timer-section sidebar-timer" aria-label="Timer">
                         <div class="card-title"><i data-lucide="timer" aria-hidden="true"></i> Timer</div>
                         <div class="timer-quick-row">
-                            <div class="timer-display" id="timer-display">00:00</div>
+                            <div class="timer-display js-timer-face">00:00</div>
                             <div class="timer-options">
-                                <button class="timer-btn" data-minutes="15">15m</button>
-                                <button class="timer-btn active" data-minutes="25">25m</button>
-                                <button class="timer-btn" data-minutes="40">40m</button>
-                                <button class="timer-btn" data-minutes="50">50m</button>
+                                <button type="button" class="timer-btn" data-minutes="15">15m</button>
+                                <button type="button" class="timer-btn active" data-minutes="25">25m</button>
+                                <button type="button" class="timer-btn" data-minutes="40">40m</button>
+                                <button type="button" class="timer-btn" data-minutes="50">50m</button>
                             </div>
                             <div class="timer-controls">
-                                <button type="button" class="btn btn-primary btn-sm" id="timer-start" onclick="toggleTimer()"><span class="icon-btn"><i data-lucide="play" aria-hidden="true"></i><span>Start</span></span></button>
+                                <button type="button" class="btn btn-primary btn-sm js-timer-start" onclick="toggleTimer()"><span class="icon-btn"><i data-lucide="play" aria-hidden="true"></i><span>Start</span></span></button>
                                 <button type="button" class="btn btn-ghost btn-sm" onclick="resetTimer()"><span class="icon-btn"><i data-lucide="rotate-ccw" aria-hidden="true"></i><span>Reset</span></span></button>
                             </div>
                         </div>
                         <div class="timer-custom-row">
                             <label for="timer-custom-minutes" class="timer-custom-label">Custom</label>
-                            <input type="number" id="timer-custom-minutes" class="timer-custom-input" min="1" max="180" step="1" value="25" inputmode="numeric" aria-label="Custom timer length in minutes">
+                            <input type="number" id="timer-custom-minutes" class="timer-custom-input js-timer-custom" min="1" max="180" step="1" value="25" inputmode="numeric" aria-label="Custom timer length in minutes">
                             <span class="timer-custom-suffix" aria-hidden="true">min</span>
                             <button type="button" class="btn btn-outline btn-sm" id="timer-custom-apply" onclick="applyCustomTimerMinutes()">Set</button>
                         </div>
@@ -3823,141 +4089,21 @@
                             </label>
                         </div>
                     </div>
-                    <div class="help-tip" style="padding: 0 1.5rem 0.5rem;">
-                        Flow: pick a prompt, write, add a challenge twist if stuck, then submit for feedback.
-                    </div>
-                    <div class="writing-stats writing-stats-block">
-                        <div class="writing-stats-row">
-                            <span><i data-lucide="file-text" aria-hidden="true"></i> <span id="word-count">0</span> words</span>
-                            <span><i data-lucide="pilcrow" aria-hidden="true"></i> <span id="paragraph-count">0</span> paragraphs</span>
-                            <span><i data-lucide="timer" aria-hidden="true"></i> <span id="time-spent">0</span> min</span>
-                        </div>
-                        <div class="writing-stats-row writing-stats-subrow">
-                            <span class="draft-save-status" id="draft-save-status">Draft saves automatically after you pause typing.</span>
-                            <label class="word-goal-inline" for="word-goal-select">
-                                <i data-lucide="target" aria-hidden="true"></i>
-                                <span class="sr-only">Word goal</span>
-                                <select id="word-goal-select" class="word-goal-select" title="Optional word goal for this device" onchange="onWordGoalChange(this.value)">
-                                    <option value="0">No goal</option>
-                                    <option value="50">50 words</option>
-                                    <option value="100">100 words</option>
-                                    <option value="200">200 words</option>
-                                    <option value="300">300 words</option>
-                                </select>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="word-goal-bar-wrap" id="word-goal-bar-wrap" hidden>
-                        <div class="word-goal-bar-track">
-                            <div class="word-goal-bar-fill" id="word-goal-fill"></div>
-                        </div>
-                        <div class="word-goal-meta" id="word-goal-meta"></div>
-                    </div>
-                    <div class="writing-content">
-                        <textarea id="essay-input" placeholder="Start your story here...
-
-Remember to:
-• Use your senses (what you see, hear, smell, feel, taste)
-• Show emotions through actions, not just words
-• Build tension with your words
-• Make your characters come alive"></textarea>
-                    </div>
-
-                    <!-- Story Coaster -->
-                    <div class="story-coaster">
-                        <div class="coaster-title"><i data-lucide="activity" aria-hidden="true"></i> Story Coaster - Tension Graph</div>
-                        <svg class="coaster-svg" id="story-coaster" viewBox="0 0 600 180">
-                            <!-- Will be drawn by JS -->
-                        </svg>
-                        <div class="challenge-count" id="challenge-count">Challenge cards used: 0</div>
-                        <div class="challenge-session-log" id="challenge-session-log" aria-live="polite"></div>
-                        <div class="coaster-warning" id="coaster-warning" style="display: none;">
-                            <i data-lucide="zap" aria-hidden="true"></i> Your story needs more twists! Try adding a challenge or conflict.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Sidebar -->
-                <div class="sidebar-right">
-                    <!-- Character Card -->
-                    <div class="card character-card">
-                        <h3><i data-lucide="theater" aria-hidden="true"></i> Character</h3>
-                        <div class="character-form" id="character-form">
-                            <div class="form-group">
-                                <label>Name</label>
-                                <div class="name-input-row">
-                                    <input type="text" id="char-name" placeholder="Character name...">
-                                    <button type="button" class="random-name-btn" onclick="randomName()" aria-label="Random name"><i data-lucide="shuffle" aria-hidden="true"></i></button>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Age</label>
-                                <input type="text" id="char-age" placeholder="e.g., 12">
-                            </div>
-                            <div class="form-group">
-                                <label>Personality</label>
-                                <select id="char-personality">
-                                    <option value="">Choose...</option>
-                                    <option value="Brave">Brave</option>
-                                    <option value="Shy">Shy</option>
-                                    <option value="Funny">Funny</option>
-                                    <option value="Mysterious">Mysterious</option>
-                                    <option value="Kind">Kind</option>
-                                    <option value="Stubborn">Stubborn</option>
-                                    <option value="Clever">Clever</option>
-                                    <option value="Rebellious">Rebellious</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Special Quirk</label>
-                                <input type="text" id="char-quirk" placeholder="e.g., Always loses things">
-                            </div>
-                            <div class="form-group">
-                                <label>Best Friend</label>
-                                <input type="text" id="char-friend" placeholder="Best friend's name">
-                            </div>
-                            <button class="btn btn-secondary btn-sm" onclick="saveCharacter()">Save Character</button>
-                        </div>
-                        <div class="character-info" id="character-info" style="display: none;">
-                            <!-- Shown when character is saved -->
-                        </div>
-                    </div>
-
-                    <!-- Sensory Palette -->
-                    <div class="card sensory-card" id="sensory-card">
-                        <div class="card-title"><i data-lucide="palette" aria-hidden="true"></i> Sensory Palette</div>
-                        <div id="flat-words-found" class="flat-words-found">
-                            <span style="color: var(--text-muted); font-size: 0.85rem;" title="We scan your draft for common plain words. Matching words show up here as chips you can click.">Flat words in your draft appear here — click one, then pick a sense for ideas.</span>
-                        </div>
-                        <div class="sense-buttons">
-                            <button type="button" class="sense-btn" data-sense="sight" title="Select a word chip first. Opens sight-focused coaching questions in a bubble." aria-label="Sight: coaching questions for visual detail. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="eye" aria-hidden="true"></i><span>Sight</span></span></button>
-                            <button type="button" class="sense-btn" data-sense="sound" title="Select a word chip first. Opens sound and silence prompts in a bubble." aria-label="Sound: coaching questions for what can be heard. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="ear" aria-hidden="true"></i><span>Sound</span></span></button>
-                            <button type="button" class="sense-btn" data-sense="smell" title="Select a word chip first. Opens smell-related prompts in a bubble." aria-label="Smell: coaching questions for scents. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="wind" aria-hidden="true"></i><span>Smell</span></span></button>
-                            <button type="button" class="sense-btn" data-sense="taste" title="Select a word chip first. Opens taste and mouth-feel prompts in a bubble." aria-label="Taste: coaching questions for taste and texture. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="candy" aria-hidden="true"></i><span>Taste</span></span></button>
-                            <button type="button" class="sense-btn" data-sense="touch" title="Select a word chip first. Opens touch, temperature, and body-feel prompts in a bubble." aria-label="Touch: coaching questions for touch and physical sensation. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="hand" aria-hidden="true"></i><span>Touch</span></span></button>
-                        </div>
-                        <p class="sensory-coach-hint">After you pick a word above, each button opens <strong>coaching questions</strong> for that sense (a bubble near the chip) so you can rewrite with show-don&rsquo;t-tell detail.</p>
-                        <div class="sensory-progress">
-                            <span id="sensory-progress-text">Replacements count toward your Sensor badge</span>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="sensory-progress-fill" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Floating Guide Button (iPad) -->
-        <button type="button" class="guide-toggle-fab" id="guide-toggle-fab" onclick="toggleGuideOverlay()" aria-label="Writing guide"><i data-lucide="clipboard-list" aria-hidden="true"></i></button>
+        <button type="button" class="guide-toggle-fab" id="guide-toggle-fab" onclick="toggleGuideOverlay()" aria-label="Story structure outline"><i data-lucide="clipboard-list" aria-hidden="true"></i></button>
 
         <!-- Guide Overlay Panel (iPad) -->
         <div class="guide-overlay-backdrop" id="guide-overlay-backdrop" onclick="toggleGuideOverlay()"></div>
         <div class="guide-overlay" id="guide-overlay">
             <div class="guide-overlay-header">
-                <h3><i data-lucide="clipboard-list" aria-hidden="true"></i> 7-Step Writing Guide</h3>
+                <h3><i data-lucide="clipboard-list" aria-hidden="true"></i> Story structure</h3>
                 <button class="guide-close-btn" onclick="toggleGuideOverlay()">&times;</button>
             </div>
+            <p class="guide-side-note">Outline only — your tools stay in the middle column.</p>
             <div class="guide-step">
                 <div class="guide-number">1</div>
                 <div class="guide-content">
@@ -4433,15 +4579,15 @@ Remember to:
                     </div>
                     <div class="help-item">
                         <strong>Top tabs (this build)</strong>
-                        Left to right: <strong>Home</strong> (prompts &amp; seed) → <strong>Plan</strong> (story template) → <strong>Drills</strong> → <strong>Write</strong> → <strong>Learn</strong> → <strong>Progress and Data</strong> → <strong>Achievements</strong>. On <strong>Learn</strong>, use the large <em>section switcher</em> under the title (three stacked rows on narrow phones, three columns on wider screens).
+                        Left to right: <strong>Home</strong> (pick a prompt, then your stats) → <strong>Plan</strong> (story template) → <strong>Drills</strong> → <strong>Write</strong> → <strong>Learn</strong> → <strong>Progress and Data</strong> → <strong>Achievements</strong>. On <strong>Learn</strong>, use the large <em>section switcher</em> under the title (three stacked rows on narrow phones, three columns on wider screens).
                     </div>
                     <div class="help-item">
                         <strong>1) Start on Home</strong>
-                        Pick one of six prompts (Refresh for new choices) or plant the Daily Story Seed, then go to Write.
+                        Pick one of six prompts (Refresh for new choices), then open <strong>Write</strong> from the nav.
                     </div>
                     <div class="help-item">
                         <strong>2) Write</strong>
-                        Optional timer and word goal. Aim for at least 50 <em>story</em> words, then Submit. Challenge cards don’t count toward that minimum.
+                        Optional word goal and a timer (under <strong>Story structure</strong> on the right on wide screens). Aim for at least 50 <em>story</em> words, then Submit. Challenge cards don’t count toward that minimum.
                     </div>
                     <div class="help-item">
                         <strong>3) Get unstuck</strong>
@@ -4513,7 +4659,7 @@ Remember to:
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.1.5';
+        const APP_VERSION = 'v4.2.0';
 
         let suggestionPopupHideTimer = null;
 
@@ -4524,13 +4670,13 @@ Remember to:
         }
 
         function setTimerStartLabel(running) {
-            const btn = document.getElementById('timer-start');
-            if (!btn) return;
-            if (running) {
-                btn.innerHTML = '<span class="icon-btn"><i data-lucide="pause" aria-hidden="true"></i><span>Pause</span></span>';
-            } else {
-                btn.innerHTML = '<span class="icon-btn"><i data-lucide="play" aria-hidden="true"></i><span>Start</span></span>';
-            }
+            document.querySelectorAll('.js-timer-start').forEach((btn) => {
+                if (running) {
+                    btn.innerHTML = '<span class="icon-btn"><i data-lucide="pause" aria-hidden="true"></i><span>Pause</span></span>';
+                } else {
+                    btn.innerHTML = '<span class="icon-btn"><i data-lucide="play" aria-hidden="true"></i><span>Start</span></span>';
+                }
+            });
             refreshIcons();
         }
 
@@ -4604,37 +4750,6 @@ Remember to:
             "Camila", "Jack", "Aria", "Daniel", "Scarlett", "Michael", "Penelope",
             "Owen", "Layla", "Elijah", "Chloe", "Aiden", "Victoria", "Samuel"
         ];
-
-        const STORY_SEEDS = {
-            characters: [
-                "A curious astronaut", "A shy inventor", "A brave messenger", "A mischievous detective",
-                "A kind dragon", "A lonely robot", "A magical cat", "A daring explorer",
-                "A worried chef", "A clever ghost", "A fearless pirate", "A gentle giant",
-                "A sneaky spy", "A wise old owl", "A playful monkey", "A quiet artist",
-                "A strong builder", "A singing mermaid", "A dancing elf", "A dreaming astronaut"
-            ],
-            settings: [
-                "in an underwater city", "on a floating island", "in a library made of clouds",
-                "inside a giant treehouse", "beneath the ocean waves", "in a town where time flows backward",
-                "inside a magical wardrobe", "on a train that never stops", "in a garden of giants",
-                "at the edge of a rainbow", "inside a snow globe world", "on a street made of chocolate",
-                "in a museum that comes alive", "beneath a bridge of stars", "in a castle of mirrors",
-                "at a secret underground station", "inside a giant's pocket", "on an island of floating rocks",
-                "in a city in the clouds", "at the bottom of a wishing well"
-            ],
-            conflicts: [
-                "discovers a door that shouldn't exist", "finds a map to a hidden world",
-                "must solve a mystery before sunset", "accidentally unleashes something magical",
-                "makes a discovery that changes everything", "gets trapped and must find a way out",
-                "hears a voice calling from far away", "spots something impossible in the sky",
-                "witnesses something no one else believes", "receives a message from the future",
-                "loses the only thing that matters", "meets someone from their dreams",
-                "stumbles upon a secret passage", "finds themselves in the wrong time period",
-                "must save someone before it's too late", "discovers their greatest fear is real",
-                "realizes nothing is as it seems", "unlocks a power they never knew they had",
-                "must choose between two impossible options", "discovers a hidden talent just in time"
-            ]
-        };
 
         const POWER_WORDS = {
             walk: {
@@ -5827,10 +5942,13 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             renderPrompts();
             renderAchievements();
             renderHistory();
-            generateDailySeed();
             loadCharacter();
             setupEventListeners();
             setupTextareaListener();
+            window.addEventListener('resize', () => {
+                clearTimeout(essayTextareaResizeTimer);
+                essayTextareaResizeTimer = setTimeout(adjustEssayTextareaHeight, 150);
+            });
             setupSensorySenseButtons();
             drawStoryCoaster();
             analyzeFlatWords();
@@ -5862,6 +5980,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             loadTemplateDraft();
             renderSkillsProgress();
 
+            requestAnimationFrame(() => adjustEssayTextareaHeight());
             refreshIcons();
         }
 
@@ -6196,6 +6315,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             if (pageId === 'practice') {
                 analyzeFlatWords();
                 drawStoryCoaster();
+                requestAnimationFrame(() => adjustEssayTextareaHeight());
             }
             refreshIcons();
         }
@@ -6217,6 +6337,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             updateWordCount();
             analyzeFlatWords();
             drawStoryCoaster();
+            adjustEssayTextareaHeight();
             showPage('practice');
             if (textarea) textarea.focus();
         }
@@ -6342,6 +6463,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             renderSessionChallengeLog();
             analyzeFlatWords();
             drawStoryCoaster();
+            adjustEssayTextareaHeight();
             renderPrompts();
         }
 
@@ -6352,10 +6474,11 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         const TIMER_CUSTOM_MAX = 180;
 
         function syncTimerCustomInput() {
-            const inp = document.getElementById('timer-custom-minutes');
-            if (!inp) return;
             const m = Number.isFinite(state.timerSlotMinutes) ? state.timerSlotMinutes : 25;
-            inp.value = String(Math.max(TIMER_CUSTOM_MIN, Math.min(TIMER_CUSTOM_MAX, m)));
+            const v = String(Math.max(TIMER_CUSTOM_MIN, Math.min(TIMER_CUSTOM_MAX, m)));
+            document.querySelectorAll('.js-timer-custom').forEach((inp) => {
+                inp.value = v;
+            });
         }
 
         function syncTimerPresetButtonsActive() {
@@ -6367,7 +6490,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         }
 
         function applyCustomTimerMinutes() {
-            const inp = document.getElementById('timer-custom-minutes');
+            const inp = document.querySelector('.js-timer-custom');
             if (!inp) return;
             let m = parseInt(String(inp.value).trim(), 10);
             if (!Number.isFinite(m)) {
@@ -6375,7 +6498,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 return;
             }
             m = Math.max(TIMER_CUSTOM_MIN, Math.min(TIMER_CUSTOM_MAX, m));
-            inp.value = String(m);
+            document.querySelectorAll('.js-timer-custom').forEach((el) => { el.value = String(m); });
             stopTimer();
             closeTimeUpOverlay();
             state.timerSlotMinutes = m;
@@ -6391,8 +6514,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         function closeTimeUpOverlay() {
             const ov = document.getElementById('timer-up-overlay');
             if (ov) ov.classList.remove('active');
-            const disp = document.getElementById('timer-display');
-            if (disp) disp.classList.remove('timer-up-flash');
+            document.querySelectorAll('.js-timer-face').forEach((disp) => disp.classList.remove('timer-up-flash'));
             if (timeUpFlashTimeoutId) {
                 clearTimeout(timeUpFlashTimeoutId);
                 timeUpFlashTimeoutId = null;
@@ -6401,17 +6523,16 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
 
         function showTimeUpAnimation() {
             const ov = document.getElementById('timer-up-overlay');
-            const disp = document.getElementById('timer-display');
-            if (disp) {
+            document.querySelectorAll('.js-timer-face').forEach((disp) => {
                 disp.classList.remove('timer-up-flash');
                 void disp.offsetWidth;
                 disp.classList.add('timer-up-flash');
-                if (timeUpFlashTimeoutId) clearTimeout(timeUpFlashTimeoutId);
-                timeUpFlashTimeoutId = setTimeout(() => {
-                    disp.classList.remove('timer-up-flash');
-                    timeUpFlashTimeoutId = null;
-                }, 2200);
-            }
+            });
+            if (timeUpFlashTimeoutId) clearTimeout(timeUpFlashTimeoutId);
+            timeUpFlashTimeoutId = setTimeout(() => {
+                document.querySelectorAll('.js-timer-face').forEach((disp) => disp.classList.remove('timer-up-flash'));
+                timeUpFlashTimeoutId = null;
+            }, 2200);
             if (ov) {
                 ov.classList.add('active');
                 refreshIcons();
@@ -6467,13 +6588,29 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         function updateTimerDisplay() {
             const mins = String(state.timerMinutes).padStart(2, '0');
             const secs = String(state.timerSeconds).padStart(2, '0');
-            document.getElementById('timer-display').textContent = `${mins}:${secs}`;
+            const text = `${mins}:${secs}`;
+            document.querySelectorAll('.js-timer-face').forEach((el) => { el.textContent = text; });
         }
 
         // ============ TEXTAREA & ANALYSIS ============
+        let essayTextareaResizeTimer = null;
+
+        function adjustEssayTextareaHeight() {
+            const ta = document.getElementById('essay-input');
+            if (!ta) return;
+            const narrow = window.matchMedia('(max-width: 768px)').matches;
+            const minH = narrow ? 96 : 120;
+            const maxH = Math.min(Math.floor(window.innerHeight * 0.65), narrow ? 448 : 576);
+            ta.style.height = 'auto';
+            const next = Math.max(minH, Math.min(maxH, ta.scrollHeight));
+            ta.style.height = next + 'px';
+            ta.style.overflowY = ta.scrollHeight > maxH ? 'auto' : 'hidden';
+        }
+
         function setupTextareaListener() {
             const textarea = document.getElementById('essay-input');
             textarea.addEventListener('input', () => {
+                adjustEssayTextareaHeight();
                 updateWordCount();
                 analyzeFlatWords();
                 drawStoryCoaster();
@@ -7302,58 +7439,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             renderAchievements();
         }
 
-        // ============ DAILY SEED ============
-        function generateDailySeed() {
-            const today = new Date();
-            const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-
-            const charIndex = seed % STORY_SEEDS.characters.length;
-            const settingIndex = (seed * 7) % STORY_SEEDS.settings.length;
-            const conflictIndex = (seed * 13) % STORY_SEEDS.conflicts.length;
-
-            document.getElementById('seed-date').textContent = today.toLocaleDateString('en-US', {
-                weekday: 'long', month: 'long', day: 'numeric'
-            });
-
-            document.getElementById('seed-content').innerHTML = `
-                <span class="seed-part"><span class="seed-part-label">Character:</span> ${STORY_SEEDS.characters[charIndex]}</span>
-                <span class="seed-part"><span class="seed-part-label">Setting:</span> ${STORY_SEEDS.settings[settingIndex]}</span>
-                <span class="seed-part"><span class="seed-part-label">Conflict:</span> ${STORY_SEEDS.conflicts[conflictIndex]}</span>
-            `;
-
-            state.currentSeed = {
-                character: STORY_SEEDS.characters[charIndex],
-                setting: STORY_SEEDS.settings[settingIndex],
-                conflict: STORY_SEEDS.conflicts[conflictIndex]
-            };
-        }
-
-        function plantSeed() {
-            if (state.currentSeed) {
-                state.currentPrompt = {
-                    text: `${state.currentSeed.character} ${state.currentSeed.setting} ${state.currentSeed.conflict}.`,
-                    difficulty: 'medium'
-                };
-                document.getElementById('current-prompt-title').textContent = state.currentPrompt.text;
-                document.getElementById('essay-input').value = '';
-                document.getElementById('essay-input').focus();
-                showPage('practice');
-                resetTimer();
-                state.currentPromptIndex = null;
-                state.challengesUsed = 0;
-                state.flatWordsFound = [];
-                state.flatWordsReplaced = 0;
-                state.revisionBaseline = null;
-                state.sessionChallengeTitles = [];
-                updateChallengeCount();
-                renderSessionChallengeLog();
-                state.startTime = Date.now();
-                analyzeFlatWords();
-                drawStoryCoaster();
-                showToast('Story seed planted! Start writing...');
-            }
-        }
-
         // ============ HISTORY ============
         function renderHistory() {
             const list = document.getElementById('history-list');
@@ -7399,6 +7484,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             updateWordCount();
             analyzeFlatWords();
             drawStoryCoaster();
+            adjustEssayTextareaHeight();
             showToast('Essay loaded from history');
         }
 
@@ -8291,6 +8377,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                             updateWordCount();
                             drawStoryCoaster();
                             analyzeFlatWords();
+                            adjustEssayTextareaHeight();
                             updateDraftSavedTime(savedAt);
                         } else {
                             localStorage.removeItem('writeboost-draft');
