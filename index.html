@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-title" content="WriteBoost">
     <meta name="theme-color" content="#045490">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2304590'/%3E%3Cstop offset='1' stop-color='%23273462'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='128' height='128' rx='28' fill='url(%23g)'/%3E%3Ctext x='64' y='82' font-size='64' text-anchor='middle'%3E%E2%9C%8D%EF%B8%8F%3C/text%3E%3C/svg%3E">
-    <title>WriteBoost v4.0.4 - Narrative Writing Trainer</title>
+    <title>WriteBoost v4.0.5 - Narrative Writing Trainer</title>
     <style>
         :root {
             /* Two Pinterest palettes merged: Mediterranean blues + lemon / air surfaces */
@@ -1093,6 +1093,83 @@
             gap: 1rem;
         }
 
+        /* Compact timer strip under the writing header (was tall/centered). */
+        .writing-area > .writing-timer-section.card {
+            border-radius: 0;
+            box-shadow: none;
+            background: var(--bg-sidebar);
+            padding: 0.45rem 1rem 0.5rem;
+            border-bottom: 1px solid var(--border);
+            margin: 0;
+            text-align: left;
+        }
+
+        .writing-area > .writing-timer-section .card-title {
+            font-size: 0.68rem;
+            margin-bottom: 0.28rem;
+            letter-spacing: 0.06em;
+        }
+
+        .timer-quick-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.35rem 0.55rem;
+        }
+
+        .writing-area > .writing-timer-section .timer-quick-row .timer-display {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1;
+            min-width: 4.5ch;
+        }
+
+        .writing-area > .writing-timer-section .timer-quick-row .timer-options {
+            margin: 0;
+            flex: 1 1 auto;
+            justify-content: flex-start;
+            gap: 0.3rem;
+        }
+
+        .writing-area > .writing-timer-section .timer-btn {
+            padding: 0.28rem 0.45rem;
+            font-size: 0.68rem;
+        }
+
+        .writing-area > .writing-timer-section .timer-quick-row .timer-controls {
+            margin: 0;
+            gap: 0.35rem;
+        }
+
+        .writing-area > .writing-timer-section .timer-controls .btn-sm {
+            padding: 0.32rem 0.55rem;
+            font-size: 0.75rem;
+        }
+
+        .writing-area > .writing-timer-section .timer-custom-row {
+            margin: 0.28rem 0 0;
+            justify-content: flex-start;
+            font-size: 0.78rem;
+            gap: 0.3rem 0.45rem;
+        }
+
+        .writing-area > .writing-timer-section .timer-custom-input {
+            width: 3.5rem;
+            padding: 0.28rem 0.35rem;
+            font-size: 0.8rem;
+        }
+
+        .writing-area > .writing-timer-section .timer-exam-row {
+            margin-top: 0.35rem;
+            text-align: left;
+        }
+
+        .writing-area > .writing-timer-section .exam-mode-toggle {
+            font-size: 0.78rem;
+            justify-content: flex-start;
+            margin-top: 0;
+        }
+
         .writing-title {
             font-size: 1.25rem;
             font-weight: 700;
@@ -1606,10 +1683,147 @@
         }
 
         /* Achievements Page */
+        .achievements-root {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .achievement-section-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text);
+            margin: 0 0 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .achievement-section-title svg {
+            width: 1.15rem;
+            height: 1.15rem;
+            color: var(--primary);
+        }
+
         .achievements-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1.5rem;
+        }
+
+        .monthly-challenge-card {
+            background: linear-gradient(135deg, var(--bg-sidebar) 0%, var(--bg-card) 100%);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 1.35rem 1.5rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .monthly-challenge-card.unlocked {
+            border-color: var(--accent);
+        }
+
+        .monthly-challenge-card .monthly-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary-dark);
+            margin-bottom: 0.35rem;
+        }
+
+        .monthly-challenge-card h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .monthly-challenge-card p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .monthly-challenge-card .monthly-status {
+            margin-top: 0.85rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .achievement-tier-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 1.35rem 1.5rem;
+            box-shadow: var(--shadow);
+            text-align: left;
+            border: 2px solid var(--border);
+            position: relative;
+        }
+
+        .achievement-tier-card.unlocked {
+            border-color: var(--accent);
+        }
+
+        .achievement-tier-card.locked {
+            opacity: 0.88;
+        }
+
+        .achievement-tier-card .tier-head {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .achievement-tier-card .tier-head .achievement-icon {
+            margin-bottom: 0;
+        }
+
+        .achievement-tier-card .tier-title {
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin: 0;
+        }
+
+        .achievement-tier-card .tier-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0.2rem 0 0;
+        }
+
+        .tier-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-top: 0.5rem;
+        }
+
+        .tier-step {
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.35rem 0.65rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--bg-sidebar);
+            color: var(--text-muted);
+        }
+
+        .tier-step.done {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: #6EE7B7;
+            color: #065F46;
+        }
+
+        .tier-step.current {
+            background: rgba(230, 168, 46, 0.2);
+            border-color: var(--btn-primary-bg);
+            color: var(--text);
+        }
+
+        .tier-step.future {
+            opacity: 0.65;
         }
 
         .achievement-card {
@@ -3007,6 +3221,11 @@
                 min-width: 52px;
             }
 
+            .writing-area > .writing-timer-section .timer-btn {
+                min-height: 36px;
+                min-width: 2.5rem;
+            }
+
             .toolbar-btn {
                 min-height: 44px;
             }
@@ -3333,7 +3552,7 @@
         <div class="logo">
             <i data-lucide="pen-line" aria-hidden="true"></i>
             <span>WriteBoost</span>
-            <span class="version-badge" id="app-version">v4.0.4</span>
+            <span class="version-badge" id="app-version">v4.0.5</span>
         </div>
         <div class="header-stats">
             <div class="stat-item">
@@ -3487,33 +3706,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="card timer-card">
-                        <div class="card-title"><i data-lucide="timer" aria-hidden="true"></i> Timer</div>
-                        <div class="timer-display" id="timer-display">00:00</div>
-                        <div class="timer-options">
-                            <button class="timer-btn" data-minutes="15">15m</button>
-                            <button class="timer-btn active" data-minutes="25">25m</button>
-                            <button class="timer-btn" data-minutes="40">40m</button>
-                            <button class="timer-btn" data-minutes="50">50m</button>
-                        </div>
-                        <div class="timer-custom-row">
-                            <label for="timer-custom-minutes" class="timer-custom-label">Custom</label>
-                            <input type="number" id="timer-custom-minutes" class="timer-custom-input" min="1" max="180" step="1" value="25" inputmode="numeric" aria-label="Custom timer length in minutes">
-                            <span class="timer-custom-suffix" aria-hidden="true">min</span>
-                            <button type="button" class="btn btn-outline btn-sm" id="timer-custom-apply" onclick="applyCustomTimerMinutes()">Set</button>
-                        </div>
-                        <div class="timer-controls">
-                            <button type="button" class="btn btn-primary btn-sm" id="timer-start" onclick="toggleTimer()"><span class="icon-btn"><i data-lucide="play" aria-hidden="true"></i><span>Start</span></span></button>
-                            <button type="button" class="btn btn-ghost btn-sm" onclick="resetTimer()"><span class="icon-btn"><i data-lucide="rotate-ccw" aria-hidden="true"></i><span>Reset</span></span></button>
-                        </div>
-                        <div style="text-align: center; margin-top: 0.75rem;">
-                            <label class="exam-mode-toggle">
-                                <input type="checkbox" id="acer-exam-mode" onchange="toggleAcerMode()">
-                                <span>Acer Exam Mode (45 min)</span>
-                            </label>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Center Writing Area -->
@@ -3524,6 +3716,34 @@
                             <button type="button" class="toolbar-btn" onclick="openChallengeModal()"><span class="icon-btn"><i data-lucide="dice-5" aria-hidden="true"></i><span>Challenge</span></span></button>
                             <button type="button" class="toolbar-btn" onclick="openPowerWordsModal()"><span class="icon-btn"><i data-lucide="dumbbell" aria-hidden="true"></i><span>Power Words</span></span></button>
                             <button class="btn btn-primary" id="submit-essay-btn" type="button" onclick="submitEssay()"><span class="icon-btn"><i data-lucide="upload" aria-hidden="true"></i><span>Submit</span></span></button>
+                        </div>
+                    </div>
+                    <div class="card timer-card writing-timer-section">
+                        <div class="card-title"><i data-lucide="timer" aria-hidden="true"></i> Timer</div>
+                        <div class="timer-quick-row">
+                            <div class="timer-display" id="timer-display">00:00</div>
+                            <div class="timer-options">
+                                <button class="timer-btn" data-minutes="15">15m</button>
+                                <button class="timer-btn active" data-minutes="25">25m</button>
+                                <button class="timer-btn" data-minutes="40">40m</button>
+                                <button class="timer-btn" data-minutes="50">50m</button>
+                            </div>
+                            <div class="timer-controls">
+                                <button type="button" class="btn btn-primary btn-sm" id="timer-start" onclick="toggleTimer()"><span class="icon-btn"><i data-lucide="play" aria-hidden="true"></i><span>Start</span></span></button>
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="resetTimer()"><span class="icon-btn"><i data-lucide="rotate-ccw" aria-hidden="true"></i><span>Reset</span></span></button>
+                            </div>
+                        </div>
+                        <div class="timer-custom-row">
+                            <label for="timer-custom-minutes" class="timer-custom-label">Custom</label>
+                            <input type="number" id="timer-custom-minutes" class="timer-custom-input" min="1" max="180" step="1" value="25" inputmode="numeric" aria-label="Custom timer length in minutes">
+                            <span class="timer-custom-suffix" aria-hidden="true">min</span>
+                            <button type="button" class="btn btn-outline btn-sm" id="timer-custom-apply" onclick="applyCustomTimerMinutes()">Set</button>
+                        </div>
+                        <div class="timer-exam-row">
+                            <label class="exam-mode-toggle">
+                                <input type="checkbox" id="acer-exam-mode" onchange="toggleAcerMode()">
+                                <span>Acer Exam: 45 min — check, then Start</span>
+                            </label>
                         </div>
                     </div>
                     <div class="help-tip" style="padding: 0 1.5rem 0.5rem;">
@@ -3988,9 +4208,8 @@ Remember to:
         <!-- Achievements (top-level tab) -->
         <div id="achievements" class="page">
             <h1 style="margin-bottom: 0.75rem;"><i data-lucide="trophy" aria-hidden="true"></i> Achievements</h1>
-            <p style="color: var(--text-light); margin-bottom: 1.25rem;">Unlock badges as you write, revise, and build habits.</p>
-            <div class="achievements-grid" id="achievements-grid">
-            </div>
+            <p style="color: var(--text-light); margin-bottom: 1.25rem;">Badges are grouped like Apple Fitness awards: ladder goals show one card with steps. Complete the <strong>monthly challenge</strong> at the top each calendar month.</p>
+            <div class="achievements-root" id="achievements-root"></div>
         </div>
 
 
@@ -4212,7 +4431,7 @@ Remember to:
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.0.4';
+        const APP_VERSION = 'v4.0.8';
 
         function refreshIcons() {
             if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
@@ -5153,6 +5372,235 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             { id: 'perfectionist', icon: 'gem', name: 'Perfectionist', condition: 'Get 6/6 on any criterion', check: (s) => s.perfectCriteria >= 1 }
         ];
 
+        /** Tier ladders: one merged card per group (lower steps collapse into steps, not separate tiles). */
+        const ACHIEVEMENT_TIER_GROUPS = [
+            { id: 'ladder-scores', title: 'Score milestones', description: 'Best score on any single essay.', icon: 'target', tiers: ['score-350', 'score-400', 'score-450', 'score-500'], labels: ['350+', '400+', '450+', '500+'] },
+            { id: 'ladder-streaks', title: 'Daily streaks', description: 'Consecutive days with practice.', icon: 'flame', tiers: ['streak-3', 'streak-5', 'streak-7', 'streak-14'], labels: ['3d', '5d', '7d', '14d'] },
+            { id: 'ladder-essays', title: 'Essay library', description: 'Total essays completed.', icon: 'library', tiers: ['ten-essays', 'twenty-essays', 'fifty-essays'], labels: ['10', '20', '50'] },
+            { id: 'ladder-words', title: 'Total words', description: 'All-time word count across essays.', icon: 'text', tiers: ['wordsmith-10k', 'wordsmith-25k'], labels: ['10K', '25K'] },
+            { id: 'ladder-length', title: 'Long drafts', description: 'Longest single essay by word count.', icon: 'book-open', tiers: ['bookworm', 'marathon-writer'], labels: ['500+', '750+'] },
+            { id: 'ladder-dialogue', title: 'Dialogue habit', description: 'Essays that used dialogue.', icon: 'messages-square', tiers: ['drama-queen', 'dialogue-pro'], labels: ['5', '10'] },
+            { id: 'ladder-challenge', title: 'Challenge depth', description: 'Most challenge cards in one essay.', icon: 'dice-5', tiers: ['twist-master', 'challenge-king'], labels: ['3 in 1', '5 in 1'] },
+            { id: 'ladder-sensory', title: 'Sensory upgrades', description: 'Flat words replaced with richer detail.', icon: 'palette', tiers: ['sensor', 'sensei'], labels: ['5', '20'] }
+        ];
+
+        const ACHIEVEMENT_TIER_GROUP_BY_ACH_ID = (() => {
+            const m = new Map();
+            ACHIEVEMENT_TIER_GROUPS.forEach(g => g.tiers.forEach(id => m.set(id, g.id)));
+            return m;
+        })();
+
+        const ACHIEVEMENT_UI_SECTIONS = [
+            { key: 'month', title: 'This month', icon: 'calendar', kind: 'monthly' },
+            { key: 'scores', title: 'Scores', icon: 'target', kind: 'tiers', groupIds: ['ladder-scores'] },
+            { key: 'streaks', title: 'Streaks', icon: 'flame', kind: 'tiers', groupIds: ['ladder-streaks'] },
+            { key: 'volume', title: 'Volume', icon: 'library', kind: 'tiers', groupIds: ['ladder-essays', 'ladder-words'] },
+            { key: 'craft', title: 'Craft & depth', icon: 'sparkles', kind: 'tiers', groupIds: ['ladder-length', 'ladder-dialogue', 'ladder-challenge', 'ladder-sensory'] },
+            { key: 'habits', title: 'Habits & exams', icon: 'clipboard-check', kind: 'standalone', ids: ['first-draft', 'perfectionist', 'exam-taker', 'self-reviewer'] }
+        ];
+
+        function essaysInMonthList(essays, now) {
+            const y = now.getFullYear();
+            const mo = now.getMonth();
+            return (essays || []).filter(e => {
+                const d = e?.date ? new Date(e.date) : null;
+                return d && !Number.isNaN(d.getTime()) && d.getFullYear() === y && d.getMonth() === mo;
+            });
+        }
+
+        function countEssaysInMonth(essays, now) {
+            return essaysInMonthList(essays, now).length;
+        }
+
+        function wordsInMonth(essays, now) {
+            return essaysInMonthList(essays, now).reduce((s, e) => s + (Number(e.wordCount) || 0), 0);
+        }
+
+        function distinctPracticeDaysInMonth(essays, now) {
+            const keys = new Set();
+            for (const e of essaysInMonthList(essays, now)) {
+                const d = new Date(e.date);
+                keys.add(`${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`);
+            }
+            return keys.size;
+        }
+
+        function monthlyChallengeKey(d = new Date()) {
+            return `monthly-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        /** Rotates by calendar month (index 0 = January). */
+        const MONTHLY_CHALLENGE_ROTATION = [
+            {
+                title: 'January Spark',
+                blurb: 'Finish 3 essays this calendar month.',
+                check: (essays, stats, now) => countEssaysInMonth(essays, now) >= 3,
+                progressLines: (essays, stats, now) => [`${countEssaysInMonth(essays, now)} / 3 essays`]
+            },
+            {
+                title: 'February Flow',
+                blurb: 'Write 1,200 words across essays this month.',
+                check: (essays, stats, now) => wordsInMonth(essays, now) >= 1200,
+                progressLines: (essays, stats, now) => [`${wordsInMonth(essays, now).toLocaleString()} / 1,200 words`]
+            },
+            {
+                title: 'March Momentum',
+                blurb: 'Submit 2 essays scoring 320+ this month.',
+                check: (essays, stats, now) => essaysInMonthList(essays, now).filter(e => (Number(e.score) || 0) >= 320).length >= 2,
+                progressLines: (essays, stats, now) => {
+                    const n = essaysInMonthList(essays, now).filter(e => (Number(e.score) || 0) >= 320).length;
+                    return [`${n} / 2 essays at 320+`];
+                }
+            },
+            {
+                title: 'April Sprint',
+                blurb: 'Complete 4 essays this month.',
+                check: (essays, stats, now) => countEssaysInMonth(essays, now) >= 4,
+                progressLines: (essays, stats, now) => [`${countEssaysInMonth(essays, now)} / 4 essays`]
+            },
+            {
+                title: 'May Mileage',
+                blurb: 'Reach 2,000 words this month.',
+                check: (essays, stats, now) => wordsInMonth(essays, now) >= 2000,
+                progressLines: (essays, stats, now) => [`${wordsInMonth(essays, now).toLocaleString()} / 2,000 words`]
+            },
+            {
+                title: 'June Rhythm',
+                blurb: 'Practice on 6 different days this month (each submit counts).',
+                check: (essays, stats, now) => distinctPracticeDaysInMonth(essays, now) >= 6,
+                progressLines: (essays, stats, now) => [`${distinctPracticeDaysInMonth(essays, now)} / 6 active days`]
+            },
+            {
+                title: 'July Bulk',
+                blurb: 'Three essays of 400+ words each this month.',
+                check: (essays, stats, now) => essaysInMonthList(essays, now).filter(e => (Number(e.wordCount) || 0) >= 400).length >= 3,
+                progressLines: (essays, stats, now) => {
+                    const n = essaysInMonthList(essays, now).filter(e => (Number(e.wordCount) || 0) >= 400).length;
+                    return [`${n} / 3 essays at 400+ words`];
+                }
+            },
+            {
+                title: 'August Peak',
+                blurb: 'Hit 380+ points on at least one essay this month.',
+                check: (essays, stats, now) => essaysInMonthList(essays, now).some(e => (Number(e.score) || 0) >= 380),
+                progressLines: (essays, stats, now) => {
+                    const best = essaysInMonthList(essays, now).reduce((m, e) => Math.max(m, Number(e.score) || 0), 0);
+                    return [best >= 380 ? `Best this month: ${best} (goal met)` : `Best this month: ${best} (need 380+)`];
+                }
+            },
+            {
+                title: 'September Steady',
+                blurb: 'Complete 4 essays this month.',
+                check: (essays, stats, now) => countEssaysInMonth(essays, now) >= 4,
+                progressLines: (essays, stats, now) => [`${countEssaysInMonth(essays, now)} / 4 essays`]
+            },
+            {
+                title: 'October Double',
+                blurb: '2+ essays and 1,500+ words this month.',
+                check: (essays, stats, now) => countEssaysInMonth(essays, now) >= 2 && wordsInMonth(essays, now) >= 1500,
+                progressLines: (essays, stats, now) => [
+                    `${countEssaysInMonth(essays, now)} / 2 essays`,
+                    `${wordsInMonth(essays, now).toLocaleString()} / 1,500 words`
+                ]
+            },
+            {
+                title: 'November Focus',
+                blurb: 'Finish 3 essays this month.',
+                check: (essays, stats, now) => countEssaysInMonth(essays, now) >= 3,
+                progressLines: (essays, stats, now) => [`${countEssaysInMonth(essays, now)} / 3 essays`]
+            },
+            {
+                title: 'December Finish',
+                blurb: 'Complete 5 essays this month.',
+                check: (essays, stats, now) => countEssaysInMonth(essays, now) >= 5,
+                progressLines: (essays, stats, now) => [`${countEssaysInMonth(essays, now)} / 5 essays`]
+            }
+        ];
+
+        function getActiveMonthlySpec(now = new Date()) {
+            return MONTHLY_CHALLENGE_ROTATION[now.getMonth()] || MONTHLY_CHALLENGE_ROTATION[0];
+        }
+
+        function achievementById(id) {
+            return ACHIEVEMENTS.find(a => a.id === id);
+        }
+
+        function tierStepStates(group) {
+            const steps = [];
+            let firstIncomplete = -1;
+            for (let i = 0; i < group.tiers.length; i++) {
+                const ach = achievementById(group.tiers[i]);
+                if (!ach) continue;
+                const earned = ach.check(state.stats);
+                steps.push({ ach, earned, label: group.labels[i] || ach.name, index: i });
+                if (!earned && firstIncomplete < 0) firstIncomplete = i;
+            }
+            return steps.map((s, j) => ({
+                ...s,
+                stepClass: s.earned ? 'done' : (j === firstIncomplete ? 'current' : 'future')
+            }));
+        }
+
+        function renderTierGroupCard(group) {
+            const steps = tierStepStates(group);
+            const anyEarned = steps.some(s => s.earned);
+            const allEarned = steps.length > 0 && steps.every(s => s.earned);
+            const headAch = achievementById(group.tiers[0]);
+            const icon = group.icon || (headAch && headAch.icon) || 'award';
+
+            return `
+                <div class="achievement-tier-card ${anyEarned ? 'unlocked' : 'locked'}">
+                    <div class="tier-head">
+                        <div class="achievement-icon"><i data-lucide="${icon}" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="tier-title">${group.title}</div>
+                            <p class="tier-sub">${group.description}</p>
+                        </div>
+                    </div>
+                    <div class="tier-steps">
+                        ${steps.map(s => `<span class="tier-step ${s.stepClass}">${s.label}</span>`).join('')}
+                    </div>
+                    <p class="tier-sub" style="margin-top:0.65rem;">
+                        ${allEarned ? 'All steps complete!' : (steps.find(s => s.stepClass === 'current') ? `Next: ${steps.find(s => s.stepClass === 'current').ach.condition}` : (headAch ? headAch.condition : ''))}
+                    </p>
+                </div>
+            `;
+        }
+
+        function renderStandaloneAchievementCard(ach) {
+            const unlocked = state.stats.unlockedAchievements.includes(ach.id);
+            return `
+                <div class="achievement-card ${unlocked ? 'unlocked' : 'locked'}">
+                    <div class="achievement-badge"><i data-lucide="${unlocked ? 'award' : 'lock'}" aria-hidden="true"></i></div>
+                    <div class="achievement-icon"><i data-lucide="${ach.icon}" aria-hidden="true"></i></div>
+                    <div class="achievement-name">${ach.name}</div>
+                    <div class="achievement-desc">${ach.condition}</div>
+                </div>
+            `;
+        }
+
+        function renderMonthlyChallengeHtml() {
+            const now = new Date();
+            const spec = getActiveMonthlySpec(now);
+            const unlocked = state.stats.unlockedAchievements.includes(monthlyChallengeKey(now));
+            const lines = spec.progressLines(state.essays, state.stats, now);
+            const monthLabel = now.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+            return `
+                <div class="monthly-challenge-card ${unlocked ? 'unlocked' : ''}">
+                    <div class="monthly-label">Monthly challenge · ${monthLabel}</div>
+                    <h3>${spec.title}</h3>
+                    <p>${spec.blurb}</p>
+                    <div class="monthly-status" style="color: var(--text);">
+                        ${lines.map(l => `<div>${l}</div>`).join('')}
+                    </div>
+                    <p class="monthly-status" style="color: ${unlocked ? 'var(--accent)' : 'var(--text-muted)'};">
+                        ${unlocked ? 'Completed — badge earned for this month!' : 'In progress — a new challenge arrives next month.'}
+                    </p>
+                </div>
+            `;
+        }
+
         // ============ STATE ============
         let state = {
             currentPage: 'dashboard',
@@ -6061,7 +6509,57 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             apply(TENSION_WORDS.high, 2);
             apply(TENSION_WORDS.resolution, -1);
 
+            const excl = (lowText.match(/!/g) || []).length;
+            const ques = (lowText.match(/\?/g) || []).length;
+            tension += Math.min(2.2, excl * 0.75 + ques * 0.4);
+            const ellipsis = (lowText.match(/\.{3,}|…/g) || []).length;
+            tension += Math.min(1, ellipsis * 0.45);
+            const wc = lowText.split(/\s+/).filter(Boolean).length;
+            if (wc >= 1 && wc <= 7) tension += 0.5;
+            if (wc >= 40) tension += 0.4;
+
+            const extraHigh = ['worried', 'nervous', 'afraid', 'scared', 'frightened', 'terrified', 'danger', 'trouble', 'problem', 'argued', 'shouted', 'yelled', 'cried', 'sobbed', 'pounding', 'shaking', 'trapped', 'chased', 'hiding', 'secret', 'lied', 'betrayed', 'thunder', 'lightning', 'shadow', 'silence', 'frozen', 'stunned'];
+            const extraCalm = ['cozy', 'safe', 'peaceful', 'sunlight', 'gentle', 'softly', 'hug', 'warm', 'relief washed'];
+            for (const w of extraHigh) {
+                const re = new RegExp('\\b' + escapeTensionRegexp(w) + '\\b', 'gi');
+                const m = lowText.match(re);
+                if (m) tension += 0.32 * m.length;
+            }
+            for (const w of extraCalm) {
+                const p = w.toLowerCase();
+                if (p.includes(' ')) {
+                    if (lowText.includes(p)) tension -= 0.35;
+                } else {
+                    const re = new RegExp('\\b' + escapeTensionRegexp(p) + '\\b', 'gi');
+                    const m = lowText.match(re);
+                    if (m) tension -= 0.32 * m.length;
+                }
+            }
+
             return Math.max(0, Math.min(10, tension));
+        }
+
+        /** If every segment scores nearly the same, amplify differences so the coaster is readable. */
+        function spreadTensionScoresForDisplay(tensions) {
+            if (!tensions || tensions.length < 2) return tensions;
+            const min = Math.min(...tensions);
+            const max = Math.max(...tensions);
+            const span = max - min;
+            if (span >= 1.35) return tensions;
+            if (span < 0.07) {
+                const n = tensions.length;
+                return tensions.map((t, i) => {
+                    const frac = i / Math.max(n - 1, 1);
+                    return Math.max(0, Math.min(10, t + (frac - 0.5) * 1.4));
+                });
+            }
+            const mid = (min + max) / 2;
+            const half = Math.max(span / 2, 0.06);
+            const targetHalf = Math.max(half, 1.12);
+            return tensions.map(t => {
+                const d = t - mid;
+                return Math.max(0, Math.min(10, mid + (d / half) * targetHalf));
+            });
         }
 
         function analyzeTension(text) {
@@ -6105,10 +6603,13 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
 
         function drawStoryCoaster() {
             const text = document.getElementById('essay-input').value;
-            const tensions = analyzeTension(text);
+            const rawTensions = analyzeTension(text);
+            const tensions = rawTensions.length >= 2
+                ? spreadTensionScoresForDisplay(rawTensions.slice())
+                : rawTensions.slice();
             const svg = document.getElementById('story-coaster');
 
-            if (tensions.length === 0) {
+            if (rawTensions.length === 0) {
                 svg.innerHTML = `
                     <text x="300" y="90" text-anchor="middle" fill="#94A3B8" font-size="14">Start writing to see your story's tension curve</text>
                 `;
@@ -6127,24 +6628,22 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
 
             tensions.forEach((tension, i) => {
                 const x = padding + (i / Math.max(tensions.length - 1, 1)) * graphWidth;
-                const y = padding + graphHeight - (tension / 10) * graphHeight;
-                points.push({ x, y, tension });
+                const t = Number.isFinite(tension) ? tension : 5;
+                const y = padding + graphHeight - (t / 10) * graphHeight;
+                points.push({ x, y, tension: t });
 
                 if (i === 0) {
                     pathD = `M ${x} ${y}`;
                 } else {
-                    const prev = points[i - 1];
-                    const cpX = (prev.x + x) / 2;
-                    pathD += ` Q ${cpX} ${prev.y} ${x} ${y}`;
+                    pathD += ` L ${x} ${y}`;
                 }
             });
 
-            // Check for flat story
-            const avgTension = tensions.reduce((a, b) => a + b, 0) / tensions.length;
-            const isFlat = tensions.every(t => Math.abs(t - avgTension) < 1);
+            const avgRaw = rawTensions.reduce((a, b) => a + b, 0) / rawTensions.length;
+            const isFlat = rawTensions.length > 1 && rawTensions.every(t => Math.abs(t - avgRaw) < 1);
 
             document.getElementById('coaster-warning').style.display =
-                !state.deferPracticeFeedback && isFlat && tensions.length > 1 ? 'flex' : 'none';
+                !state.deferPracticeFeedback && isFlat ? 'flex' : 'none';
 
             // Labels
             const labels = [];
@@ -6535,29 +7034,104 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
 
         // ============ ACHIEVEMENTS ============
         function renderAchievements() {
-            const grid = document.getElementById('achievements-grid');
+            const root = document.getElementById('achievements-root');
+            if (!root) return;
 
-            grid.innerHTML = ACHIEVEMENTS.map(ach => {
-                const unlocked = state.stats.unlockedAchievements.includes(ach.id);
-                return `
-                    <div class="achievement-card ${unlocked ? 'unlocked' : 'locked'}">
-                        <div class="achievement-badge"><i data-lucide="${unlocked ? 'award' : 'lock'}" aria-hidden="true"></i></div>
-                        <div class="achievement-icon"><i data-lucide="${ach.icon}" aria-hidden="true"></i></div>
-                        <div class="achievement-name">${ach.name}</div>
-                        <div class="achievement-desc">${ach.condition}</div>
-                    </div>
-                `;
-            }).join('');
+            const parts = [];
+            for (const section of ACHIEVEMENT_UI_SECTIONS) {
+                if (section.kind === 'monthly') {
+                    parts.push(`
+                        <section class="achievement-section" aria-labelledby="ach-sec-${section.key}">
+                            <h2 class="achievement-section-title" id="ach-sec-${section.key}">
+                                <i data-lucide="${section.icon}" aria-hidden="true"></i> ${section.title}
+                            </h2>
+                            ${renderMonthlyChallengeHtml()}
+                        </section>
+                    `);
+                    continue;
+                }
+
+                if (section.kind === 'tiers') {
+                    const cards = (section.groupIds || [])
+                        .map(gid => ACHIEVEMENT_TIER_GROUPS.find(g => g.id === gid))
+                        .filter(Boolean)
+                        .map(renderTierGroupCard)
+                        .join('');
+                    parts.push(`
+                        <section class="achievement-section" aria-labelledby="ach-sec-${section.key}">
+                            <h2 class="achievement-section-title" id="ach-sec-${section.key}">
+                                <i data-lucide="${section.icon}" aria-hidden="true"></i> ${section.title}
+                            </h2>
+                            <div class="achievements-grid">${cards}</div>
+                        </section>
+                    `);
+                    continue;
+                }
+
+                if (section.kind === 'standalone') {
+                    const cards = (section.ids || [])
+                        .map(achievementById)
+                        .filter(Boolean)
+                        .map(renderStandaloneAchievementCard)
+                        .join('');
+                    parts.push(`
+                        <section class="achievement-section" aria-labelledby="ach-sec-${section.key}">
+                            <h2 class="achievement-section-title" id="ach-sec-${section.key}">
+                                <i data-lucide="${section.icon}" aria-hidden="true"></i> ${section.title}
+                            </h2>
+                            <div class="achievements-grid">${cards}</div>
+                        </section>
+                    `);
+                }
+            }
+
+            root.innerHTML = parts.join('');
             refreshIcons();
         }
 
         function checkAchievements() {
+            const newly = [];
             ACHIEVEMENTS.forEach(ach => {
                 if (!state.stats.unlockedAchievements.includes(ach.id) && ach.check(state.stats)) {
                     state.stats.unlockedAchievements.push(ach.id);
-                    showToast(`Achievement unlocked: ${ach.name}!`);
+                    newly.push(ach);
                 }
             });
+
+            const now = new Date();
+            const monthlyKey = monthlyChallengeKey(now);
+            const monthlySpec = getActiveMonthlySpec(now);
+            let monthlyNew = false;
+            if (!state.stats.unlockedAchievements.includes(monthlyKey) && monthlySpec.check(state.essays, state.stats, now)) {
+                state.stats.unlockedAchievements.push(monthlyKey);
+                monthlyNew = true;
+            }
+
+            const tierToNew = new Map();
+            const standaloneNew = [];
+            for (const ach of newly) {
+                const gid = ACHIEVEMENT_TIER_GROUP_BY_ACH_ID.get(ach.id);
+                if (gid) {
+                    if (!tierToNew.has(gid)) tierToNew.set(gid, []);
+                    tierToNew.get(gid).push(ach);
+                } else {
+                    standaloneNew.push(ach);
+                }
+            }
+
+            tierToNew.forEach((list, gid) => {
+                const group = ACHIEVEMENT_TIER_GROUPS.find(g => g.id === gid);
+                if (!group || list.length === 0) return;
+                const sorted = list.slice().sort((a, b) => group.tiers.indexOf(b.id) - group.tiers.indexOf(a.id));
+                const top = sorted[0];
+                if (list.length > 1) {
+                    showToast(`Achievement unlocked: ${top.name}! (${list.length} ${group.title} steps)`);
+                } else {
+                    showToast(`Achievement unlocked: ${top.name}!`);
+                }
+            });
+            standaloneNew.forEach(ach => showToast(`Achievement unlocked: ${ach.name}!`));
+            if (monthlyNew) showToast(`Monthly challenge complete: ${monthlySpec.title}!`);
 
             saveState();
             renderAchievements();
