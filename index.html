@@ -6,9 +6,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="WriteBoost">
+    <meta name="description" content="WriteBoost — practice narrative writing: stories, scenes, dialogue, and tension. Creative fiction trainer with prompts and feedback; not for formal argument or research essays.">
     <meta name="theme-color" content="#045490">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2304590'/%3E%3Cstop offset='1' stop-color='%23273462'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='128' height='128' rx='28' fill='url(%23g)'/%3E%3Ctext x='64' y='82' font-size='64' text-anchor='middle'%3E%E2%9C%8D%EF%B8%8F%3C/text%3E%3C/svg%3E">
-    <title>WriteBoost v4.0.5 - Narrative Writing Trainer</title>
+    <title>WriteBoost — Narrative writing practice</title>
     <style>
         :root {
             /* Two Pinterest palettes merged: Mediterranean blues + lemon / air surfaces */
@@ -382,8 +383,27 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+        }
+
+        .logo-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 0.08rem;
+            line-height: 1.12;
+            min-width: 0;
+        }
+
+        .logo-title {
             font-size: 1.5rem;
             font-weight: 700;
+        }
+
+        .logo-tagline {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            opacity: 0.9;
         }
 
         .version-badge {
@@ -3087,7 +3107,7 @@
                 padding: 0.75rem 1.25rem;
             }
 
-            .logo {
+            .logo-title {
                 font-size: 1.25rem;
             }
 
@@ -3270,10 +3290,17 @@
             .logo {
                 flex: 1 1 auto;
                 min-width: 0;
-                font-size: 1.05rem;
                 gap: 0.35rem;
                 flex-wrap: nowrap;
                 justify-content: flex-start;
+            }
+
+            .logo-title {
+                font-size: 1.05rem;
+            }
+
+            .logo-tagline {
+                font-size: 0.55rem;
             }
 
             .logo .lucide {
@@ -3549,6 +3576,21 @@
             flex-wrap: wrap;
             gap: 0.5rem;
         }
+
+        .dashboard-pitch {
+            margin: 0 0 1.25rem;
+            padding: 0.75rem 1.1rem;
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--primary);
+            background: var(--bg-sidebar);
+            color: var(--text-light);
+            font-size: 0.92rem;
+            line-height: 1.55;
+        }
+
+        .dashboard-pitch strong {
+            color: var(--text);
+        }
     </style>
 </head>
 <body>
@@ -3556,8 +3598,11 @@
     <header class="header">
         <div class="logo">
             <i data-lucide="pen-line" aria-hidden="true"></i>
-            <span>WriteBoost</span>
-            <span class="version-badge" id="app-version">v4.0.5</span>
+            <div class="logo-brand">
+                <span class="logo-title">WriteBoost</span>
+                <span class="logo-tagline">Narrative writing</span>
+            </div>
+            <span class="version-badge" id="app-version">v4.1.0</span>
         </div>
         <div class="header-stats">
             <div class="stat-item">
@@ -3598,6 +3643,10 @@
     <main class="main">
         <!-- Dashboard Page -->
         <div id="dashboard" class="page active">
+            <p class="dashboard-pitch" role="note">
+                <strong>WriteBoost</strong> is built for <strong>narrative writing</strong> — short stories, scenes, characters, dialogue, and tension.
+                It is <strong>not</strong> aimed at formal argument essays, research reports, or non-story exam formats; use it to practice creative prose.
+            </p>
             <div class="dashboard-empty-hint" id="dashboard-empty-hint" style="display: none;">
                 <strong>Welcome!</strong> Your stats stay at 0 until you finish your first piece — that’s normal.
                 Pick a prompt below (or plant the Daily Story Seed), write at least 50 words in Practice, then submit to unlock achievements like <strong><span class="icon-btn" style="vertical-align:middle"><i data-lucide="trophy" aria-hidden="true"></i><span>First Draft</span></span></strong>. In Practice you can set an optional word goal and see when your draft auto-saves; detailed feedback waits until after you submit.
@@ -4355,6 +4404,10 @@ Remember to:
             <div class="modal-body">
                 <div class="help-list">
                     <div class="help-item">
+                        <strong>What this app is for</strong>
+                        WriteBoost trains <strong>narrative</strong> skills (story, voice, sensory detail, structure). Don’t expect modules for thesis papers, citations, or persuasive five-paragraph essays — the prompts and feedback assume you’re writing fiction or story-like scenes.
+                    </div>
+                    <div class="help-item">
                         <strong>Top tabs (this build)</strong>
                         Left to right: <strong>Home</strong> (prompts &amp; seed) → <strong>Plan</strong> (story template) → <strong>Drills</strong> → <strong>Write</strong> → <strong>Learn</strong> → <strong>Progress and Data</strong> → <strong>Achievements</strong>. On <strong>Learn</strong>, use the large <em>section switcher</em> under the title (three stacked rows on narrow phones, three columns on wider screens).
                     </div>
@@ -4436,7 +4489,7 @@ Remember to:
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.0.11';
+        const APP_VERSION = 'v4.1.0';
 
         function refreshIcons() {
             if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
@@ -4918,12 +4971,6 @@ Remember to:
             }
         }
 
-        const FLAT_WORDS = [
-            "happy", "sad", "angry", "scared", "beautiful", "ugly", "cold", "hot",
-            "loud", "quiet", "big", "small", "good", "bad", "nice", "mean",
-            "fast", "slow", "tired", "excited", "nervous", "surprised", "bored", "brave"
-        ];
-
         const WEAK_VERBS = [
             { weak: 'said', alternatives: ['whispered', 'shouted', 'muttered', 'replied', 'declared', 'exclaimed'] },
             { weak: 'went', alternatives: ['dashed', 'crept', 'stumbled', 'wandered', 'rushed', 'strode'] },
@@ -5234,6 +5281,22 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             }
         ];
 
+        /** Escape a literal flat-word token for use inside a RegExp (word is a single token, no spaces). */
+        function escapeFlatWordToken(word) {
+            return String(word).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        /** Generic “show don’t tell” prompts for common one-word labels. */
+        function genericShowDontTell(word, hint) {
+            return {
+                sight: `What could we see on the page that shows this — not the word “${word}” by itself? (${hint})`,
+                sound: `What might we hear — voices, breath, background noise, or a telling silence?`,
+                touch: `What does a body feel here — temperature, texture, pulse, sweat, shivers, weight?`,
+                smell: `Does the place or moment carry a smell that makes the feeling concrete?`,
+                taste: `Could taste or mouth-feel appear (dry mouth, bitterness, metal, sweetness)?`
+            };
+        }
+
         const SENSORY_SUGGESTIONS = {
             angry: {
                 sight: "Did his face turn red? Did his fists clench? Did veins pop out on his neck?",
@@ -5339,8 +5402,45 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 touch: "Did hands stay calm? Did heart pound but not race?",
                 smell: "Did courage smell like iron - strong and sure?",
                 taste: "Did brave taste like steel - hard and determined?"
-            }
+            },
+            beautiful: genericShowDontTell('beautiful', 'beauty in a person, place, or object'),
+            ugly: genericShowDontTell('ugly', 'harsh or unflattering specifics'),
+            good: genericShowDontTell('good', 'what exactly is good — fair, kind, skilled, lucky?'),
+            bad: genericShowDontTell('bad', 'what kind of bad — unfair, rude, rotten, scary?'),
+            nice: genericShowDontTell('nice', 'swap vague praise for one concrete behavior or detail'),
+            mean: genericShowDontTell('mean', 'what did they do or say that hurt?'),
+            fast: genericShowDontTell('fast', 'speed compared to what — blur, pounding feet, wind?'),
+            slow: genericShowDontTell('slow', 'dragging feet, long pauses, heavy air?'),
+            bored: genericShowDontTell('bored', 'slumping, sighing, clock-watching, droning voice?'),
+            worried: genericShowDontTell('worried', 'fidgeting, checking, rehearsing disasters?'),
+            funny: genericShowDontTell('funny', 'what made someone laugh — timing, mismatch, accident?'),
+            strange: genericShowDontTell('strange', 'what rule of normal broke — sound, object, behavior?'),
+            hungry: genericShowDontTell('hungry', 'hollow stomach, dizziness, thinking only of food?'),
+            bright: genericShowDontTell('bright', 'light sources, squinting, washed-out colors?'),
+            dark: genericShowDontTell('dark', 'what disappears from view — edges, faces, path?'),
+            soft: genericShowDontTell('soft', 'fabric, voice, footsteps, pressure?'),
+            hard: genericShowDontTell('hard', 'difficult vs physically hard — pick one and show it'),
+            easy: genericShowDontTell('easy', 'what made it feel effortless — flow, luck, practice?'),
+            sleepy: genericShowDontTell('sleepy', 'heavy lids, yawning, nodding, slow thoughts?'),
+            proud: genericShowDontTell('proud', 'posture, what they refuse to apologize for?'),
+            embarrassed: genericShowDontTell('embarrassed', 'heat in face, looking away, forced laugh?'),
+            lonely: genericShowDontTell('lonely', 'empty seats, quiet phone, too-loud thoughts?'),
+            very: genericShowDontTell('very', 'pick a sharper verb or noun instead of intensifying'),
+            really: genericShowDontTell('really', 'show the proof in one concrete image or action'),
+            pretty: genericShowDontTell('pretty', 'what specifically looks pleasing — light, shape, color?'),
+            fun: genericShowDontTell('fun', 'what happened that made people grin or lean in?'),
+            weird: genericShowDontTell('weird', 'what detail would make a reader do a double-take?'),
+            gross: genericShowDontTell('gross', 'texture, smell, sound — make the reader recoil fairly'),
+            cute: genericShowDontTell('cute', 'small details readers can picture without the label'),
+            perfect: genericShowDontTell('perfect', 'what matched the ideal — line, timing, fit?'),
+            terrible: genericShowDontTell('terrible', 'what went wrong in the senses — noise, pain, shame?'),
+            amazing: genericShowDontTell('amazing', 'one moment that earns the word without saying it'),
+            suddenly: genericShowDontTell('suddenly', 'what changed in one beat — sound, motion, silence?'),
+            finally: genericShowDontTell('finally', 'show the wait — clock, breaths, repeated tries?')
         };
+
+        /** Every key must have SENSORY_SUGGESTIONS so chips always open hints. */
+        const FLAT_WORDS = Object.keys(SENSORY_SUGGESTIONS);
 
         const TENSION_WORDS = {
             calm: ["quietly", "peacefully", "smiled", "warm", "soft", "gentle", "relaxed", "calmly", "serene", "tranquil", "slowly", "breathed", "watched", "waited", "sat", "rested", "comfortable", "content", "comfortably"],
@@ -6066,6 +6166,10 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             if (pageId === 'achievements') {
                 renderAchievements();
             }
+            if (pageId === 'practice') {
+                analyzeFlatWords();
+                drawStoryCoaster();
+            }
             refreshIcons();
         }
 
@@ -6687,14 +6791,11 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
 
         // ============ SENSORY PALETTE ============
         function analyzeFlatWords() {
-            const raw = document.getElementById('essay-input').value;
-            const text = raw.toLowerCase();
+            const ta = document.getElementById('essay-input');
+            if (!ta) return;
+            const raw = ta.value;
             const previousFound = Array.isArray(state.flatWordsFound) ? state.flatWordsFound.slice() : [];
-
-            const found = FLAT_WORDS.filter(word => {
-                const regex = new RegExp(`\\b${word}\\b`, 'i');
-                return regex.test(text);
-            });
+            const found = getFlatWordsInText(raw);
 
             // Count a "replacement" when a flat word disappears from the draft (user edited it out).
             // Skip when the textarea was cleared so mass-delete doesn't inflate the count.
@@ -7382,7 +7483,13 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         function getFlatWordsInText(text) {
             const t = (text || '').toLowerCase();
             if (!t.trim()) return [];
-            return FLAT_WORDS.filter(word => new RegExp(`\\b${word}\\b`, 'i').test(t));
+            return FLAT_WORDS.filter(word => {
+                try {
+                    return new RegExp(`\\b${escapeFlatWordToken(word)}\\b`, 'i').test(t);
+                } catch (e) {
+                    return false;
+                }
+            });
         }
 
         function isTensionCurveFlatForCoaching(text) {
