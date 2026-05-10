@@ -227,6 +227,14 @@
             flex-wrap: wrap;
         }
 
+        .page > h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            line-height: 1.25;
+            color: var(--text);
+            margin-top: 0;
+        }
+
         .page > h1 svg, .page > h2 svg {
             width: 1.35rem;
             height: 1.35rem;
@@ -1171,8 +1179,10 @@
         }
 
         .writing-title {
-            font-size: 1.25rem;
+            font-size: 1.875rem;
             font-weight: 700;
+            line-height: 1.25;
+            color: var(--text);
         }
 
         .writing-toolbar {
@@ -2284,11 +2294,6 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-        }
-
-        .sensory-card.sensory-deferred .sense-buttons {
-            opacity: 0.45;
-            pointer-events: none;
         }
 
         .sr-only {
@@ -3847,10 +3852,10 @@ Remember to:
                     </div>
 
                     <!-- Sensory Palette -->
-                    <div class="card sensory-card sensory-deferred" id="sensory-card">
+                    <div class="card sensory-card" id="sensory-card">
                         <div class="card-title"><i data-lucide="palette" aria-hidden="true"></i> Sensory Palette</div>
                         <div id="flat-words-found" class="flat-words-found">
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">After you submit, you’ll get word-level tips here and on Results.</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">Flat words in your draft appear here — click one, then pick a sense for ideas.</span>
                         </div>
                         <div class="sense-buttons">
                             <button type="button" class="sense-btn" data-sense="sight"><span class="icon-btn"><i data-lucide="eye" aria-hidden="true"></i><span>Sight</span></span></button>
@@ -3860,7 +3865,7 @@ Remember to:
                             <button type="button" class="sense-btn" data-sense="touch"><span class="icon-btn"><i data-lucide="hand" aria-hidden="true"></i><span>Touch</span></span></button>
                         </div>
                         <div class="sensory-progress">
-                            <span id="sensory-progress-text">Coaching unlocks after submit</span>
+                            <span id="sensory-progress-text">Replacements count toward your Sensor badge</span>
                             <div class="progress-bar">
                                 <div class="progress-fill" id="sensory-progress-fill" style="width: 0%"></div>
                             </div>
@@ -4431,7 +4436,7 @@ Remember to:
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.0.8';
+        const APP_VERSION = 'v4.0.11';
 
         function refreshIcons() {
             if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
@@ -5656,7 +5661,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             flatWordsReplaced: 0,
             selectedFlatWord: null,
             selectedSense: null,
-            deferPracticeFeedback: true,
             revisionBaseline: null,
             resultsContextEssay: null,
             sessionChallengeTitles: [],
@@ -6074,7 +6078,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             state.challengesUsed = 0;
             state.flatWordsFound = [];
             state.flatWordsReplaced = 0;
-            state.deferPracticeFeedback = true;
             state.revisionBaseline = null;
             state.sessionChallengeTitles = [];
             sessionHiddenPromptIndices.clear();
@@ -6200,7 +6203,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             state.challengesUsed = 0;
             state.flatWordsFound = [];
             state.flatWordsReplaced = 0;
-            state.deferPracticeFeedback = true;
             state.revisionBaseline = null;
             state.sessionChallengeTitles = [];
             sessionHiddenPromptIndices.add(index);
@@ -6474,7 +6476,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 const n = el ? parseInt(el.textContent, 10) : NaN;
                 state.revisionBaseline = Number.isFinite(n) ? { score: n, criteria: null, wordCount: null } : null;
             }
-            state.deferPracticeFeedback = false;
             showPage('practice');
             analyzeFlatWords();
             drawStoryCoaster();
@@ -6643,7 +6644,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             const isFlat = rawTensions.length > 1 && rawTensions.every(t => Math.abs(t - avgRaw) < 1);
 
             document.getElementById('coaster-warning').style.display =
-                !state.deferPracticeFeedback && isFlat ? 'flex' : 'none';
+                isFlat ? 'flex' : 'none';
 
             // Labels
             const labels = [];
@@ -6713,25 +6714,12 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             if (replacementEvents > 0) checkAchievements();
         }
 
-        function setSensoryDeferredUi(deferred) {
-            const card = document.getElementById('sensory-card');
-            if (card) card.classList.toggle('sensory-deferred', deferred);
-        }
-
         function renderFlatWords() {
             const container = document.getElementById('flat-words-found');
             if (!container) return;
 
-            setSensoryDeferredUi(!!state.deferPracticeFeedback);
-
-            if (state.deferPracticeFeedback) {
-                container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">After you submit, word highlights and sensory questions appear here.</span>';
-                const pt = document.getElementById('sensory-progress-text');
-                const pf = document.getElementById('sensory-progress-fill');
-                if (pt) pt.textContent = 'Unlocks after you submit';
-                if (pf) pf.style.width = '0%';
-                return;
-            }
+            const card = document.getElementById('sensory-card');
+            if (card) card.classList.remove('sensory-deferred');
 
             if (state.flatWordsFound.length === 0) {
                 container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">No flat words detected. Keep writing!</span>';
@@ -7178,7 +7166,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 state.challengesUsed = 0;
                 state.flatWordsFound = [];
                 state.flatWordsReplaced = 0;
-                state.deferPracticeFeedback = true;
                 state.revisionBaseline = null;
                 state.sessionChallengeTitles = [];
                 updateChallengeCount();
@@ -7226,7 +7213,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         function viewEssay(index) {
             const essay = state.essays[index];
             document.getElementById('essay-input').value = essay.text;
-            state.deferPracticeFeedback = true;
             state.revisionBaseline = null;
             state.sessionChallengeTitles = [];
             state.challengesUsed = 0;
@@ -7519,7 +7505,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 showPage('practice');
                 openChallengeModal();
             } else if (c.actionKind === 'sensory' && c.hintWord) {
-                state.deferPracticeFeedback = false;
                 showPage('practice');
                 analyzeFlatWords();
                 requestAnimationFrame(() => {
@@ -8120,7 +8105,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                             if (draft.promptTitle) {
                                 document.getElementById('current-prompt-title').textContent = draft.promptTitle;
                             }
-                            state.deferPracticeFeedback = true;
                             updateWordCount();
                             drawStoryCoaster();
                             analyzeFlatWords();
