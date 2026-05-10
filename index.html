@@ -505,7 +505,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.5.7';
+var APP_VERSION = '1.5.8';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -588,6 +588,19 @@ function cloudFirebaseReady() {
   return true;
 }
 
+/** WeChat / some in-app WebViews misbehave with Firestore IndexedDB cache (phantom “no doc” → empty upload wipes cloud). */
+function cloudFirestoreAvoidPersistence() {
+  var ua = navigator.userAgent || '';
+  return /MicroMessenger/i.test(ua) || /\bQQ\//i.test(ua);
+}
+
+function tryEnableFirestorePersistence() {
+  if (cloudFirestoreAvoidPersistence()) return;
+  try {
+    firebase.firestore().enablePersistence({ synchronizeTabs: true }).catch(function() {});
+  } catch (e) {}
+}
+
 function sanitizeFamilyId(s) {
   return String(s || '').trim().replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
 }
@@ -663,9 +676,7 @@ function saveCloudFamilyAndConnect() {
       cloudUpdateStatusUI('初始化失败');
       return;
     }
-    try {
-      firebase.firestore().enablePersistence({ synchronizeTabs: true }).catch(function() {});
-    } catch (e) {}
+    tryEnableFirestorePersistence();
     cloudAttachListener();
     cloudUpdateStatusUI();
   });
@@ -748,8 +759,10 @@ function cloudSubscribeDocChanges(ref, familyAtStart) {
   });
 }
 
-/** Apply one snapshot from an authoritative read (server get) before any upload. */
-function cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap) {
+/**
+ * Apply snapshot before any upload. allowSeedEmpty: true only if server (or non-cache read) confirmed the doc does not exist — never seed from cache-only !exists.
+ */
+function cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap, allowSeedEmpty) {
   if (cloudFamilyId !== familyAtStart) return;
   if (snap.exists) {
     var data = snap.data();
@@ -764,10 +777,48 @@ function cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap) {
       lastMergedRemoteAt = Math.max(lastMergedRemoteAt, data.updatedAt || 0);
       applyRemoteDoc(data);
     }
+  } else if (!allowSeedEmpty) {
+    return;
   }
   cloudServerSynced = true;
   cloudAfterInitialHydrate();
   cloudSubscribeDocChanges(ref, familyAtStart);
+}
+
+/** Cache says “no doc” but cloud may exist — wait for a server-backed snapshot instead of uploading empty state. */
+function cloudWaitForAuthoritativeSnapshot(ref, familyAtStart) {
+  cloudUpdateStatusUI('正在从服务器同步…（微信内置浏览器可能较慢，请稍候）');
+  var settled = false;
+  var timer = setTimeout(function() {
+    if (settled || cloudFamilyId !== familyAtStart) return;
+    settled = true;
+    try { if (cloudUnsub) cloudUnsub(); } catch (e) {}
+    cloudUnsub = null;
+    cloudUpdateStatusUI('同步超时：请在微信里选「在浏览器打开」用 Safari，或换网络后重试。');
+  }, 25000);
+  try {
+    cloudUnsub = ref.onSnapshot({ includeMetadataChanges: true }, function(snap) {
+      if (settled || cloudFamilyId !== familyAtStart) return;
+      if (snap.metadata.fromCache && !snap.exists) return;
+      settled = true;
+      clearTimeout(timer);
+      try { if (cloudUnsub) cloudUnsub(); } catch (e) {}
+      cloudUnsub = null;
+      var allowSeed = !snap.exists ? !snap.metadata.fromCache : true;
+      cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap, allowSeed);
+    }, function(err) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      console.error(err);
+      cloudUpdateStatusUI('监听失败：' + formatCloudFirestoreError(err));
+    });
+  } catch (e) {
+    settled = true;
+    clearTimeout(timer);
+    console.error(e);
+    cloudUpdateStatusUI('无法完成云同步初始化，请用系统 Safari/Chrome 打开页面。');
+  }
 }
 
 function cloudAttachListener() {
@@ -781,17 +832,34 @@ function cloudAttachListener() {
   var ref = db.collection('family_score').doc(cloudFamilyId);
   var familyAtStart = cloudFamilyId;
 
-  ref.get({ source: 'server' }).then(function(snap) {
-    cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap);
-  }).catch(function(err) {
-    console.warn('Firestore get(server) failed, falling back to default', err);
-    ref.get().then(function(snap) {
-      cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap);
-    }).catch(function(e2) {
-      console.error(e2);
-      cloudUpdateStatusUI('拉取云端失败：' + formatCloudFirestoreError(e2));
+  function runAfterDefaultGet(snap) {
+    if (cloudFamilyId !== familyAtStart) return;
+    if (snap.metadata.fromCache && !snap.exists) {
+      cloudWaitForAuthoritativeSnapshot(ref, familyAtStart);
+      return;
+    }
+    var allowSeed = !snap.metadata.fromCache;
+    cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap, allowSeed);
+  }
+
+  function tryServerGet(attempt) {
+    ref.get({ source: 'server' }).then(function(snap) {
+      if (cloudFamilyId !== familyAtStart) return;
+      cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap, true);
+    }).catch(function(err) {
+      if (cloudFamilyId !== familyAtStart) return;
+      console.warn('Firestore get(server) attempt ' + attempt, err);
+      if (attempt < 3) {
+        setTimeout(function() { tryServerGet(attempt + 1); }, 600 * (attempt + 1));
+        return;
+      }
+      ref.get().then(runAfterDefaultGet).catch(function(e2) {
+        console.error(e2);
+        cloudUpdateStatusUI('拉取云端失败：' + formatCloudFirestoreError(e2));
+      });
     });
-  });
+  }
+  tryServerGet(0);
 }
 
 function scheduleCloudPush(immediate) {
@@ -844,9 +912,7 @@ function cloudTryAutoConnect() {
       cloudUpdateStatusUI('Firebase 配置无效');
       return;
     }
-    try {
-      firebase.firestore().enablePersistence({ synchronizeTabs: true }).catch(function() {});
-    } catch (e) {}
+    tryEnableFirestorePersistence();
     cloudAttachListener();
   });
 }
