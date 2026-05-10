@@ -11,7 +11,7 @@
 body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif; background: #f4f6fb; min-height: 100vh; color: #2d3748; }
 
 .topbar { position: sticky; top: 0; z-index: 100; padding: 0 16px; height: 56px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 12px rgba(0,0,0,0.10); transition: background 0.3s; }
-.topbar-brian { background: linear-gradient(135deg, #4f86f7, #3a6fd4); }
+.topbar-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
 .topbar-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
 .topbar-title { color: white; font-size: 18px; font-weight: 800; }
 .topbar-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right; }
@@ -23,16 +23,22 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 .kid-btn .avatar { font-size: 32px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
 .kid-btn .avatar.ph { font-size: 34px; }
 .kid-btn .total { font-size: 12px; font-weight: 600; }
-.kid-btn.active-brian { border-color: #4f86f7; background: #ebf2ff; color: #4f86f7; }
+.kid-btn.active-brian { border-color: #EE5802; background: #FFF0E6; color: #EE5802; }
 .kid-btn.active-linden { border-color: #48bb78; background: #e6f7ee; color: #48bb78; }
 
 .score-banner { padding: 16px; transition: background 0.3s; }
-.score-banner-brian { background: linear-gradient(135deg, #4f86f7, #3a6fd4); }
+.score-banner-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
 .score-banner-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
-.score-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; max-width: 720px; margin: 0 auto; }
+.score-cards { display: grid; grid-template-columns: 1fr; gap: 10px; max-width: 720px; margin: 0 auto; }
+@media (min-width: 520px) {
+  .score-cards { grid-template-columns: repeat(3, 1fr); }
+}
 .score-card { background: rgba(255,255,255,0.18); border-radius: 14px; padding: 12px 8px; text-align: center; backdrop-filter: blur(4px); }
 .score-card .sc-label { color: rgba(255,255,255,0.8); font-size: 11px; margin-bottom: 4px; }
 .score-card .sc-val { color: white; font-size: 24px; font-weight: 800; }
+.score-card .sc-val.sc-neg { color: #fecaca; }
+.score-card .sc-val.sc-pos { color: #ecfdf5; }
+.score-card .sc-val.sc-zero { color: rgba(255,255,255,0.92); }
 
 .week-summary { max-width: 720px; margin: 14px auto 0; padding: 12px 10px; background: rgba(255,255,255,0.14); border-radius: 14px; backdrop-filter: blur(4px); }
 .week-summary-hd { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
@@ -54,7 +60,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 .section-tabs { background: white; border-bottom: 2px solid #e2e8f0; position: sticky; top: 130px; z-index: 98; }
 .section-tabs-inner { max-width: 720px; margin: 0 auto; display: flex; }
 .section-tab { flex: 1; padding: 12px 6px; text-align: center; font-size: 13px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; user-select: none; }
-.section-tab.active-brian { color: #4f86f7; border-bottom-color: #4f86f7; }
+.section-tab.active-brian { color: #EE5802; border-bottom-color: #EE5802; }
 .section-tab.active-linden { color: #48bb78; border-bottom-color: #48bb78; }
 
 .main-content { max-width: 720px; margin: 0 auto; padding: 16px; }
@@ -114,13 +120,13 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 
 .award-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 .award-opt { padding: 7px 14px; border-radius: 20px; border: 2px solid #e2e8f0; font-size: 13px; font-weight: 600; cursor: pointer; background: white; color: #718096; transition: all 0.15s; }
-.award-opt.sel-brian { border-color: #4f86f7; background: #ebf2ff; color: #4f86f7; }
+.award-opt.sel-brian { border-color: #EE5802; background: #FFF0E6; color: #EE5802; }
 .award-opt.sel-linden { border-color: #48bb78; background: #e6f7ee; color: #48bb78; }
 
 .submit-row { padding: 16px; max-width: 720px; margin: 0 auto; position: sticky; bottom: 0; background: linear-gradient(to top, #f4f6fb 65%, transparent); padding-top: 30px; }
 .submit-btn { width: 100%; padding: 16px; border-radius: 16px; color: white; font-size: 17px; font-weight: 700; border: none; cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 20px rgba(0,0,0,0.18); }
 .submit-btn:hover { opacity: 0.9; }
-.submit-btn-brian { background: linear-gradient(135deg, #4f86f7, #3a6fd4); }
+.submit-btn-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
 .submit-btn-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
 
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
@@ -129,12 +135,12 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 .overlay.show .modal { transform: translateY(0); }
 .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
 .modal-preview { border-radius: 14px; padding: 14px 16px; margin-bottom: 20px; }
-.modal-preview-brian { background: #ebf2ff; }
+.modal-preview-brian { background: #FFF0E6; }
 .modal-preview-linden { background: #e6f7ee; }
 .m-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px; border-bottom: 1px solid rgba(0,0,0,0.06); }
 .m-row:last-child { border: none; }
 .m-total { display: flex; justify-content: space-between; padding-top: 10px; margin-top: 4px; font-size: 18px; font-weight: 800; border-top: 2px solid currentColor; }
-.m-total-brian { color: #4f86f7; border-color: #4f86f7; }
+.m-total-brian { color: #EE5802; border-color: #EE5802; }
 .m-total-linden { color: #48bb78; border-color: #48bb78; }
 .btn-row { display: flex; gap: 12px; }
 .btn { flex: 1; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.15s; }
@@ -149,12 +155,12 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 .page.active { display: block; }
 
 .hist-summary { border-radius: 16px; padding: 16px 20px; margin-bottom: 16px; color: white; }
-.hist-summary-brian { background: linear-gradient(135deg, #4f86f7, #3a6fd4); }
+.hist-summary-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
 .hist-summary-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
 .hist-summary .hs-label { font-size: 13px; opacity: 0.8; margin-bottom: 4px; }
 .hist-summary .hs-val { font-size: 38px; font-weight: 900; }
 .hist-day { background: white; border-radius: 16px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-.hd-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; }
+.hd-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 14px 16px; gap: 8px; }
 .hd-date { font-size: 14px; font-weight: 700; }
 .hd-body { padding: 0 16px 12px; }
 .hi { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
@@ -163,11 +169,14 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 /* RULES PAGE */
 .rules-page { padding: 0; }
 .rules-card { background: white; border-radius: 16px; padding: 20px 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-.rules-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.rules-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.rules-card-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.rules-add-custom-btn { font-size: 13px; padding: 8px 16px; border-radius: 20px; border: none; background: linear-gradient(135deg, #FF8F4A, #EE5802); color: white; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(238,88,2,0.35); }
+.rules-add-custom-btn:active { opacity: 0.92; transform: scale(0.98); }
 .rules-card-title { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
 .rules-edit-btn { font-size: 13px; padding: 5px 14px; border-radius: 20px; border: 1.5px solid #e2e8f0; background: white; cursor: pointer; font-weight: 600; color: #718096; transition: all 0.15s; }
-.rules-edit-btn:hover { border-color: #4f86f7; color: #4f86f7; }
-.rules-edit-btn.editing { background: #4f86f7; border-color: #4f86f7; color: white; }
+.rules-edit-btn:hover { border-color: #EE5802; color: #EE5802; }
+.rules-edit-btn.editing { background: #EE5802; border-color: #EE5802; color: white; }
 .rules-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
 .rules-row:last-child { border-bottom: none; }
 .rules-icon-cell { flex-shrink: 0; margin-top: 2px; width: 28px; display: flex; align-items: flex-start; justify-content: center; }
@@ -200,14 +209,14 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 .rules-award-pts { font-weight: 700; color: #6b46c1; }
 
 .rules-input { border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 4px 6px; font-size: 13px; outline: none; }
-.rules-input:focus { border-color: #4f86f7; }
+.rules-input:focus { border-color: #EE5802; }
 
 .sync-bar { background: linear-gradient(180deg, #eef2ff 0%, #e8ecf4 100%); border-bottom: 1px solid #c3d0e8; padding: 8px 14px; }
 .sync-bar-inner { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #4a5568; }
-.sync-bar-inner .ph-cloud { font-size: 20px; color: #4f86f7; flex-shrink: 0; }
+.sync-bar-inner .ph-cloud { font-size: 20px; color: #EE5802; flex-shrink: 0; }
 .sync-bar-text { flex: 1; min-width: 0; line-height: 1.35; }
-.sync-bar-btn { padding: 6px 14px; border-radius: 10px; border: 1.5px solid #4f86f7; background: white; color: #4f86f7; font-weight: 700; cursor: pointer; font-size: 12px; flex-shrink: 0; }
-.sync-bar-btn:hover { background: #ebf2ff; }
+.sync-bar-btn { padding: 6px 14px; border-radius: 10px; border: 1.5px solid #EE5802; background: white; color: #EE5802; font-weight: 700; cursor: pointer; font-size: 12px; flex-shrink: 0; }
+.sync-bar-btn:hover { background: #FFF0E6; }
 
 .cloud-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; }
 .cloud-overlay.show { display: flex; }
@@ -216,16 +225,30 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 .cloud-hint { font-size: 13px; color: #718096; margin-bottom: 14px; line-height: 1.5; }
 .cloud-modal label { display: block; font-size: 12px; font-weight: 700; color: #4a5568; margin-bottom: 6px; }
 .cloud-input { width: 100%; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 15px; margin-bottom: 14px; outline: none; }
-.cloud-input:focus { border-color: #4f86f7; }
+.cloud-input:focus { border-color: #EE5802; }
 .cloud-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 .cloud-btns button { flex: 1; min-width: 100px; padding: 10px; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; font-size: 14px; }
-.cloud-btns .btn-primary { background: #4f86f7; color: white; }
+.cloud-btns .btn-primary { background: #EE5802; color: white; }
 .cloud-btns .btn-secondary { background: #edf2f7; color: #4a5568; }
 .cloud-btns .btn-disconnect { background: #fff5f5; color: #c53030; border: 1.5px solid #feb2b2; flex: 1 1 100%; }
 .cloud-setup-details { font-size: 12px; color: #4a5568; line-height: 1.55; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; background: #f7fafc; }
 .cloud-setup-details summary { cursor: pointer; font-weight: 700; color: #2d3748; }
 .cloud-setup-details ol { margin: 10px 0 0 18px; padding: 0; }
 .cloud-err { color: #c53030; font-size: 12px; margin-top: 10px; min-height: 1.2em; }
+
+.history-edit-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 320; display: none; align-items: center; justify-content: center; padding: 16px; }
+.history-edit-overlay.show { display: flex; }
+.history-edit-modal { background: white; border-radius: 18px; padding: 20px; max-width: 420px; width: 100%; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+.history-edit-modal h3 { font-size: 17px; margin-bottom: 12px; color: #2d3748; }
+.history-edit-modal .he-field { margin-bottom: 12px; }
+.history-edit-modal label { display: block; font-size: 12px; font-weight: 700; color: #4a5568; margin-bottom: 4px; }
+.history-edit-items { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.history-edit-item-row { display: flex; gap: 8px; align-items: center; }
+.he-del-btn { flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid rgba(229,62,62,0.45); background: rgba(255,255,255,0.95); color: #c53030; font-size: 18px; line-height: 1; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+.he-del-btn:hover { background: #fff5f5; border-color: #e53e3e; }
+.he-del-btn:active { transform: scale(0.96); }
+.hist-edit-btn { font-size: 12px; padding: 4px 12px; border-radius: 10px; border: 1.5px solid #EE5802; background: #fff; color: #EE5802; font-weight: 700; cursor: pointer; flex-shrink: 0; }
+.hist-edit-btn:active { opacity: 0.88; background: #FFF0E6; }
 
 @media (max-width: 420px) {
   .two-col { grid-template-columns: 1fr; }
@@ -261,9 +284,9 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 
 <div class="score-banner score-banner-brian" id="score-banner">
   <div class="score-cards">
-    <div class="score-card"><div class="sc-label">今日加分</div><div class="sc-val" id="disp-plus">+0</div></div>
-    <div class="score-card"><div class="sc-label">今日扣分</div><div class="sc-val" id="disp-minus">0</div></div>
-    <div class="score-card"><div class="sc-label">累计总分</div><div class="sc-val" id="disp-total">0</div></div>
+    <div class="score-card"><div class="sc-label">今日得分</div><div class="sc-val sc-zero" id="disp-today-net">0</div></div>
+    <div class="score-card"><div class="sc-label">个人累计</div><div class="sc-val" id="disp-total">0</div></div>
+    <div class="score-card"><div class="sc-label">两人合计</div><div class="sc-val" id="disp-combined-total">0</div></div>
   </div>
   <div class="week-summary" id="week-summary">
     <div class="week-summary-hd">
@@ -418,6 +441,8 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
     </div>
   </div>
 
+  <div id="custom-extras-container"></div>
+
   <div class="task-card col">
     <div class="row">
       <i class="t-icon ph ph-trophy" aria-hidden="true"></i>
@@ -452,7 +477,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
     <div class="modal-preview modal-preview-brian" id="modal-preview"></div>
     <div class="btn-row">
       <button class="btn btn-cancel" onclick="closeModal()">取消</button>
-      <button class="btn" id="modal-ok" style="background:#4f86f7;color:white;" onclick="confirmSubmit()">确认提交</button>
+      <button class="btn" id="modal-ok" style="background:#EE5802;color:white;" onclick="confirmSubmit()">确认提交</button>
     </div>
   </div>
 </div>
@@ -484,6 +509,26 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
   </div>
 </div>
 
+<div class="history-edit-overlay" id="history-edit-overlay" onclick="if(event.target===this)closeHistoryEdit()">
+  <div class="history-edit-modal" onclick="event.stopPropagation()">
+    <h3>修改历史记录</h3>
+    <p class="cloud-hint" style="margin-top:-6px">日期：<strong id="history-edit-date"></strong></p>
+    <div class="he-field">
+      <label for="history-edit-net">当日净得分（由下方明细自动加总）</label>
+      <input type="number" id="history-edit-net" class="cloud-input" style="margin-bottom:0" readonly title="修改各行分数后自动更新">
+    </div>
+    <div class="he-field">
+      <label>明细行（名称 + 分数，可增删）</label>
+      <div class="history-edit-items" id="history-edit-items"></div>
+      <button type="button" class="sync-bar-btn" style="margin-top:4px" onclick="historyEditAddRow()">+ 添加一行</button>
+    </div>
+    <div class="cloud-btns" style="margin-top:16px">
+      <button type="button" class="btn-secondary" onclick="closeHistoryEdit()">取消</button>
+      <button type="button" class="btn-primary" onclick="saveHistoryEdit()">保存</button>
+    </div>
+  </div>
+</div>
+
 <template id="tpl-duo-owl">
 <svg class="duo-owl-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
   <ellipse cx="32" cy="39" rx="25" ry="22" fill="#58CC02"/>
@@ -505,7 +550,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.5.8';
+var APP_VERSION = '1.8.0';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -708,6 +753,7 @@ function replaceRFromObject(obj) {
   }
   delete d.writeCnThresh;
   delete d.writeCnPts;
+  if (!Array.isArray(d.customExtras)) d.customExtras = [];
   Object.keys(R).forEach(function(k) { delete R[k]; });
   Object.assign(R, d);
 }
@@ -955,6 +1001,7 @@ function makeState() {
   return { hw: null, cnMin: 0, enMin: 0, jpUnit: 0, cantoUnit: 0,
            outdoor: null, meal: null,
            laundry: 0, dishes: 0, enWords: 0, bball: 0,
+           customCounts: {},
            award: 'none' };
 }
 var state = { brian: makeState(), linden: makeState() };
@@ -979,7 +1026,8 @@ function defaultRules() {
     awardPts:    { gold: 10, special: 15, top: 20 },
     awardWeeks:  { gold: 3,  special: 5,  top: 8 },
     writeEnThresh: [50, 75, 125, 200, 300],
-    writeEnPts:    [1, 2, 3, 4, 5]
+    writeEnPts:    [1, 2, 3, 4, 5],
+    customExtras: []
   };
 }
 
@@ -1000,6 +1048,15 @@ function saveRulesToDisk(r) {
 }
 
 var R = loadRules();
+if (!Array.isArray(R.customExtras)) R.customExtras = [];
+
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function escapeAttr(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
 (function migrateOutdoorMealPenalty() {
   if (localStorage.getItem('rules_penalty_mig_v1')) return;
   var d = defaultRules();
@@ -1158,8 +1215,80 @@ function renderTodayUI() {
   // writing (English only)
   document.getElementById('input-enw').value = s.enWords || 0;
   updateWriteBadge();
+  renderCustomExtrasInToday();
   // award
   setAwardUI(s.award);
+}
+
+function renderCustomExtrasInToday() {
+  var el = document.getElementById('custom-extras-container');
+  if (!el) return;
+  var rules = R.customExtras || [];
+  if (!rules.length) {
+    el.innerHTML = '';
+    return;
+  }
+  var s = get();
+  if (!s.customCounts) s.customCounts = {};
+  var html = '<div class="sec-hdr" style="margin-top:24px">自定义加分</div>';
+  rules.forEach(function(rule) {
+    var id = rule.id;
+    var cnt = s.customCounts[id] || 0;
+    var pts = rule.plus || 0;
+    html += '<div class="task-card">';
+    html += '<span class="t-icon" style="font-size:26px;line-height:1" aria-hidden="true">' + escapeHtml(rule.emoji || '✨') + '</span>';
+    html += '<div class="t-info"><div class="t-name">' + escapeHtml(rule.name) + '</div><div class="t-sub">' + escapeHtml(rule.sub) + '</div></div>';
+    html += '<span class="badge badge-plus" id="ce-badge-' + id + '">+' + (cnt * pts) + '分</span>';
+    html += '<div class="stepper">';
+    html += '<button type="button" class="step-btn" onclick="addCustomExtraCount(\'' + id + '\',-1)">−</button>';
+    html += '<div class="step-val" id="ce-cnt-' + id + '">' + cnt + '</div>';
+    html += '<button type="button" class="step-btn" onclick="addCustomExtraCount(\'' + id + '\',1)">+</button>';
+    html += '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+function addCustomExtraCount(id, delta) {
+  var s = get();
+  if (!s.customCounts) s.customCounts = {};
+  s.customCounts[id] = Math.max(0, (s.customCounts[id] || 0) + delta);
+  renderCustomExtrasInToday();
+  updateBanner();
+}
+
+function addCustomExtraRule() {
+  if (!Array.isArray(R.customExtras)) R.customExtras = [];
+  R.customExtras.push({
+    id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 9),
+    emoji: '✨',
+    name: '新加分项',
+    sub: '每次 +1 分（可在下方改说明与分数）',
+    plus: 1
+  });
+  renderRules();
+}
+
+/** 未点「编辑」时也可直接新增：进入编辑模式并插入一条，避免找不到入口。 */
+function enterRulesEditAndAddCustomExtra() {
+  if (!Array.isArray(R.customExtras)) R.customExtras = [];
+  rulesEditing = true;
+  addCustomExtraRule();
+  setTimeout(function() {
+    var el = document.getElementById('rules-custom-extras-card');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    var first = document.querySelector('#rules-custom-extras-card input[id^="ce-name-"]');
+    if (first) try { first.focus(); } catch (e) {}
+  }, 80);
+}
+
+function removeCustomExtraRule(id) {
+  if (!Array.isArray(R.customExtras)) return;
+  R.customExtras = R.customExtras.filter(function(r) { return r.id !== id; });
+  if (state.brian.customCounts) delete state.brian.customCounts[id];
+  if (state.linden.customCounts) delete state.linden.customCounts[id];
+  renderRules();
+  renderTodayUI();
+  updateBanner();
 }
 
 function updateReadBadge() {
@@ -1259,13 +1388,23 @@ function setAwardUI(val) {
 }
 
 // ============ BANNER ============
+function grandTotalCombined() {
+  var t = 0;
+  KIDS.forEach(function(kid) { t += grandTotalForKid(kid); });
+  return t;
+}
+
 function updateBanner() {
-  var res = calcToday();
-  document.getElementById('disp-plus').textContent = '+' + res.plus;
-  document.getElementById('disp-minus').textContent = res.minus;
-  var hist = getHistory(currentKid);
-  var past = 0; hist.forEach(function(d) { past += (d.net || 0); });
-  document.getElementById('disp-total').textContent = past + res.net;
+  var todayNet = netForKidDay(currentKid, getTodayKey());
+  var elToday = document.getElementById('disp-today-net');
+  if (elToday) {
+    elToday.textContent = (todayNet >= 0 ? '+' : '') + todayNet;
+    elToday.className = 'sc-val ' + (todayNet > 0 ? 'sc-pos' : (todayNet < 0 ? 'sc-neg' : 'sc-zero'));
+  }
+  document.getElementById('disp-total').textContent = (grandTotalForKid(currentKid) >= 0 ? '+' : '') + grandTotalForKid(currentKid);
+  var comb = grandTotalCombined();
+  var combEl = document.getElementById('disp-combined-total');
+  if (combEl) combEl.textContent = (comb >= 0 ? '+' : '') + comb;
   updateWeekSummary();
   scheduleCloudPush();
 }
@@ -1281,6 +1420,10 @@ function calcToday() {
   var pts = { laundry: R.optional[0].plus, dishes: R.optional[1].plus, bball: R.optional[3].plus };
   plus += s.laundry * pts.laundry + s.dishes * pts.dishes + calcWriteScore() + s.bball * pts.bball;
   plus += (R.awardPts[s.award] || 0);
+  (R.customExtras || []).forEach(function(rule) {
+    var cnt = (s.customCounts && s.customCounts[rule.id]) || 0;
+    plus += cnt * (rule.plus || 0);
+  });
   return { plus: plus, minus: ded, net: plus - ded };
 }
 
@@ -1299,10 +1442,133 @@ function historyNetForDay(kid, key) {
   return null;
 }
 
+function historyEntryForDay(kid, key) {
+  var hist = getHistory(kid);
+  for (var i = 0; i < hist.length; i++) if (hist[i].date === key) return hist[i];
+  return null;
+}
+
+/** 历史行是否为「再次提交」分隔行 */
+function isHistorySepItem(it) {
+  return (it.score === 0 || it.score === undefined) && String(it.name || '').indexOf('——') === 0;
+}
+
+/** 取最后一次提交对应条目块（分隔行之后；无分隔则整段为第一次提交） */
+function lastSegmentItems(items) {
+  var segs = [[]];
+  (items || []).forEach(function(it) {
+    if (isHistorySepItem(it)) segs.push([]);
+    else segs[segs.length - 1].push(it);
+  });
+  return segs[segs.length - 1] || [];
+}
+
+/** 按 key 汇总条目，用于与表单逐项 diff（key 缺省时用 name） */
+function buildItemStateFromItems(items) {
+  var m = {};
+  (items || []).forEach(function(it) {
+    if (isHistorySepItem(it)) return;
+    var k = it.key || it.name;
+    var sc = Number(it.score) || 0;
+    if (!m[k]) m[k] = { score: 0, name: it.name };
+    m[k].score += sc;
+    m[k].name = it.name;
+  });
+  return m;
+}
+
+function cloneItemState(state) {
+  if (!state || typeof state !== 'object') return {};
+  try { return JSON.parse(JSON.stringify(state)); } catch (e) { return {}; }
+}
+
+/** 今日条目中，上次提交后的分项快照（无 _lastItemState 时从最后一段历史行推断） */
+function getPrevItemStateForSubmit(ex) {
+  if (ex._lastItemState && typeof ex._lastItemState === 'object' && Object.keys(ex._lastItemState).length)
+    return cloneItemState(ex._lastItemState);
+  return buildItemStateFromItems(lastSegmentItems(ex.items));
+}
+
+/** 旧版历史行没有 key，与新版 buildItems 的 key 无法对齐，需用单笔净分变动过渡一次 */
+function lastSegmentLacksStableKeys(ex) {
+  if (ex._lastItemState && typeof ex._lastItemState === 'object' && Object.keys(ex._lastItemState).length) return false;
+  var seg = lastSegmentItems(ex.items || []);
+  return seg.length > 0 && seg.some(function(it) { return !it.key; });
+}
+
+function formItemsHaveStableKeys(newItems) {
+  return (newItems || []).some(function(it) { return it.key; });
+}
+
+/**
+ * 再次提交：分项变动 + 新快照。旧数据兼容时只追加一条「净分变动」。
+ */
+function computeResubmitDiff(ex, newItems, formNet) {
+  var lastF = ex._lastFormNet != null ? ex._lastFormNet : ex.net;
+  var delta = formNet - lastF;
+  if (lastSegmentLacksStableKeys(ex) && formItemsHaveStableKeys(newItems)) {
+    return {
+      deltas: delta !== 0 ? [{ key: '_legacy_net', name: '本次净分变动（旧记录转新格式）', score: delta }] : [],
+      nextState: buildItemStateFromItems(newItems),
+      legacy: true
+    };
+  }
+  var prevSt = getPrevItemStateForSubmit(ex);
+  var d = diffItemStateAgainstForm(prevSt, newItems);
+  d.legacy = false;
+  return d;
+}
+
+/**
+ * 将上次快照与当前 buildItems 对比，得到分项变动（仅非零变动）。
+ * nextState 为当前表单分项快照，写入 _lastItemState 供下次 diff。
+ */
+function diffItemStateAgainstForm(prevState, newItems) {
+  var next = {};
+  (newItems || []).forEach(function(it) {
+    var k = it.key || it.name;
+    var sc = Number(it.score) || 0;
+    if (!next[k]) next[k] = { score: 0, name: it.name };
+    next[k].score += sc;
+    next[k].name = it.name;
+  });
+  prevState = prevState || {};
+  var deltas = [];
+  Object.keys(next).forEach(function(k) {
+    var pv = prevState[k] ? prevState[k].score : 0;
+    var nv = next[k].score;
+    var d = nv - pv;
+    if (d !== 0) deltas.push({ key: k, name: next[k].name, score: d });
+  });
+  Object.keys(prevState).forEach(function(k) {
+    if (next[k]) return;
+    var pv = prevState[k].score;
+    if (pv !== 0) deltas.push({ key: k, name: prevState[k].name || k, score: -pv });
+  });
+  return { deltas: deltas, nextState: next };
+}
+
+/** 今日：历史累计分 +（当前表单净分 − 上次提交时的表单净分）。其它日期：历史记录。 */
 function netForKidDay(kid, key) {
-  if (key === getTodayKey()) return calcTodayForKid(kid).net;
-  var h = historyNetForDay(kid, key);
-  return h === null ? 0 : h;
+  var tkey = getTodayKey();
+  if (key !== tkey) {
+    var h = historyNetForDay(kid, key);
+    return h === null ? 0 : h;
+  }
+  var ex = historyEntryForDay(kid, key);
+  if (!ex) return calcTodayForKid(kid).net;
+  var lastF = ex._lastFormNet != null ? ex._lastFormNet : ex.net;
+  return ex.net + (calcTodayForKid(kid).net - lastF);
+}
+
+function grandTotalForKid(kid) {
+  var tkey = getTodayKey();
+  var hist = getHistory(kid);
+  var past = 0;
+  hist.forEach(function(d) {
+    if (d.date !== tkey) past += (d.net || 0);
+  });
+  return past + netForKidDay(kid, tkey);
 }
 
 function updateWeekSummary() {
@@ -1345,9 +1611,7 @@ function saveHistory(kid, arr) {
 }
 function refreshTotals() {
   KIDS.forEach(function(kid) {
-    var hist = getHistory(kid);
-    var total = 0; hist.forEach(function(d) { total += (d.net || 0); });
-    document.getElementById('total-' + kid).textContent = '共 ' + total + ' 分';
+    document.getElementById('total-' + kid).textContent = '共 ' + grandTotalForKid(kid) + ' 分';
   });
 }
 
@@ -1357,27 +1621,32 @@ function buildItems() {
   var items = [];
   var m0 = R.required[0].minus, m3 = R.required[3].minus, m4 = R.required[4].minus;
   if (s.hw !== true && m0 > 0) {
-    items.push({ name: R.required[0].name + (s.hw === false ? '（未完成）' : '（未记录）'), score: -m0 });
+    items.push({ key: 'req_hw', name: R.required[0].name + (s.hw === false ? '（未完成）' : '（未记录）'), score: -m0 });
   }
-  var r = calcReadScore(); if (r !== 0) items.push({ name: '读书（中' + s.cnMin + '+英' + s.enMin + '分）', score: r });
-  var d = calcDuoScore(); if (d !== 0) items.push({ name: '多邻国（日' + s.jpUnit + '+粤' + s.cantoUnit + '）', score: d });
+  var r = calcReadScore(); if (r !== 0) items.push({ key: 'read', name: '读书（中' + s.cnMin + '+英' + s.enMin + '分）', score: r });
+  var d = calcDuoScore(); if (d !== 0) items.push({ key: 'duo', name: '多邻国（日' + s.jpUnit + '+粤' + s.cantoUnit + '）', score: d });
   if (s.outdoor !== 'done' && s.outdoor !== 'cca' && m3 > 0) {
-    items.push({ name: R.required[3].name + (s.outdoor === 'fail' ? '（未完成）' : '（未记录）'), score: -m3 });
+    items.push({ key: 'outdoor', name: R.required[3].name + (s.outdoor === 'fail' ? '（未完成）' : '（未记录）'), score: -m3 });
   }
   if (s.meal !== true && m4 > 0) {
-    items.push({ name: R.required[4].name + (s.meal === false ? '（需改进）' : '（未记录）'), score: -m4 });
+    items.push({ key: 'meal', name: R.required[4].name + (s.meal === false ? '（需改进）' : '（未记录）'), score: -m4 });
   }
-  if (s.laundry > 0) items.push({ name: R.optional[0].name + '×' + s.laundry, score: s.laundry * R.optional[0].plus });
-  if (s.dishes > 0) items.push({ name: R.optional[1].name + '×' + s.dishes, score: s.dishes * R.optional[1].plus });
-  var ws = calcWriteScore(); if (ws > 0) items.push({ name: '英文写作（' + s.enWords + ' 词）', score: ws });
-  if (s.bball > 0) items.push({ name: R.optional[3].name + '×' + s.bball, score: s.bball * R.optional[3].plus });
-  if (s.award !== 'none') items.push({ name: '获奖：' + R.awardLabels[s.award], score: R.awardPts[s.award] });
-  var net = 0; items.forEach(function(it) { net += it.score; });
-  return { items: items, net: net };
+  if (s.laundry > 0) items.push({ key: 'laundry', name: R.optional[0].name + '×' + s.laundry, score: s.laundry * R.optional[0].plus });
+  if (s.dishes > 0) items.push({ key: 'dishes', name: R.optional[1].name + '×' + s.dishes, score: s.dishes * R.optional[1].plus });
+  var ws = calcWriteScore(); if (ws > 0) items.push({ key: 'write', name: '英文写作（' + s.enWords + ' 词）', score: ws });
+  if (s.bball > 0) items.push({ key: 'bball', name: R.optional[3].name + '×' + s.bball, score: s.bball * R.optional[3].plus });
+  (R.customExtras || []).forEach(function(rule) {
+    var cnt = (s.customCounts && s.customCounts[rule.id]) || 0;
+    if (cnt > 0 && (rule.plus || 0) > 0) items.push({ key: 'custom:' + rule.id, name: rule.name + '×' + cnt, score: cnt * rule.plus });
+  });
+  if (s.award !== 'none') items.push({ key: 'award', name: '获奖：' + R.awardLabels[s.award], score: R.awardPts[s.award] });
+  /** 与横幅/本周用的 calcToday().net 必须一致，否则多次提交时 delta 与 netForKidDay 会算错 */
+  return { items: items, net: calcToday().net };
 }
 
 function openModal() {
   var res = buildItems();
+  var formNet = calcToday().net;
   document.getElementById('modal-title').textContent = (currentKid === 'brian' ? 'Brian' : 'Linden') + ' 今日积分确认';
   var html = '';
   res.items.forEach(function(it) {
@@ -1385,27 +1654,196 @@ function openModal() {
     html += '<div class="m-row"><span>' + it.name + '</span><span style="font-weight:700;color:' + color + ';">' + (it.score>=0?'+':'') + it.score + '分</span></div>';
   });
   if (!res.items.length) html = '<div style="color:#aaa;padding:8px 0">今日无记录</div>';
-  html += '<div class="m-total m-total-' + currentKid + '"><span>今日合计</span><span>' + (res.net>=0?'+':'') + res.net + '分</span></div>';
+  html += '<div class="m-total m-total-' + currentKid + '"><span>本次表单净分</span><span>' + (formNet>=0?'+':'') + formNet + '分</span></div>';
+  var exToday = historyEntryForDay(currentKid, getTodayKey());
+  if (exToday) {
+    var lastF = exToday._lastFormNet != null ? exToday._lastFormNet : exToday.net;
+    var delta = formNet - lastF;
+    var nextTot = exToday.net + delta;
+    var diffPv = computeResubmitDiff(exToday, res.items, formNet);
+    html += '<div style="font-size:12px;color:#718096;margin-top:10px;line-height:1.5">今日已累计 <b style="color:#2d3748">' + exToday.net + '</b> 分。保存后本次变动 <b style="color:#2d3748">' + (delta >= 0 ? '+' : '−') + Math.abs(delta) + '</b> 分，<strong>今日合计 ' + (nextTot >= 0 ? '+' : '') + nextTot + ' 分</strong>（与下方累计总分一致）。</div>';
+    if (diffPv.legacy && diffPv.deltas.length) {
+      html += '<div style="font-size:11px;color:#718096;margin-top:6px">本条为旧数据兼容：历史中只记一笔净分变动；之后再提交将按分项增减记录。</div>';
+    }
+    if (diffPv.deltas.length) {
+      html += '<div style="font-size:12px;color:#4a5568;margin-top:8px;line-height:1.55"><strong>再次提交只记入与上次表单相比有变化的分项</strong>（未变动的必修/选修不会重复写）：</div>';
+      diffPv.deltas.forEach(function(d) {
+        var col = d.score >= 0 ? '#28a745' : '#e53e3e';
+        html += '<div class="m-row" style="font-size:13px"><span>' + escapeHtml(d.name) + '</span><span style="font-weight:700;color:' + col + ';">' + (d.score >= 0 ? '+' : '') + d.score + '分</span></div>';
+      });
+    } else if (delta !== 0) {
+      html += '<div style="font-size:11px;color:#718096;margin-top:6px">分项 diff 与净分变动不一致时，将只记一笔「本次净分变动」以对齐今日合计。</div>';
+    }
+  }
   document.getElementById('modal-preview').innerHTML = html;
   document.getElementById('modal-preview').className = 'modal-preview modal-preview-' + currentKid;
-  document.getElementById('modal-ok').style.background = currentKid === 'brian' ? '#4f86f7' : '#48bb78';
+  document.getElementById('modal-ok').style.background = currentKid === 'brian' ? '#EE5802' : '#48bb78';
   document.getElementById('overlay').classList.add('show');
 }
 function closeModal() { document.getElementById('overlay').classList.remove('show'); }
 
 function confirmSubmit() {
   var res = buildItems();
+  var ct = calcTodayForKid(currentKid);
+  var formNet = ct.net;
   var hist = getHistory(currentKid);
-  // remove today if exists
-  hist = hist.filter(function(d) { return d.date !== getTodayKey(); });
-  hist.unshift({ date: getTodayKey(), net: res.net, items: res.items });
+  var today = getTodayKey();
+  var idx = -1;
+  for (var i = 0; i < hist.length; i++) if (hist[i].date === today) { idx = i; break; }
+  var cumNet;
+  if (idx >= 0) {
+    var ex = hist[idx];
+    var lastF = ex._lastFormNet != null ? ex._lastFormNet : ex.net;
+    var delta = formNet - lastF;
+    var diffRes = computeResubmitDiff(ex, res.items, formNet);
+    ex._lastItemState = diffRes.nextState;
+    ex._lastFormNet = formNet;
+    var toAppend = [];
+    if (delta !== 0) {
+      toAppend = (diffRes.deltas && diffRes.deltas.length) ? diffRes.deltas.slice() : [];
+      var sumD = 0;
+      toAppend.forEach(function(x) { sumD += Number(x.score) || 0; });
+      if (toAppend.length && sumD !== delta) {
+        toAppend = [{ key: '_netdelta', name: '本次净分变动', score: delta }];
+      } else if (!toAppend.length) {
+        toAppend = [{ key: '_netdelta', name: '本次净分变动', score: delta }];
+      }
+    }
+    if (toAppend.length) {
+      var tstr = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+      var sep = { name: '—— 再次提交（' + tstr + '）——', score: 0 };
+      ex.items = (ex.items || []).concat([sep]).concat(toAppend);
+    }
+    ex.net = sumHistoryItemsScores(ex.items);
+    cumNet = ex.net;
+  } else {
+    hist.unshift({
+      date: today,
+      items: res.items || [],
+      _lastFormNet: formNet,
+      _lastItemState: buildItemStateFromItems(res.items)
+    });
+    var lineSum = sumHistoryItemsScores(hist[0].items);
+    hist[0].net = lineSum === formNet ? lineSum : formNet;
+    cumNet = hist[0].net;
+  }
   saveHistory(currentKid, hist);
   closeModal();
   refreshTotals();
   updateBanner();
   scheduleCloudPush(true);
   var name = currentKid === 'brian' ? 'Brian' : 'Linden';
-  alert('✅ ' + name + ' 今日积分已保存！\n净得分：' + (res.net>=0?'+':'') + res.net + '分');
+  alert('✅ ' + name + ' 已保存！\n今日累计净分：' + (cumNet >= 0 ? '+' : '') + cumNet + ' 分\n（当前表单净分：' + (formNet >= 0 ? '+' : '') + formNet + ' 分；再次提交只追加与上次相比有变化的分项）');
+}
+
+var historyEditDateStr = null;
+var historyEditItemsListenerBound = false;
+
+function sumHistoryItemsScores(items) {
+  var s = 0;
+  (items || []).forEach(function(it) {
+    if (isHistorySepItem(it)) return;
+    s += Number(it.score) || 0;
+  });
+  return s;
+}
+
+function historyEditRecalcNetFromDom() {
+  var items = [];
+  document.querySelectorAll('#history-edit-items .history-edit-item-row').forEach(function(row) {
+    var n = row.querySelector('.he-it-name').value.trim();
+    var sc = parseInt(row.querySelector('.he-it-score').value, 10);
+    if (!n && (isNaN(sc) || sc === 0)) return;
+    if (isNaN(sc)) sc = 0;
+    items.push({ name: n, score: sc });
+  });
+  var net = sumHistoryItemsScores(items);
+  var el = document.getElementById('history-edit-net');
+  if (el) el.value = net;
+}
+
+function openHistoryEdit(dateStr) {
+  historyEditDateStr = dateStr;
+  var entry = historyEntryForDay(currentKid, dateStr);
+  if (!entry) return;
+  document.getElementById('history-edit-date').textContent = dateStr;
+  var wrap = document.getElementById('history-edit-items');
+  wrap.innerHTML = '';
+  (entry.items || []).forEach(function(it) {
+    if (isHistorySepItem(it)) return;
+    historyEditAppendRow(it.name, it.score);
+  });
+  if (!wrap.querySelector('.history-edit-item-row')) historyEditAppendRow('', 0);
+  historyEditRecalcNetFromDom();
+  if (!historyEditItemsListenerBound) {
+    wrap.addEventListener('input', historyEditRecalcNetFromDom);
+    historyEditItemsListenerBound = true;
+  }
+  document.getElementById('history-edit-overlay').classList.add('show');
+}
+
+function historyEditAddRow() {
+  historyEditAppendRow('', 0);
+}
+
+function historyEditDeleteRow(btn) {
+  if (!confirm('确定删除这一行吗？')) return;
+  var row = btn && btn.closest ? btn.closest('.history-edit-item-row') : null;
+  if (!row) return;
+  row.remove();
+  var wrap = document.getElementById('history-edit-items');
+  if (wrap && !wrap.querySelector('.history-edit-item-row')) historyEditAppendRow('', 0);
+  historyEditRecalcNetFromDom();
+}
+
+function historyEditAppendRow(name, score) {
+  var wrap = document.getElementById('history-edit-items');
+  var row = document.createElement('div');
+  row.className = 'history-edit-item-row';
+  row.innerHTML = '<input type="text" class="rules-input he-it-name" placeholder="项目名称" value="' + escapeAttr(name || '') + '" style="flex:1;min-width:0">' +
+    '<input type="number" class="rules-input he-it-score" placeholder="分" value="' + (score !== undefined && score !== null && score !== '' ? score : '') + '" style="width:72px">' +
+    '<button type="button" class="he-del-btn" title="删除此行" aria-label="删除此行" onclick="historyEditDeleteRow(this)">×</button>';
+  wrap.appendChild(row);
+  historyEditRecalcNetFromDom();
+}
+
+function closeHistoryEdit() {
+  document.getElementById('history-edit-overlay').classList.remove('show');
+  historyEditDateStr = null;
+}
+
+function saveHistoryEdit() {
+  if (!historyEditDateStr) return;
+  historyEditRecalcNetFromDom();
+  var items = [];
+  document.querySelectorAll('#history-edit-items .history-edit-item-row').forEach(function(row) {
+    var n = row.querySelector('.he-it-name').value.trim();
+    var sc = parseInt(row.querySelector('.he-it-score').value, 10);
+    if (!n && (isNaN(sc) || sc === 0)) return;
+    if (isNaN(sc)) sc = 0;
+    items.push({ name: n || '（项目）', score: sc });
+  });
+  var net = sumHistoryItemsScores(items);
+  var hist = getHistory(currentKid);
+  for (var i = 0; i < hist.length; i++) {
+    if (hist[i].date === historyEditDateStr) {
+      hist[i].net = net;
+      hist[i].items = items;
+      if (hist[i].date === getTodayKey()) {
+        var ctEd = calcTodayForKid(currentKid);
+        hist[i]._lastFormNet = ctEd.net;
+        hist[i]._lastItemState = buildItemStateFromItems(items);
+      }
+      break;
+    }
+  }
+  saveHistory(currentKid, hist);
+  closeHistoryEdit();
+  renderHistory();
+  refreshTotals();
+  updateBanner();
+  scheduleCloudPush(true);
+  alert('✅ 已保存修改');
 }
 
 // ============ HISTORY ============
@@ -1417,17 +1855,23 @@ function renderHistory() {
     container.innerHTML = '<div class="empty"><div class="ei">📅</div><p>' + name + ' 暂无记录</p></div>';
     return;
   }
-  var total = 0; hist.forEach(function(d) { total += (d.net || 0); });
+  var total = grandTotalForKid(currentKid);
   var html = '<div class="hist-summary hist-summary-' + currentKid + '"><div class="hs-label">' + name + ' 累计总分</div><div class="hs-val">' + (total>=0?'+':'') + total + ' 分</div></div>';
   hist.forEach(function(day) {
     var dt = new Date(day.date + 'T00:00:00');
-    var col = day.net >= 0 ? (currentKid === 'brian' ? '#4f86f7' : '#48bb78') : '#e53e3e';
+    var dispNet = day.date === getTodayKey() ? netForKidDay(currentKid, day.date) : day.net;
+    var col = dispNet >= 0 ? (currentKid === 'brian' ? '#EE5802' : '#48bb78') : '#e53e3e';
     var rows = '';
     (day.items || []).forEach(function(it) {
-      rows += '<div class="hi"><span>' + it.name + '</span><span style="font-weight:700;color:' + (it.score>=0?'#28a745':'#e53e3e') + '">' + (it.score>=0?'+':'') + it.score + '分</span></div>';
+      var isSep = isHistorySepItem(it);
+      if (isSep) {
+        rows += '<div class="hi" style="border-bottom:none;padding:8px 0 4px"><span style="color:#a0aec0;font-size:12px">' + escapeHtml(it.name) + '</span></div>';
+        return;
+      }
+      rows += '<div class="hi"><span>' + escapeHtml(it.name) + '</span><span style="font-weight:700;color:' + (it.score>=0?'#28a745':'#e53e3e') + '">' + (it.score>=0?'+':'') + it.score + '分</span></div>';
     });
     if (!rows) rows = '<div style="color:#aaa;font-size:13px;padding:6px 0">无详细记录</div>';
-    html += '<div class="hist-day"><div class="hd-header"><span class="hd-date">' + fmtDate(dt) + '</span><span class="hd-score" style="color:' + col + '">' + (day.net>=0?'+':'') + day.net + '分</span></div><div class="hd-body">' + rows + '</div></div>';
+    html += '<div class="hist-day"><div class="hd-header"><span class="hd-date">' + fmtDate(dt) + '</span><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="hd-score" style="color:' + col + '">' + (dispNet>=0?'+':'') + dispNet + '分</span><button type="button" class="hist-edit-btn" onclick="openHistoryEdit(\'' + day.date + '\')">修改</button></div></div><div class="hd-body">' + rows + '</div></div>';
   });
   container.innerHTML = html;
 }
@@ -1474,6 +1918,38 @@ function renderRules() {
   });
   html += '</div>';
 
+  // User-defined bonus rules
+  html += '<div class="rules-card" id="rules-custom-extras-card"><div class="rules-card-header"><div class="rules-card-title">✨ 我的加分项</div>';
+  html += '<div class="rules-card-actions">';
+  if (rulesEditing) {
+    html += '<button type="button" class="rules-edit-btn" onclick="addCustomExtraRule()">➕ 再添加一条</button>';
+  } else {
+    html += '<button type="button" class="rules-add-custom-btn" onclick="enterRulesEditAndAddCustomExtra()">➕ 添加自定义加分项</button>';
+  }
+  html += '</div></div>';
+  html += '<p style="font-size:12px;color:#718096;margin:-6px 0 12px;line-height:1.45">自定义规则会出现在「今天」最下方「自定义加分」里，用 ± 计次数；改完后点顶部「✅ 保存」写入并云同步。</p>';
+  var cex = R.customExtras || [];
+  if (!cex.length && !rulesEditing) {
+    html += '<p style="color:#a0aec0;font-size:13px;padding:4px 0">还没有自定义项。点右侧橙色按钮即可新增一条（会自动进入编辑模式）。</p>';
+  }
+  cex.forEach(function(rule) {
+    if (rulesEditing) {
+      html += '<div class="rules-row" style="background:#fffbeb;border-radius:8px;padding:8px;flex-wrap:wrap">';
+      html += '<div class="rules-emoji"><input class="rules-input" id="ce-emoji-' + rule.id + '" value="' + escapeAttr(rule.emoji || '') + '" style="width:44px;text-align:center" title="图标/emoji"></div>';
+      html += '<div class="rules-body" style="flex:1;min-width:200px">';
+      html += '名称：<input class="rules-input" id="ce-name-' + rule.id + '" value="' + escapeAttr(rule.name) + '" style="width:95%;margin-bottom:4px;display:block;">';
+      html += '说明：<input class="rules-input" id="ce-sub-' + rule.id + '" value="' + escapeAttr(rule.sub) + '" style="width:95%;margin-bottom:4px;display:block;">';
+      html += '每次 <input class="rules-input" id="ce-plus-' + rule.id + '" type="number" min="0" step="1" value="' + (rule.plus || 0) + '" style="width:52px;"> 分';
+      html += '</div>';
+      html += '<button type="button" class="rules-edit-btn" style="align-self:center;margin-top:8px" onclick="removeCustomExtraRule(\'' + rule.id + '\')">删除</button>';
+      html += '</div>';
+    } else {
+      html += '<div class="rules-row"><div class="rules-emoji">' + escapeHtml(rule.emoji || '✨') + '</div><div class="rules-body"><div class="rules-name">' + escapeHtml(rule.name) + '</div><div class="rules-detail">' + escapeHtml(rule.sub) + '</div></div>';
+      html += '<span class="rules-score rs-plus">+' + (rule.plus || 0) + '分/次</span></div>';
+    }
+  });
+  html += '</div>';
+
   // Writing table (English only)
   html += '<div class="rules-card"><div class="rules-card-header"><div class="rules-card-title">✍️ 英文写作加分标准</div>';
   html += '</div>';
@@ -1493,9 +1969,7 @@ function renderRules() {
   html += '</table></div>';
 
   // Awards
-  html += '<div class="rules-card"><div class="rules-card-header"><div class="rules-card-title">🏆 比赛获奖加分</div>';
-  if (rulesEditing) html += '<button class="rules-edit-btn" onclick="editAwards()">✏️ 修改</button>';
-  html += '</div>';
+  html += '<div class="rules-card"><div class="rules-card-header"><div class="rules-card-title">🏆 比赛获奖加分</div></div>';
   ['gold','special','top'].forEach(function(key) {
     var bg = { gold:'award-bronze', special:'award-silver', top:'award-gold-bg' }[key];
     var emoji = { gold:'🥉', special:'🥈', top:'🥇' }[key];
@@ -1536,6 +2010,16 @@ function toggleRulesEdit() {
       o.sub = document.getElementById('oe-sub-' + i).value;
       if (o.plus > 0) { var v = parseFloat(document.getElementById('oe-plus-' + i).value); if (!isNaN(v)) o.plus = v; }
     });
+    (R.customExtras || []).forEach(function(rule) {
+      var elE = document.getElementById('ce-emoji-' + rule.id);
+      var elN = document.getElementById('ce-name-' + rule.id);
+      var elS = document.getElementById('ce-sub-' + rule.id);
+      var elP = document.getElementById('ce-plus-' + rule.id);
+      if (elE) rule.emoji = elE.value.trim() || '✨';
+      if (elN) rule.name = elN.value;
+      if (elS) rule.sub = elS.value;
+      if (elP) { var pv = parseFloat(elP.value); if (!isNaN(pv) && pv >= 0) rule.plus = pv; }
+    });
     // writing thresholds (English only)
     R.writeEnThresh = []; R.writeEnPts = [];
     for (var wi = 0; ; wi++) {
@@ -1557,6 +2041,7 @@ function toggleRulesEdit() {
     // update labels in today page
     updateRuleLabels();
     applyRequiredTaskUI();
+    renderCustomExtrasInToday();
     updateBanner();
     scheduleCloudPush(true);
     alert('✅ 规则已保存！');
