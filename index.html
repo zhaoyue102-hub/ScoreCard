@@ -550,7 +550,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.8.0';
+var APP_VERSION = '1.8.1';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -1501,10 +1501,20 @@ function formItemsHaveStableKeys(newItems) {
 }
 
 /**
+ * 上次提交时的表单净分，用于桥接「账本 ex.net」与「当前表单」。
+ * 若 _lastFormNet 误存为 0 但账本已有非零（旧数据/同步），用 ex.net 作基准，避免今日得分与个人累计变成 ex.net + formNet。
+ */
+function effectiveLastFormNetForBridge(ex, formNet) {
+  var lf = ex._lastFormNet == null ? ex.net : ex._lastFormNet;
+  if (lf === 0 && ex.net !== 0) lf = ex.net;
+  return lf;
+}
+
+/**
  * 再次提交：分项变动 + 新快照。旧数据兼容时只追加一条「净分变动」。
  */
 function computeResubmitDiff(ex, newItems, formNet) {
-  var lastF = ex._lastFormNet != null ? ex._lastFormNet : ex.net;
+  var lastF = effectiveLastFormNetForBridge(ex, formNet);
   var delta = formNet - lastF;
   if (lastSegmentLacksStableKeys(ex) && formItemsHaveStableKeys(newItems)) {
     return {
@@ -1557,8 +1567,9 @@ function netForKidDay(kid, key) {
   }
   var ex = historyEntryForDay(kid, key);
   if (!ex) return calcTodayForKid(kid).net;
-  var lastF = ex._lastFormNet != null ? ex._lastFormNet : ex.net;
-  return ex.net + (calcTodayForKid(kid).net - lastF);
+  var formN = calcTodayForKid(kid).net;
+  var lastF = effectiveLastFormNetForBridge(ex, formN);
+  return ex.net + (formN - lastF);
 }
 
 function grandTotalForKid(kid) {
@@ -1657,7 +1668,7 @@ function openModal() {
   html += '<div class="m-total m-total-' + currentKid + '"><span>本次表单净分</span><span>' + (formNet>=0?'+':'') + formNet + '分</span></div>';
   var exToday = historyEntryForDay(currentKid, getTodayKey());
   if (exToday) {
-    var lastF = exToday._lastFormNet != null ? exToday._lastFormNet : exToday.net;
+    var lastF = effectiveLastFormNetForBridge(exToday, formNet);
     var delta = formNet - lastF;
     var nextTot = exToday.net + delta;
     var diffPv = computeResubmitDiff(exToday, res.items, formNet);
@@ -1693,7 +1704,7 @@ function confirmSubmit() {
   var cumNet;
   if (idx >= 0) {
     var ex = hist[idx];
-    var lastF = ex._lastFormNet != null ? ex._lastFormNet : ex.net;
+    var lastF = effectiveLastFormNetForBridge(ex, formNet);
     var delta = formNet - lastF;
     var diffRes = computeResubmitDiff(ex, res.items, formNet);
     ex._lastItemState = diffRes.nextState;
