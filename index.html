@@ -3602,7 +3602,7 @@
                 <span class="logo-title">WriteBoost</span>
                 <span class="logo-tagline">Narrative writing</span>
             </div>
-            <span class="version-badge" id="app-version">v4.1.0</span>
+            <span class="version-badge" id="app-version">v4.1.1</span>
         </div>
         <div class="header-stats">
             <div class="stat-item">
@@ -3913,6 +3913,7 @@ Remember to:
                             <button type="button" class="sense-btn" data-sense="taste"><span class="icon-btn"><i data-lucide="candy" aria-hidden="true"></i><span>Taste</span></span></button>
                             <button type="button" class="sense-btn" data-sense="touch"><span class="icon-btn"><i data-lucide="hand" aria-hidden="true"></i><span>Touch</span></span></button>
                         </div>
+                        <p class="help-tip" style="margin: 0.4rem 0 0; font-size: 0.78rem; text-align: center;">After you pick a word above, each button opens <strong>coaching questions</strong> for that sense (a bubble near the chip) so you can rewrite with show-don&rsquo;t-tell detail.</p>
                         <div class="sensory-progress">
                             <span id="sensory-progress-text">Replacements count toward your Sensor badge</span>
                             <div class="progress-bar">
@@ -4489,7 +4490,7 @@ Remember to:
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.1.0';
+        const APP_VERSION = 'v4.1.1';
 
         function refreshIcons() {
             if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
@@ -5805,6 +5806,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             loadCharacter();
             setupEventListeners();
             setupTextareaListener();
+            setupSensorySenseButtons();
             drawStoryCoaster();
             analyzeFlatWords();
 
@@ -6811,8 +6813,32 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             }
 
             state.flatWordsFound = found;
+            if (state.selectedFlatWord && !found.includes(state.selectedFlatWord)) {
+                state.selectedFlatWord = null;
+                state.selectedSense = null;
+                document.querySelectorAll('.sense-btn').forEach(btn => btn.classList.remove('active'));
+            }
             renderFlatWords();
             if (replacementEvents > 0) checkAchievements();
+        }
+
+        function setupSensorySenseButtons() {
+            document.querySelectorAll('.sense-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const sense = btn.dataset.sense;
+                    const word = state.selectedFlatWord;
+                    if (!word) {
+                        showToast('Tap a flat-word chip first, then Sight / Sound / … for question prompts.');
+                        return;
+                    }
+                    if (!SENSORY_SUGGESTIONS[word]) {
+                        showToast('No coaching text for that word yet.');
+                        return;
+                    }
+                    state.selectedSense = sense;
+                    showSuggestion();
+                });
+            });
         }
 
         function renderFlatWords() {
@@ -6845,15 +6871,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             document.querySelectorAll('.flat-word').forEach(el => {
                 el.style.border = el.textContent === word ? '2px solid var(--primary)' : 'none';
             });
-
-            // Activate sense buttons
-            document.querySelectorAll('.sense-btn').forEach(btn => {
-                btn.classList.add('active');
-                btn.onclick = () => {
-                    state.selectedSense = btn.dataset.sense;
-                    showSuggestion();
-                };
-            });
+            document.querySelectorAll('.sense-btn').forEach(btn => btn.classList.add('active'));
         }
 
         function showSuggestion() {
