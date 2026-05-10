@@ -1418,7 +1418,9 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.35rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.65rem;
+            justify-content: flex-start;
+            align-items: flex-start;
         }
 
         .flat-word {
@@ -1445,6 +1447,9 @@
             display: flex;
             gap: 0.35rem;
             flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
         }
 
         .sense-btn {
@@ -1469,6 +1474,24 @@
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+        }
+
+        .sensory-coach-hint {
+            margin: 0.35rem 0 0;
+            padding: 0;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-align: left;
+            text-wrap: pretty;
+        }
+
+        .sensory-coach-hint strong {
+            color: var(--text-light);
+            font-weight: 600;
         }
 
         .sensory-progress {
@@ -1681,8 +1704,8 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow-lg);
             padding: 1rem;
-            max-width: 300px;
-            z-index: 1001;
+            max-width: min(300px, calc(100vw - 24px));
+            z-index: 10050;
             border: 2px solid var(--primary);
         }
 
@@ -3602,7 +3625,7 @@
                 <span class="logo-title">WriteBoost</span>
                 <span class="logo-tagline">Narrative writing</span>
             </div>
-            <span class="version-badge" id="app-version">v4.1.1</span>
+            <span class="version-badge" id="app-version">v4.1.5</span>
         </div>
         <div class="header-stats">
             <div class="stat-item">
@@ -3904,16 +3927,16 @@ Remember to:
                     <div class="card sensory-card" id="sensory-card">
                         <div class="card-title"><i data-lucide="palette" aria-hidden="true"></i> Sensory Palette</div>
                         <div id="flat-words-found" class="flat-words-found">
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Flat words in your draft appear here — click one, then pick a sense for ideas.</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;" title="We scan your draft for common plain words. Matching words show up here as chips you can click.">Flat words in your draft appear here — click one, then pick a sense for ideas.</span>
                         </div>
                         <div class="sense-buttons">
-                            <button type="button" class="sense-btn" data-sense="sight"><span class="icon-btn"><i data-lucide="eye" aria-hidden="true"></i><span>Sight</span></span></button>
-                            <button type="button" class="sense-btn" data-sense="sound"><span class="icon-btn"><i data-lucide="ear" aria-hidden="true"></i><span>Sound</span></span></button>
-                            <button type="button" class="sense-btn" data-sense="smell"><span class="icon-btn"><i data-lucide="wind" aria-hidden="true"></i><span>Smell</span></span></button>
-                            <button type="button" class="sense-btn" data-sense="taste"><span class="icon-btn"><i data-lucide="candy" aria-hidden="true"></i><span>Taste</span></span></button>
-                            <button type="button" class="sense-btn" data-sense="touch"><span class="icon-btn"><i data-lucide="hand" aria-hidden="true"></i><span>Touch</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="sight" title="Select a word chip first. Opens sight-focused coaching questions in a bubble." aria-label="Sight: coaching questions for visual detail. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="eye" aria-hidden="true"></i><span>Sight</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="sound" title="Select a word chip first. Opens sound and silence prompts in a bubble." aria-label="Sound: coaching questions for what can be heard. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="ear" aria-hidden="true"></i><span>Sound</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="smell" title="Select a word chip first. Opens smell-related prompts in a bubble." aria-label="Smell: coaching questions for scents. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="wind" aria-hidden="true"></i><span>Smell</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="taste" title="Select a word chip first. Opens taste and mouth-feel prompts in a bubble." aria-label="Taste: coaching questions for taste and texture. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="candy" aria-hidden="true"></i><span>Taste</span></span></button>
+                            <button type="button" class="sense-btn" data-sense="touch" title="Select a word chip first. Opens touch, temperature, and body-feel prompts in a bubble." aria-label="Touch: coaching questions for touch and physical sensation. Choose a flat word chip first."><span class="icon-btn"><i data-lucide="hand" aria-hidden="true"></i><span>Touch</span></span></button>
                         </div>
-                        <p class="help-tip" style="margin: 0.4rem 0 0; font-size: 0.78rem; text-align: center;">After you pick a word above, each button opens <strong>coaching questions</strong> for that sense (a bubble near the chip) so you can rewrite with show-don&rsquo;t-tell detail.</p>
+                        <p class="sensory-coach-hint">After you pick a word above, each button opens <strong>coaching questions</strong> for that sense (a bubble near the chip) so you can rewrite with show-don&rsquo;t-tell detail.</p>
                         <div class="sensory-progress">
                             <span id="sensory-progress-text">Replacements count toward your Sensor badge</span>
                             <div class="progress-bar">
@@ -4490,7 +4513,9 @@ Remember to:
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.1.1';
+        const APP_VERSION = 'v4.1.5';
+
+        let suggestionPopupHideTimer = null;
 
         function refreshIcons() {
             if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
@@ -6849,10 +6874,10 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             if (card) card.classList.remove('sensory-deferred');
 
             if (state.flatWordsFound.length === 0) {
-                container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">No flat words detected. Keep writing!</span>';
+                container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;" title="No plain words from our list in the draft yet. Try words like happy, sad, good, or very — or keep writing.">No flat words detected. Keep writing!</span>';
             } else {
                 container.innerHTML = state.flatWordsFound.map(word => `
-                    <span class="flat-word" onclick="selectFlatWord('${word}')" title="Click to see suggestions">${word}</span>
+                    <span class="flat-word" data-flat-word="${word}" onclick="selectFlatWord('${word}')" title="Click to select, then press Sight / Sound / … for rewrite prompts in a bubble.">${word}</span>
                 `).join('');
             }
 
@@ -6869,15 +6894,41 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         function selectFlatWord(word) {
             state.selectedFlatWord = word;
             document.querySelectorAll('.flat-word').forEach(el => {
-                el.style.border = el.textContent === word ? '2px solid var(--primary)' : 'none';
+                el.style.border = el.getAttribute('data-flat-word') === word ? '2px solid var(--primary)' : 'none';
             });
             document.querySelectorAll('.sense-btn').forEach(btn => btn.classList.add('active'));
         }
 
+        /** `position:fixed` uses viewport coordinates only — do not add window.scrollY. */
+        function positionSuggestionPopupNear(anchorEl) {
+            const popup = document.getElementById('suggestion-popup');
+            if (!popup || !anchorEl) return;
+            const rect = anchorEl.getBoundingClientRect();
+            const gap = 10;
+            const popW = Math.min(300, window.innerWidth - 24);
+            let left = rect.left;
+            let top = rect.bottom + gap;
+            const maxLeft = window.innerWidth - popW - 12;
+            if (left > maxLeft) left = Math.max(12, maxLeft);
+            if (left < 12) left = 12;
+            const estH = 200;
+            if (top + estH > window.innerHeight - 12) {
+                top = Math.max(72, rect.top - estH - gap);
+            }
+            popup.style.top = `${top}px`;
+            popup.style.left = `${left}px`;
+            popup.style.right = 'auto';
+            popup.style.bottom = 'auto';
+        }
+
         function showSuggestion() {
             const popup = document.getElementById('suggestion-popup');
+            const headerEl = document.getElementById('suggestion-header');
+            const textEl = document.getElementById('suggestion-text');
             const word = state.selectedFlatWord;
             const sense = state.selectedSense;
+
+            if (!popup || !headerEl || !textEl) return;
 
             if (!word || !sense || !SENSORY_SUGGESTIONS[word]) {
                 popup.style.display = 'none';
@@ -6886,24 +6937,31 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
 
             const suggestion = SENSORY_SUGGESTIONS[word][sense] || SENSORY_SUGGESTIONS[word].sight;
 
-            document.getElementById('suggestion-header').innerHTML = `<i data-lucide="lightbulb" aria-hidden="true"></i> ${sense.charAt(0).toUpperCase() + sense.slice(1)} suggestion for "${word}":`;
-            document.getElementById('suggestion-text').textContent = suggestion;
+            headerEl.innerHTML = `<i data-lucide="lightbulb" aria-hidden="true"></i> ${sense.charAt(0).toUpperCase() + sense.slice(1)} suggestion for "${word}":`;
+            textEl.textContent = suggestion;
             refreshIcons();
 
-            // Position near the clicked word
-            const wordEl = document.querySelector(`.flat-word[onclick*="${word}"]`);
+            const wordEl = document.querySelector(`.flat-word[data-flat-word="${word}"]`);
+            const card = document.getElementById('sensory-card');
             if (wordEl) {
-                const rect = wordEl.getBoundingClientRect();
-                popup.style.top = (rect.bottom + window.scrollY + 10) + 'px';
-                popup.style.left = Math.min(rect.left, window.innerWidth - 320) + 'px';
+                positionSuggestionPopupNear(wordEl);
+            } else if (card) {
+                positionSuggestionPopupNear(card);
+            } else {
+                popup.style.top = '88px';
+                popup.style.left = '16px';
+                popup.style.right = 'auto';
+                popup.style.bottom = 'auto';
             }
 
             popup.style.display = 'block';
+            popup.style.position = 'fixed';
 
-            // Auto-close after 5 seconds
-            setTimeout(() => {
+            if (suggestionPopupHideTimer) clearTimeout(suggestionPopupHideTimer);
+            suggestionPopupHideTimer = setTimeout(() => {
                 popup.style.display = 'none';
-            }, 8000);
+                suggestionPopupHideTimer = null;
+            }, 15000);
         }
 
         // ============ CHALLENGE CARDS ============
