@@ -505,7 +505,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.5.5';
+var APP_VERSION = '1.5.6';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -532,6 +532,10 @@ var cloudPushTimer = null;
 var cloudApplyingRemote = false;
 var lastPushedTs = 0;
 var lastMergedRemoteAt = 0;
+/** Firestore has delivered the first onSnapshot for this subscription — never push before this or we overwrite cloud with local defaults. */
+var cloudServerSynced = false;
+var cloudPushPending = false;
+var cloudPushWantsImmediate = false;
 var firebaseLoadCallbacks = [];
 
 function cloudConfigValid() {
@@ -606,6 +610,17 @@ function cloudUpdateStatusUI(errMsg) {
   el.textContent = '云同步：已连接 · 家庭码「' + cloudFamilyId + '」';
 }
 
+function cloudAfterInitialHydrate() {
+  if (cloudPushPending) {
+    var imm = cloudPushWantsImmediate;
+    cloudPushPending = false;
+    cloudPushWantsImmediate = false;
+    scheduleCloudPush(imm);
+  } else {
+    scheduleCloudPush(false);
+  }
+}
+
 function formatCloudFirestoreError(err) {
   if (!err) return '未知错误';
   var code = err.code || '';
@@ -652,7 +667,6 @@ function saveCloudFamilyAndConnect() {
       firebase.firestore().enablePersistence({ synchronizeTabs: true }).catch(function() {});
     } catch (e) {}
     cloudAttachListener();
-    scheduleCloudPush(true);
     cloudUpdateStatusUI();
   });
 }
@@ -664,6 +678,9 @@ function disconnectCloud() {
   }
   cloudFamilyId = null;
   localStorage.removeItem('cloud_family_id');
+  cloudServerSynced = false;
+  cloudPushPending = false;
+  cloudPushWantsImmediate = false;
   closeCloudSettings();
   cloudUpdateStatusUI();
 }
@@ -713,15 +730,33 @@ function cloudAttachListener() {
     cloudUnsub();
     cloudUnsub = null;
   }
+  cloudServerSynced = false;
   var db = firebase.firestore();
   cloudUnsub = db.collection('family_score').doc(cloudFamilyId).onSnapshot(function(snap) {
-    if (!snap.exists) return;
+    // With persistence, the first callback may be cache-only (!exists) while the doc exists on server — pushing then would wipe the cloud.
+    if (!cloudServerSynced && snap.metadata.fromCache) return;
+
+    var isInitial = !cloudServerSynced;
+    if (isInitial) cloudServerSynced = true;
+
+    if (!snap.exists) {
+      if (isInitial) cloudAfterInitialHydrate();
+      return;
+    }
     var data = snap.data();
-    if (!data || typeof data.updatedAt !== 'number') return;
-    if (data.clientId === cloudClientId && data.updatedAt === lastPushedTs) return;
-    if (data.updatedAt <= lastMergedRemoteAt) return;
+    if (!data || typeof data.updatedAt !== 'number') {
+      if (isInitial) cloudAfterInitialHydrate();
+      return;
+    }
+    if (data.clientId === cloudClientId && data.updatedAt === lastPushedTs) {
+      lastMergedRemoteAt = Math.max(lastMergedRemoteAt, data.updatedAt);
+      if (isInitial) cloudAfterInitialHydrate();
+      return;
+    }
+    if (!isInitial && data.updatedAt <= lastMergedRemoteAt) return;
     lastMergedRemoteAt = data.updatedAt;
     applyRemoteDoc(data);
+    if (isInitial) cloudAfterInitialHydrate();
   }, function(err) {
     console.error(err);
     cloudUpdateStatusUI('监听失败：' + formatCloudFirestoreError(err));
@@ -731,6 +766,11 @@ function cloudAttachListener() {
 function scheduleCloudPush(immediate) {
   if (!cloudFamilyId || cloudApplyingRemote) return;
   if (!cloudConfigValid()) return;
+  if (!cloudServerSynced) {
+    cloudPushPending = true;
+    if (immediate) cloudPushWantsImmediate = true;
+    return;
+  }
   function doPush() {
     cloudPushTimer = null;
     if (!cloudFamilyId || cloudApplyingRemote) return;
@@ -777,7 +817,6 @@ function cloudTryAutoConnect() {
       firebase.firestore().enablePersistence({ synchronizeTabs: true }).catch(function() {});
     } catch (e) {}
     cloudAttachListener();
-    scheduleCloudPush(false);
   });
 }
 
