@@ -318,13 +318,6 @@
             height: 1.2rem;
         }
 
-        .dashboard-empty-hint strong {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            color: var(--primary-dark);
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -414,9 +407,19 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             background: var(--bg-sidebar);
+            text-wrap: pretty;
+            line-height: 1.55;
+            word-break: normal;
+            overflow-wrap: break-word;
+            hyphens: none;
         }
 
+        /* Only the card title is block; inline <strong> (Avg, Essays, …) must stay inline or every word stacks and “/” ends up alone */
         .help-item strong {
+            display: inline;
+        }
+
+        .help-item > strong:first-of-type {
             display: block;
             margin-bottom: 0.25rem;
         }
@@ -528,19 +531,266 @@
         }
 
         /* Dashboard */
-        .dashboard-flow {
-            margin: 0 0 1rem;
-            padding: 0.55rem 0.85rem;
+        .dashboard-start {
+            margin: 0 0 1.1rem;
+            padding: 0.65rem 0.75rem;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border);
             background: var(--bg-sidebar);
+        }
+
+        .dashboard-start-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin: 0 0 0.5rem;
+        }
+
+        .dashboard-start-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .dashboard-start-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.5rem 0.55rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
             font-size: 0.84rem;
-            line-height: 1.5;
+            line-height: 1.35;
             color: var(--text-light);
         }
 
-        .dashboard-flow strong {
+        .dashboard-start-step strong {
             color: var(--text);
+        }
+
+        .dashboard-start-step-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dashboard-step-lead {
+            margin: 0 0 0.4rem;
+            font-size: 0.8rem;
+            line-height: 1.35;
+            color: var(--text-muted);
+        }
+
+        .dashboard-start-sublist {
+            margin: 0;
+            padding-left: 1.15rem;
+            display: grid;
+            gap: 0.32rem;
+            font-size: 0.82rem;
+            line-height: 1.38;
+        }
+
+        .dashboard-start-sublist li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-step-num {
+            flex-shrink: 0;
+            width: 1.45rem;
+            height: 1.45rem;
+            border-radius: 999px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            margin-top: 0.06rem;
+        }
+
+        .dashboard-start-meta {
+            margin: 0.55rem 0 0;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.78rem;
+            line-height: 1.4;
+            color: var(--text-muted);
+        }
+
+        .quick-start-modal.modal,
+        .help-guide-modal.modal {
+            max-width: min(36rem, calc(100vw - 0.5rem));
+            width: min(36rem, calc(100vw - 0.5rem));
+        }
+
+        .quick-start-modal .modal-body {
+            padding: 1rem 1.35rem 1.1rem;
+        }
+
+        /* Quick Start only: short lines, no fancy breaks that split punctuation */
+        .quick-start-modal .qs-body .dashboard-start-step,
+        .quick-start-modal .qs-body .dashboard-step-lead,
+        .quick-start-modal .qs-body .dashboard-start-sublist li,
+        .quick-start-modal .qs-body .quick-start-tagline {
+            line-height: 1.55;
+            word-break: normal;
+            overflow-wrap: break-word;
+            hyphens: none;
+        }
+
+        .quick-start-modal .dashboard-start-sublist {
+            padding-left: 1rem;
+        }
+
+        .quick-start-modal .dashboard-start-step-body > .dashboard-start-sublist:first-child {
+            margin-top: 0.15rem;
+        }
+
+        @media (max-width: 640px) {
+            .quick-start-modal .dashboard-start-step {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.4rem;
+            }
+
+            .quick-start-modal .dashboard-step-num {
+                margin-top: 0;
+                align-self: flex-start;
+            }
+
+            .quick-start-modal .modal-body {
+                padding: 0.85rem 0.875rem 1rem;
+            }
+
+            .quick-start-modal .modal-header {
+                padding: 1rem 0.875rem;
+            }
+
+            .quick-start-modal .modal-footer.quick-start-footer {
+                padding: 0.75rem 0.875rem;
+            }
+        }
+
+        .quick-start-modal .dashboard-start {
+            margin: 0;
+        }
+
+        .quick-start-modal .dashboard-start-title {
+            display: none;
+        }
+
+        .quick-start-modal .dashboard-start-steps {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 0.45rem;
+        }
+
+        .quick-start-modal .dashboard-start-step {
+            flex: none !important;
+            width: 100%;
+            max-width: none;
+            flex-direction: row !important;
+            align-items: flex-start !important;
+            text-align: left !important;
+        }
+
+        .quick-start-modal .dashboard-start-step.has-sublist {
+            flex: none !important;
+            text-align: left;
+            align-items: flex-start;
+        }
+
+        .quick-start-modal .dashboard-start-step.has-sublist .dashboard-step-num {
+            align-self: flex-start;
+        }
+
+        .quick-start-modal .quick-start-tagline {
+            margin: 0 0 0.55rem;
+            font-size: 0.78rem;
+            line-height: 1.35;
+            color: var(--text-muted);
+        }
+
+        .modal-footer.quick-start-footer {
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .quick-start-never {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.82rem;
+            color: var(--text-light);
+            cursor: pointer;
+            margin: 0;
+            flex: 1 1 12rem;
+            min-width: 0;
+        }
+
+        .quick-start-never input {
+            flex-shrink: 0;
+        }
+
+        .quick-start-footer-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            flex: 1 1 auto;
+        }
+
+        .dashboard-quickstart-hint {
+            margin: 0 0 0.75rem;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            color: var(--text-muted);
+        }
+
+        @media (min-width: 600px) {
+            .dashboard-start-steps {
+                flex-direction: row;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .dashboard-start-step {
+                flex: 1;
+                min-width: 0;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 0.55rem 0.45rem;
+            }
+
+            .dashboard-start-step.has-sublist {
+                flex: 1.35;
+                text-align: left;
+                align-items: stretch;
+            }
+
+            .dashboard-start-step.has-sublist .dashboard-step-num {
+                align-self: center;
+            }
+
+            .dashboard-start-step.has-sublist .dashboard-start-step-body {
+                width: 100%;
+            }
+
+            .dashboard-start-step.has-sublist .dashboard-start-sublist {
+                text-align: left;
+            }
+
+            .dashboard-step-num {
+                margin-top: 0;
+            }
         }
 
         .card {
@@ -1646,11 +1896,31 @@
             background: var(--bg-card);
             border-radius: var(--radius);
             max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
+            width: min(90%, calc(100vw - 1.25rem));
+            max-height: 85vh;
             overflow-y: auto;
             transform: scale(0.9);
             transition: transform 0.2s;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 599px) {
+            .modal {
+                width: calc(100vw - 0.5rem);
+                max-width: none;
+            }
+
+            .modal-header {
+                padding: 1rem 0.875rem;
+            }
+
+            .modal-body {
+                padding: 1rem 0.875rem;
+            }
+
+            .modal-footer {
+                padding: 0.875rem;
+            }
         }
 
         .modal-overlay.active .modal {
@@ -3856,33 +4126,15 @@
             color: var(--text);
         }
 
-        .dashboard-empty-hint {
-            margin: 0 0 1.25rem;
-            padding: 1rem 1.25rem;
-            border-radius: 12px;
-            border: 1px dashed var(--border);
-            background: rgba(4, 84, 144, 0.07);
-            color: var(--text);
-            font-size: 0.95rem;
-            line-height: 1.55;
-        }
-
-        .dashboard-empty-hint .hint-actions {
-            margin-top: 0.75rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
         .dashboard-pitch {
-            margin: 0 0 1.25rem;
-            padding: 0.75rem 1.1rem;
+            margin: 0 0 0.85rem;
+            padding: 0.55rem 0.85rem;
             border-radius: var(--radius-sm);
             border-left: 4px solid var(--primary);
             background: var(--bg-sidebar);
             color: var(--text-light);
-            font-size: 0.92rem;
-            line-height: 1.55;
+            font-size: 0.86rem;
+            line-height: 1.45;
         }
 
         .dashboard-pitch strong {
@@ -3899,7 +4151,7 @@
                 <span class="logo-title">WriteBoost</span>
                 <span class="logo-tagline">Narrative writing</span>
             </div>
-            <span class="version-badge" id="app-version">v4.2.6</span>
+            <span class="version-badge" id="app-version">v4.2.20</span>
         </div>
         <div class="header-stats" role="toolbar" aria-label="Your writing stats — tap a number to open Progress and Data">
             <div class="stat-item header-stat-clickable" role="button" tabindex="0" title="Essays — open essay library"
@@ -3936,10 +4188,10 @@
 
     <!-- Navigation -->
     <nav class="nav">
-        <button type="button" class="nav-btn active" data-page="dashboard"><span class="nav-btn-inner"><i data-lucide="layout-dashboard" aria-hidden="true"></i><span>Home</span></span></button>
+        <button type="button" class="nav-btn active" data-page="dashboard"><span class="nav-btn-inner"><i data-lucide="file-pen-line" aria-hidden="true"></i><span>Prompt</span></span></button>
+        <button type="button" class="nav-btn" data-page="practice"><span class="nav-btn-inner"><i data-lucide="pen-line" aria-hidden="true"></i><span>Write</span></span></button>
         <button type="button" class="nav-btn" data-page="templates"><span class="nav-btn-inner"><i data-lucide="layout-list" aria-hidden="true"></i><span>Plan</span></span></button>
         <button type="button" class="nav-btn" data-page="sentence-practice"><span class="nav-btn-inner"><i data-lucide="sparkles" aria-hidden="true"></i><span>Drills</span></span></button>
-        <button type="button" class="nav-btn" data-page="practice"><span class="nav-btn-inner"><i data-lucide="pen-line" aria-hidden="true"></i><span>Write</span></span></button>
         <button type="button" class="nav-btn" data-page="learn"><span class="nav-btn-inner"><i data-lucide="book-open" aria-hidden="true"></i><span>Learn</span></span></button>
         <button type="button" class="nav-btn" data-page="progress" aria-label="Progress and Data"><span class="nav-btn-inner"><i data-lucide="trending-up" aria-hidden="true"></i><span class="nav-text-full">Progress and Data</span><span class="nav-text-short" aria-hidden="true">Progress</span></span></button>
         <button type="button" class="nav-btn" data-page="achievements" aria-label="Achievements"><span class="nav-btn-inner"><i data-lucide="trophy" aria-hidden="true"></i><span class="nav-text-full">Achievements</span><span class="nav-text-short" aria-hidden="true">Badges</span></span></button>
@@ -3950,26 +4202,17 @@
         <!-- Dashboard Page -->
         <div id="dashboard" class="page active">
             <p class="dashboard-pitch" role="note">
-                <strong>WriteBoost</strong> is built for <strong>narrative writing</strong> — short stories, scenes, characters, dialogue, and tension.
-                It is <strong>not</strong> aimed at formal argument essays, research reports, or non-story exam formats; use it to practice creative prose.
+                <strong>WriteBoost</strong> is built for <strong>narrative writing</strong> — scenes, characters, voice, and tension on the page. Use it to sharpen hooks, sensory detail, and dialogue; it is <strong>not</strong> for formal argument papers or research reports.
             </p>
-            <div class="dashboard-empty-hint" id="dashboard-empty-hint" style="display: none;">
-                <strong>Welcome!</strong> Your stats stay at 0 until you finish your first piece — that’s normal.
-                <strong>Step 1:</strong> pick any prompt below. <strong>Step 2:</strong> write at least 50 words on the Write page. <strong>Step 3:</strong> submit to unlock achievements like <strong><span class="icon-btn" style="vertical-align:middle"><i data-lucide="trophy" aria-hidden="true"></i><span>First Draft</span></span></strong>. Optional word goals and auto-save live on Write; detailed feedback comes after submit.
-                <div class="hint-actions">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="showPage('practice')"><span class="icon-btn"><i data-lucide="pen-line" aria-hidden="true"></i><span>Go to Write</span></span></button>
-                    <button type="button" class="btn btn-outline btn-sm" onclick="openHelpModal()"><span class="icon-btn"><i data-lucide="circle-help" aria-hidden="true"></i><span>Quick Start</span></span></button>
-                </div>
-            </div>
 
-            <p class="dashboard-flow" role="navigation" aria-label="How to start"><strong>Start here:</strong> (1) Choose one prompt card → (2) Open <strong>Write</strong> from the nav → (3) Submit when you’re ready. Counts and scores live in the <strong>header</strong> — tap <strong>Essays</strong> or <strong>Words</strong> for your library, <strong>Avg</strong> or <strong>Best</strong> for skill breakdown, <strong>Streak</strong> for trends.</p>
+            <p class="dashboard-quickstart-hint"><strong>Quick Start</strong> on each load until you opt out. More detail: <strong>?</strong></p>
 
             <div class="prompts-section">
                 <div class="prompts-section-header">
-                    <h2><i data-lucide="file-pen-line" aria-hidden="true"></i> Step 1 — Pick a prompt</h2>
+                    <h2><i data-lucide="file-pen-line" aria-hidden="true"></i> Prompt</h2>
                     <button type="button" class="btn btn-outline btn-sm" onclick="refreshPromptDeck()" title="Shuffle six new choices from the pool"><span class="icon-btn"><i data-lucide="refresh-cw" aria-hidden="true"></i><span>Refresh</span></span></button>
                 </div>
-                <p class="help-tip">Six ideas at a time from the unused pool. Tap a card to load it into Write. Your pick hides until you start a new story or refresh.</p>
+                <p class="help-tip">Six at a time — tap a card to open in Write, or <strong>Refresh</strong> for a new mix.</p>
                 <div class="prompts-grid" id="prompts-grid">
                     <!-- Generated dynamically -->
                 </div>
@@ -4494,7 +4737,7 @@
                 <textarea id="sp-input" placeholder="Rewrite the sentence here using SHOW, not tell..." style="width: 100%; min-height: 100px; padding: 0.75rem; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 1rem; font-family: inherit; resize: vertical;"></textarea>
                 <div class="sp-actions" style="display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap;">
                     <button type="button" class="btn btn-primary" id="sp-check-btn" onclick="checkSentenceRewrite()"><span class="icon-btn"><i data-lucide="check" aria-hidden="true"></i><span>Check My Answer</span></span></button>
-                    <button type="button" class="btn btn-ghost" id="sp-skip-btn" onclick="skipSentenceChallenge()"><span class="icon-btn"><i data-lucide="skip-forward" aria-hidden="true"></i><span>Skip</span></span></button>
+                    <button type="button" class="btn btn-ghost" id="sp-refresh-btn" onclick="refreshSentenceChallenge()" title="Next drill sentence (streak resets if you have not checked an answer yet)"><span class="icon-btn"><i data-lucide="refresh-cw" aria-hidden="true"></i><span>Refresh</span></span></button>
                 </div>
                 <p class="help-tip" style="margin-top: 0.75rem; margin-bottom: 0;">After you check, your <strong>results</strong> stay in the green or yellow box below until you go to the next challenge.</p>
                 <div class="sp-feedback" id="sp-feedback" role="region" aria-label="Drill results"></div>
@@ -4707,46 +4950,96 @@
         </div>
     </div>
 
+    <!-- Quick Start (auto on load until dismissed permanently) -->
+    <div class="modal-overlay" id="quick-start-modal" role="dialog" aria-modal="true" aria-labelledby="quick-start-title" onclick="if (event.target === this) closeQuickStartModal(false)">
+        <div class="modal quick-start-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title" id="quick-start-title"><i data-lucide="rocket" aria-hidden="true"></i> Quick Start</div>
+                <button type="button" class="modal-close" onclick="closeQuickStartModal(false)" aria-label="Close">×</button>
+            </div>
+            <div class="modal-body qs-body">
+                <p class="quick-start-tagline">For <strong>narrative</strong> scenes, not research papers.</p>
+                <div class="dashboard-start" role="navigation" aria-label="How to start">
+                    <p class="dashboard-start-title">Start here</p>
+                    <div class="dashboard-start-steps">
+                        <div class="dashboard-start-step">
+                            <span class="dashboard-step-num" aria-hidden="true">1</span>
+                            <span>Pick a <strong>prompt</strong>. It opens in <strong>Write</strong>.</span>
+                        </div>
+                        <div class="dashboard-start-step has-sublist">
+                            <span class="dashboard-step-num" aria-hidden="true">2</span>
+                            <div class="dashboard-start-step-body">
+                                <p class="dashboard-step-lead">After <strong>Write</strong>:</p>
+                                <ul class="dashboard-start-sublist">
+                                    <li><strong>Submit</strong> with 50+ words for scores and feedback.</li>
+                                    <li><strong>Progress</strong> for drafts and trends.</li>
+                                    <li><strong>Achievements</strong> for badges.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="dashboard-start-step has-sublist">
+                            <span class="dashboard-step-num" aria-hidden="true">3</span>
+                            <div class="dashboard-start-step-body">
+                                <p class="dashboard-step-lead">Optional:</p>
+                                <ul class="dashboard-start-sublist">
+                                    <li><strong>Plan</strong> for character, plot, and beats.</li>
+                                    <li><strong>Drills</strong> for quick line practice.</li>
+                                    <li><strong>Learn</strong> for tips, power words, and models.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer quick-start-footer">
+                <label class="quick-start-never">
+                    <input type="checkbox" id="quick-start-never-again" autocomplete="off">
+                    Never show again
+                </label>
+                <div class="quick-start-footer-actions">
+                    <button type="button" class="btn btn-outline" onclick="openFullGuideFromQuickStart()"><span class="icon-btn"><i data-lucide="circle-help" aria-hidden="true"></i><span>Full guide</span></span></button>
+                    <button type="button" class="btn btn-primary" onclick="closeQuickStartModalFromGotIt()">Got it</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Help Modal -->
     <div class="modal-overlay" id="help-modal">
-        <div class="modal">
+        <div class="modal help-guide-modal">
             <div class="modal-header">
-                <div class="modal-title"><i data-lucide="circle-help" aria-hidden="true"></i> Quick Start</div>
+                <div class="modal-title"><i data-lucide="circle-help" aria-hidden="true"></i> Full guide</div>
                 <button class="modal-close" onclick="closeHelpModal()">×</button>
             </div>
             <div class="modal-body">
                 <div class="help-list">
                     <div class="help-item">
                         <strong>What this app is for</strong>
-                        WriteBoost trains <strong>narrative</strong> skills (story, voice, sensory detail, structure). Don’t expect modules for thesis papers, citations, or persuasive five-paragraph essays — the prompts and feedback assume you’re writing fiction or story-like scenes.
+                        WriteBoost trains <strong>narrative</strong> skills (story, voice, sensory detail, structure)&#x2060;. Don’t expect modules for thesis papers, citations, or persuasive five-paragraph essays — the prompts and feedback assume you’re writing fiction or story-like scenes&#x2060;.
                     </div>
                     <div class="help-item">
-                        <strong>Top tabs (this build)</strong>
-                        Left to right: <strong>Home</strong> (pick a prompt; live stats in the <strong>header</strong>) → <strong>Plan</strong> (story template) → <strong>Drills</strong> → <strong>Write</strong> → <strong>Learn</strong> → <strong>Progress and Data</strong> → <strong>Achievements</strong>. On <strong>Learn</strong>, use the large <em>section switcher</em> under the title (three stacked rows on narrow phones, three columns on wider screens).
-                    </div>
-                    <div class="help-item">
-                        <strong>1) Start on Home</strong>
-                        Pick one of six prompts (Refresh for new choices), then open <strong>Write</strong> from the nav.
+                        <strong>1) Start on Prompt</strong>
+                        Pick one of six prompts (Refresh for new choices); it loads into <strong>Write</strong>&#x2060;. You can also open <strong>Write</strong> directly from the tab bar&#x2060;.
                     </div>
                     <div class="help-item">
                         <strong>2) Write</strong>
-                        Optional word goal and a timer (under <strong>Story structure</strong> on the right on wide screens). Aim for at least 50 <em>story</em> words, then Submit. Challenge cards don’t count toward that minimum.
+                        Optional word goal and a timer (under <strong>Story structure</strong> on the right on wide screens)&#x2060;. Aim for at least 50 <em>story</em> words, then Submit&#x2060;. Challenge cards don’t count toward that minimum&#x2060;.
                     </div>
                     <div class="help-item">
                         <strong>3) Get unstuck</strong>
-                        Use Challenge in the editor, open the Power Words modal, or visit <strong>Learn → Power Words</strong>.
+                        Use Challenge in the editor, open the Power Words modal, or visit <strong>Learn&nbsp;→&nbsp;Power Words.</strong>
                     </div>
                     <div class="help-item">
                         <strong>4) Results</strong>
-                        Score breakdown, coaching, outline, optional online grammar check. <strong>Revise this draft</strong> returns you to Write; submit again to see the revision comparison on Results.
+                        Score breakdown, coaching, outline, optional online grammar check. <strong>Revise this draft</strong> returns you to Write&#x2060;; submit again to see the revision comparison on Results&#x2060;.
                     </div>
                     <div class="help-item">
                         <strong>5) Progress and Data</strong>
-                        Skill charts and recent-essay trends are at the top; essay history, export/import, sync code, and clear-all are below on the same page. Tap header <strong>Avg</strong> or <strong>Best</strong> to jump to skill breakdown; <strong>Essays</strong> / <strong>Words</strong> for the library. Open <strong>Achievements</strong> for badges.
+                        Skill charts and recent-essay trends are at the top; essay history, export&nbsp;/&nbsp;import, sync code, and clear-all are below on the same page. Tap header <strong>Avg</strong> or <strong>Best</strong> to jump to skill breakdown;&nbsp;<strong>Essays</strong>&nbsp;/&nbsp;<strong>Words</strong> for the library. Open <strong>Achievements</strong> for badges&#x2060;.
                     </div>
                     <div class="help-item">
                         <strong>6) Shortcuts</strong>
-                        <strong>Ctrl+Enter</strong> / <strong>⌘+Enter</strong> submits from Write. <strong>Esc</strong> closes dialogs.
+                        <strong>Ctrl+Enter</strong>&nbsp;/&nbsp;<strong>⌘+Enter</strong> submits from Write. <strong>Esc</strong> closes dialogs&#x2060;.
                     </div>
                 </div>
             </div>
@@ -4802,7 +5095,7 @@
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.2.6';
+        const APP_VERSION = 'v4.2.20';
 
         let suggestionPopupHideTimer = null;
 
@@ -6057,26 +6350,64 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         /** Prompt indices hidden on the dashboard after picking (session-only; not saved). */
         const sessionHiddenPromptIndices = new Set();
 
+        const QUICK_START_NEVER_KEY = 'writeboost-quick-start-never';
         const ONBOARDING_DISMISSED_KEY = 'writeboost-onboarding-dismissed';
 
-        function markOnboardingDismissed() {
+        function migrateQuickStartPreference() {
             try {
-                localStorage.setItem(ONBOARDING_DISMISSED_KEY, '1');
+                if (localStorage.getItem(QUICK_START_NEVER_KEY)) return;
+                if (localStorage.getItem(ONBOARDING_DISMISSED_KEY)) {
+                    localStorage.setItem(QUICK_START_NEVER_KEY, '1');
+                    localStorage.removeItem(ONBOARDING_DISMISSED_KEY);
+                }
+            } catch (e) { /* private mode / storage full */ }
+        }
+
+        function markQuickStartNever() {
+            try {
+                localStorage.setItem(QUICK_START_NEVER_KEY, '1');
             } catch (e) { /* private mode / storage full */ }
         }
 
         function shouldAutoShowQuickStart() {
             try {
-                if (localStorage.getItem(ONBOARDING_DISMISSED_KEY)) return false;
+                if (localStorage.getItem(QUICK_START_NEVER_KEY)) return false;
             } catch (e) {
                 return false;
             }
-            return (state.essays || []).length === 0;
+            return true;
+        }
+
+        function openQuickStartModal() {
+            const modal = document.getElementById('quick-start-modal');
+            const cb = document.getElementById('quick-start-never-again');
+            if (cb) cb.checked = false;
+            if (modal) modal.classList.add('active');
+            refreshIcons();
+            focusFirstModalControl('quick-start-modal');
+        }
+
+        function closeQuickStartModal(neverAgain) {
+            const modal = document.getElementById('quick-start-modal');
+            if (modal) modal.classList.remove('active');
+            if (neverAgain) markQuickStartNever();
+            refreshIcons();
+        }
+
+        function closeQuickStartModalFromGotIt() {
+            const cb = document.getElementById('quick-start-never-again');
+            closeQuickStartModal(!!(cb && cb.checked));
+        }
+
+        function openFullGuideFromQuickStart() {
+            const cb = document.getElementById('quick-start-never-again');
+            closeQuickStartModal(!!(cb && cb.checked));
+            openHelpModal();
         }
 
         function maybeAutoOpenQuickStart() {
             if (!shouldAutoShowQuickStart()) return;
-            setTimeout(() => openHelpModal(), 450);
+            setTimeout(() => openQuickStartModal(), 450);
         }
 
         // ============ INITIALIZATION ============
@@ -6109,6 +6440,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 syncNow();
             }, 300);
 
+            migrateQuickStartPreference();
             maybeAutoOpenQuickStart();
 
             setTimerStartLabel(false);
@@ -6566,12 +6898,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             const bestEl = document.getElementById('best-score');
             if (bestEl) bestEl.textContent = state.stats.totalEssays > 0 ? (state.stats.bestScore ?? '--') : '--';
 
-            const dashEmpty = document.getElementById('dashboard-empty-hint');
-            if (dashEmpty) {
-                const hasNoEssays = (state.essays || []).length === 0;
-                dashEmpty.style.display = hasNoEssays ? 'block' : 'none';
-            }
-
             checkAchievements();
         }
 
@@ -6904,6 +7230,9 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 let el = null;
                 if (overlayId === 'power-words-modal') {
                     el = document.getElementById('modal-power-word');
+                } else if (overlayId === 'quick-start-modal') {
+                    const overlay = document.getElementById('quick-start-modal');
+                    el = overlay?.querySelector('.modal-footer .btn-primary') || overlay?.querySelector('.modal-close');
                 } else if (overlayId === 'help-modal') {
                     const overlay = document.getElementById('help-modal');
                     el = overlay?.querySelector('.modal-footer .btn-primary') || overlay?.querySelector('.modal-close');
@@ -6924,10 +7253,14 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                     e.preventDefault();
                     return;
                 }
+                const qs = document.getElementById('quick-start-modal');
                 const h = document.getElementById('help-modal');
                 const c = document.getElementById('challenge-modal');
                 const p = document.getElementById('power-words-modal');
-                if (h?.classList.contains('active')) {
+                if (qs?.classList.contains('active')) {
+                    closeQuickStartModal(false);
+                    e.preventDefault();
+                } else if (h?.classList.contains('active')) {
                     closeHelpModal();
                     e.preventDefault();
                 } else if (c?.classList.contains('active')) {
@@ -7382,6 +7715,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         }
 
         function openHelpModal() {
+            closeQuickStartModal(false);
             const modal = document.getElementById('help-modal');
             if (modal) modal.classList.add('active');
             refreshIcons();
@@ -7391,7 +7725,6 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         function closeHelpModal() {
             const modal = document.getElementById('help-modal');
             if (modal) modal.classList.remove('active');
-            markOnboardingDismissed();
         }
 
         function searchModalPowerWord() {
@@ -8486,6 +8819,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             if (confirm('Are you sure you want to delete ALL data?\n\nThis will erase all essays, scores, achievements, and character data.\n\nTip: Export a backup first!')) {
                 if (confirm('This action cannot be undone. Really delete everything?')) {
                     localStorage.removeItem('writeboost-v2');
+                    localStorage.removeItem(QUICK_START_NEVER_KEY);
                     localStorage.removeItem(ONBOARDING_DISMISSED_KEY);
                     location.reload();
                 }
@@ -9059,14 +9393,14 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             const inputEl = document.getElementById('sp-input');
             const feedbackEl = document.getElementById('sp-feedback');
             const checkBtn = document.getElementById('sp-check-btn');
-            const skipBtn = document.getElementById('sp-skip-btn');
+            const refreshBtn = document.getElementById('sp-refresh-btn');
             if (boringEl) boringEl.textContent = challenge.boring;
             if (hintEl) hintEl.textContent = challenge.hint;
             if (inputEl) inputEl.value = '';
             if (feedbackEl) feedbackEl.innerHTML = '';
             lastDrillScoreForSave = null;
             if (checkBtn) checkBtn.disabled = false;
-            if (skipBtn) skipBtn.disabled = false;
+            if (refreshBtn) refreshBtn.disabled = false;
             refreshIcons();
         }
 
@@ -9125,7 +9459,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             saveSentencePractice();
         }
 
-        function skipSentenceChallenge() {
+        function refreshSentenceChallenge() {
             if (sentencePracticeAwaitingNext) {
                 advanceSentenceChallenge();
                 return;
