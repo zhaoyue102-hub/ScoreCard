@@ -505,19 +505,20 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.5.2';
+var APP_VERSION = '1.5.3';
 
 /*
-  云同步：Firebase 控制台创建网页应用后，把下面换成你的配置。
-  若仓库在 GitHub 上公开：apiKey 等仍会出现在页面里（与所有前端一样），请用 Firestore 规则 + 足够长的家庭码；勿把家庭码写进仓库。
+  云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
+  只需把 firebaseConfig 里每一项抄到下面 FIREBASE_CONFIG，不要粘贴 import / getAnalytics 等代码（本页用 compat 脚本加载 Firestore）。
 */
 var FIREBASE_CONFIG = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_PROJECT.firebaseapp.com',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_PROJECT.appspot.com',
-  messagingSenderId: '000000000000',
-  appId: '1:000000000000:web:xxxxxxxx'
+  apiKey: 'AIzaSyA6KsaKtcVS0CRz_LPru5rn4OevL5f3r9Y',
+  authDomain: 'scorecard-21d5f.firebaseapp.com',
+  projectId: 'scorecard-21d5f',
+  storageBucket: 'scorecard-21d5f.firebasestorage.app',
+  messagingSenderId: '965211969039',
+  appId: '1:965211969039:web:a356e9d5ecfa934cd0b57a',
+  measurementId: 'G-3DF80674Q6'
 };
 
 var cloudFamilyId = localStorage.getItem('cloud_family_id') || null;
