@@ -426,7 +426,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
       <span class="badge badge-plus" id="badge-write">+0分</span>
     </div>
     <div class="writing-single">
-      <div class="w-field"><label><i class="ph ph-text-aa" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>英文写作（词数）</label><input type="number" id="input-enw" value="0" min="0" oninput="calcWriting()"></div>
+      <div class="w-field"><label><i class="ph ph-text-aa" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>英文写作得分（0～100）</label><input type="number" id="input-enw" value="0" min="0" max="100" title="按老师/试卷分数填写" oninput="calcWriting()"></div>
     </div>
   </div>
 
@@ -550,7 +550,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.8.1';
+var APP_VERSION = '1.8.3';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -1000,7 +1000,7 @@ function startOfWeekMonday(ref) {
 function makeState() {
   return { hw: null, cnMin: 0, enMin: 0, jpUnit: 0, cantoUnit: 0,
            outdoor: null, meal: null,
-           laundry: 0, dishes: 0, enWords: 0, bball: 0,
+           laundry: 0, dishes: 0, enWriteScore: 0, bball: 0,
            customCounts: {},
            award: 'none' };
 }
@@ -1019,14 +1019,18 @@ function defaultRules() {
     optional: [
       { emoji: "🧺", name: "洗内裤", sub: "每次 +1分", plus: 1 },
       { emoji: "🥣", name: "饭后收拾碗筷", sub: "每次 +1分", plus: 1 },
-      { emoji: "✍️", name: "英文写作加分", sub: "按英文词数加分", plus: 0 },
+      { emoji: "✍️", name: "英文写作加分", sub: "60～79 分两档；80 分起有基础分，之后每 5 分多加 1 分（规则页可调）", plus: 0 },
       { emoji: "🏀", name: "上篮球课", sub: "每节 +10分", plus: 10 }
     ],
     awardLabels: { gold: "一等奖/金奖（华夏杯/AMIO）", special: "特等奖", top: "状元" },
     awardPts:    { gold: 10, special: 15, top: 20 },
     awardWeeks:  { gold: 3,  special: 5,  top: 8 },
-    writeEnThresh: [50, 75, 125, 200, 300],
-    writeEnPts:    [1, 2, 3, 4, 5],
+    writeEnThresh: [60, 70],
+    writeEnPts:    [1, 2],
+    /** 得分 ≥80：基础分 + floor((得分−80)/步长)×每步加分 */
+    writeEnAt80: 3,
+    writeEnAbove80Step: 5,
+    writeEnAbove80Per: 1,
     customExtras: []
   };
 }
@@ -1049,6 +1053,44 @@ function saveRulesToDisk(r) {
 
 var R = loadRules();
 if (!Array.isArray(R.customExtras)) R.customExtras = [];
+
+/** 旧版「按词数」阶梯 → 新版「按写作得分」阶梯（仅当仍为默认词数档位时自动迁移） */
+(function migrateWriteEnRulesToScoreLadder() {
+  if (localStorage.getItem('rules_write_en_score_v2')) return;
+  var t = R.writeEnThresh, p = R.writeEnPts;
+  if (Array.isArray(t) && t.length === 5 && t[0] === 50 && t[1] === 75 && t[2] === 125 &&
+      Array.isArray(p) && p.length === 5 && p[0] === 1 && p[4] === 5) {
+    R.writeEnThresh = [60, 70];
+    R.writeEnPts = [1, 2];
+    R.writeEnAt80 = 3;
+    R.writeEnAbove80Step = 5;
+    R.writeEnAbove80Per = 1;
+    if (R.optional && R.optional[2]) {
+      R.optional[2].sub = '60～79 分两档；80 分起有基础分，之后每 5 分多加 1 分（规则页可调）';
+    }
+    saveRulesToDisk(R);
+  }
+  localStorage.setItem('rules_write_en_score_v2', '1');
+})();
+
+/** 旧版四档（60/70/80/90）→ 80 以上按每 5 分多加 1 分 */
+(function migrateWrite80PerFiveBonus() {
+  if (localStorage.getItem('rules_write80_per5_v1')) return;
+  var t = R.writeEnThresh, p = R.writeEnPts;
+  if (Array.isArray(t) && t.length === 4 && t[0] === 60 && t[1] === 70 && t[2] === 80 && t[3] === 90 &&
+      Array.isArray(p) && p.length === 4 && p[2] === 3 && p[3] === 4) {
+    R.writeEnThresh = [60, 70];
+    R.writeEnPts = [1, 2];
+    R.writeEnAt80 = 3;
+    R.writeEnAbove80Step = 5;
+    R.writeEnAbove80Per = 1;
+    if (R.optional && R.optional[2]) {
+      R.optional[2].sub = '60～79 分两档；80 分起基础 3 分，之后每 5 分多加 1 分（规则页可调）';
+    }
+    saveRulesToDisk(R);
+  }
+  localStorage.setItem('rules_write80_per5_v1', '1');
+})();
 
 function escapeHtml(str) {
   return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -1212,8 +1254,11 @@ function renderTodayUI() {
     document.getElementById('cnt-' + key).textContent = s[key];
     document.getElementById('badge-' + key).textContent = '+' + (s[key] * pts[key]) + '分';
   });
-  // writing (English only)
-  document.getElementById('input-enw').value = s.enWords || 0;
+  // writing: 按得分 0～100（旧存档里的 enWords 不再使用）
+  if (s.enWriteScore == null || isNaN(s.enWriteScore)) s.enWriteScore = 0;
+  s.enWriteScore = Math.max(0, Math.min(100, parseInt(s.enWriteScore, 10) || 0));
+  if (s.enWords !== undefined) delete s.enWords;
+  document.getElementById('input-enw').value = s.enWriteScore;
   updateWriteBadge();
   renderCustomExtrasInToday();
   // award
@@ -1360,14 +1405,32 @@ function addCount(key, delta) {
 }
 
 function calcWriting() {
-  get().enWords = parseInt(document.getElementById('input-enw').value) || 0;
+  var raw = parseInt(document.getElementById('input-enw').value, 10);
+  if (isNaN(raw)) raw = 0;
+  get().enWriteScore = Math.max(0, Math.min(100, raw));
+  document.getElementById('input-enw').value = get().enWriteScore;
   updateWriteBadge(); updateBanner();
 }
+/**
+ * 写作得分：低于 80 按规则表「≥ 阈值」取满足的最高一档；≥80 为 writeEnAt80 + floor((g−80)/步长)×每步加分。
+ */
 function calcWriteScore() {
-  var s = 0, en = get().enWords;
-  var enT = R.writeEnThresh, enP = R.writeEnPts;
-  for (var i = enT.length - 1; i >= 0; i--) { if (en > enT[i]) { s += enP[i]; break; } }
-  return s;
+  var g = Math.max(0, Math.min(100, parseInt(get().enWriteScore, 10) || 0));
+  var enT = R.writeEnThresh || [], enP = R.writeEnPts || [];
+  var at80 = Number(R.writeEnAt80);
+  if (isNaN(at80)) at80 = 3;
+  var step = Number(R.writeEnAbove80Step);
+  if (isNaN(step) || step <= 0) step = 5;
+  var per = Number(R.writeEnAbove80Per);
+  if (isNaN(per)) per = 1;
+  if (g >= 80) {
+    return at80 + Math.floor((g - 80) / step) * per;
+  }
+  for (var i = enT.length - 1; i >= 0; i--) {
+    var th = Number(enT[i]);
+    if (!isNaN(th) && g >= th) return Number(enP[i]) || 0;
+  }
+  return 0;
 }
 function updateWriteBadge() {
   document.getElementById('badge-write').textContent = '+' + calcWriteScore() + '分';
@@ -1644,7 +1707,7 @@ function buildItems() {
   }
   if (s.laundry > 0) items.push({ key: 'laundry', name: R.optional[0].name + '×' + s.laundry, score: s.laundry * R.optional[0].plus });
   if (s.dishes > 0) items.push({ key: 'dishes', name: R.optional[1].name + '×' + s.dishes, score: s.dishes * R.optional[1].plus });
-  var ws = calcWriteScore(); if (ws > 0) items.push({ key: 'write', name: '英文写作（' + s.enWords + ' 词）', score: ws });
+  var ws = calcWriteScore(); if (ws > 0) items.push({ key: 'write', name: '英文写作（得分 ' + s.enWriteScore + '）', score: ws });
   if (s.bball > 0) items.push({ key: 'bball', name: R.optional[3].name + '×' + s.bball, score: s.bball * R.optional[3].plus });
   (R.customExtras || []).forEach(function(rule) {
     var cnt = (s.customCounts && s.customCounts[rule.id]) || 0;
@@ -1964,20 +2027,36 @@ function renderRules() {
   // Writing table (English only)
   html += '<div class="rules-card"><div class="rules-card-header"><div class="rules-card-title">✍️ 英文写作加分标准</div>';
   html += '</div>';
-  html += '<table class="rules-table"><tr><th>英文（词数）</th><th>加分</th></tr>';
+  html += '<table class="rules-table"><tr><th>写作得分（≥）</th><th>加分</th></tr>';
   var maxR = R.writeEnThresh.length;
   for (var i = 0; i < maxR; i++) {
     html += '<tr>';
     if (rulesEditing) {
-      html += '<td>> <input class="rules-input" id="wt-en-' + i + '" type="number" value="' + (R.writeEnThresh[i]||'') + '" style="width:60px;"> 词</td>';
+      html += '<td>≥ <input class="rules-input" id="wt-en-' + i + '" type="number" value="' + (R.writeEnThresh[i]||'') + '" style="width:60px;"> 分</td>';
       html += '<td><input class="rules-input" id="wt-en-pt-' + i + '" type="number" value="' + (R.writeEnPts[i]||'') + '" style="width:40px;"> 分</td>';
     } else {
-      html += '<td>> ' + (R.writeEnThresh[i]||'—') + ' 词</td>';
+      html += '<td>≥ ' + (R.writeEnThresh[i] != null ? R.writeEnThresh[i] : '—') + ' 分</td>';
       html += '<td style="color:#28a745;font-weight:700;">' + (R.writeEnPts[i] ? '+' + R.writeEnPts[i] + '分' : '') + '</td>';
     }
     html += '</tr>';
   }
-  html += '</table></div>';
+  html += '</table>';
+  var at80 = R.writeEnAt80, st80 = R.writeEnAbove80Step, pr80 = R.writeEnAbove80Per;
+  if (isNaN(Number(at80))) at80 = 3;
+  if (isNaN(Number(st80)) || Number(st80) <= 0) st80 = 5;
+  if (isNaN(Number(pr80))) pr80 = 1;
+  var ex85 = Number(at80) + Math.floor(5 / Number(st80)) * Number(pr80);
+  var ex100 = Number(at80) + Math.floor(20 / Number(st80)) * Number(pr80);
+  if (rulesEditing) {
+    html += '<p style="font-size:13px;color:#4a5568;margin-top:10px;line-height:1.55"><strong>得分 ≥80：</strong>基础 +' +
+      '<input class="rules-input" id="wt-at80" type="number" value="' + at80 + '" style="width:44px"> 分；之后每 ' +
+      '<input class="rules-input" id="wt-step80" type="number" value="' + st80 + '" style="width:44px"> 分，多加 ' +
+      '<input class="rules-input" id="wt-per80" type="number" value="' + pr80 + '" style="width:44px"> 分<br>' +
+      '<span style="font-size:12px;color:#718096">示例（按当前值）：80 分 +' + at80 + '，85 分 +' + ex85 + '，100 分 +' + ex100 + '</span></p>';
+  } else {
+    html += '<p style="font-size:13px;color:#4a5568;margin-top:10px;line-height:1.6"><strong>得分 ≥80：</strong>先 +' + at80 + ' 分；之后每满 ' + st80 + ' 分再多 +' + pr80 + ' 分（例：85 为 +' + ex85 + '，100 为 +' + ex100 + '）。</p>';
+  }
+  html += '</div>';
 
   // Awards
   html += '<div class="rules-card"><div class="rules-card-header"><div class="rules-card-title">🏆 比赛获奖加分</div></div>';
@@ -2040,6 +2119,12 @@ function toggleRulesEdit() {
       if (elT) { var vt = parseFloat(elT.value); if (!isNaN(vt)) R.writeEnThresh[wi] = vt; }
       if (elP) { var vp = parseFloat(elP.value); if (!isNaN(vp)) R.writeEnPts[wi] = vp; }
     }
+    var elAt80 = document.getElementById('wt-at80');
+    var elStep80 = document.getElementById('wt-step80');
+    var elPer80 = document.getElementById('wt-per80');
+    if (elAt80) { var vat = parseFloat(elAt80.value); if (!isNaN(vat) && vat >= 0) R.writeEnAt80 = vat; }
+    if (elStep80) { var vst = parseFloat(elStep80.value); if (!isNaN(vst) && vst > 0) R.writeEnAbove80Step = vst; }
+    if (elPer80) { var vper = parseFloat(elPer80.value); if (!isNaN(vper) && vper >= 0) R.writeEnAbove80Per = vper; }
     // awards
     ['gold','special','top'].forEach(function(key) {
       R.awardLabels[key] = document.getElementById('ae-label-' + key).value;
