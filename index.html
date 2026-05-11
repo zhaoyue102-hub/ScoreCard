@@ -29,6 +29,15 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 .score-banner { padding: 16px; transition: background 0.3s; }
 .score-banner-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
 .score-banner-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
+.habit-hero { max-width: 720px; margin: 0 auto 12px; padding: 12px 14px; background: rgba(255,255,255,0.2); border-radius: 14px; border: 1px solid rgba(255,255,255,0.32); backdrop-filter: blur(4px); }
+.habit-hero-inner { display: flex; gap: 12px; align-items: flex-start; }
+.habit-hero-emoji { font-size: 28px; line-height: 1; flex-shrink: 0; }
+.habit-hero-title { color: rgba(255,255,255,0.92); font-size: 11px; font-weight: 800; letter-spacing: 0.08em; margin-bottom: 5px; }
+.habit-hero-line { color: white; font-size: 15px; font-weight: 800; line-height: 1.45; }
+.habit-hero-today { color: rgba(255,255,255,0.84); font-size: 12px; font-weight: 600; margin-top: 6px; line-height: 1.5; }
+.week-habit-bar { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.22); font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.93); line-height: 1.5; text-align: center; }
+.habit-inline { font-size: 12px; color: #4a5568; margin-top: 8px; padding: 8px 10px; background: #f7fafc; border-radius: 10px; line-height: 1.5; border: 1px solid #edf2f7; }
+.task-card.col > .habit-inline { align-self: stretch; text-align: center; }
 .score-cards { display: grid; grid-template-columns: 1fr; gap: 10px; max-width: 720px; margin: 0 auto; }
 @media (min-width: 520px) {
   .score-cards { grid-template-columns: repeat(3, 1fr); }
@@ -286,6 +295,16 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 </div>
 
 <div class="score-banner score-banner-brian" id="score-banner">
+  <div class="habit-hero" id="habit-hero">
+    <div class="habit-hero-inner">
+      <span class="habit-hero-emoji" aria-hidden="true">🏆</span>
+      <div style="min-width:0;flex:1">
+        <div class="habit-hero-title">习惯成就</div>
+        <div class="habit-hero-line" id="habit-hero-week">本周读书 0 分钟 · 多邻国 0 单元 · 加总 0</div>
+        <div class="habit-hero-today" id="habit-hero-today">今日：读书 0 分钟（中0+英0）· 多邻国 0 单元（日0+粤0）</div>
+      </div>
+    </div>
+  </div>
   <div class="score-cards">
     <div class="score-card"><div class="sc-label">今日得分</div><div class="sc-val sc-zero" id="disp-today-net">0</div></div>
     <div class="score-card"><div class="sc-label">个人累计</div><div class="sc-val" id="disp-total">0</div></div>
@@ -297,6 +316,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
       <div class="week-summary-total">合计 <span id="week-total-val">0</span> 分</div>
     </div>
     <div class="week-days" id="week-days"></div>
+    <div class="week-habit-bar" id="week-habit-bar">本周习惯：读书 0 分钟 · 多邻国 0 单元 · 加总 0</div>
   </div>
 </div>
 
@@ -353,6 +373,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
         </div>
       </div>
     </div>
+    <div class="habit-inline" id="stat-read-day">今日读书：中 0 + 英 0 = 0 分钟</div>
   </div>
 
   <div class="task-card col">
@@ -381,6 +402,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
         </div>
       </div>
     </div>
+    <div class="habit-inline" id="stat-duo-day">今日多邻国：日 0 + 粤 0 = 0 单元</div>
   </div>
 
   <div class="task-card">
@@ -567,8 +589,9 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <svg class="duo-owl-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
   <ellipse cx="32" cy="39" rx="25" ry="22" fill="#58CC02"/>
   <ellipse cx="32" cy="44" rx="15" ry="12" fill="#89E219" opacity=".9"/>
-  <path d="M15 21L9 8l12 9z" fill="#46A302"/>
-  <path d="M49 21l6-13-12 9z" fill="#46A302"/>
+  <!-- ears: shorter, hugging the head (was long spikes to y≈8) -->
+  <path d="M14 22 L10 15 L21 19 Z" fill="#46A302"/>
+  <path d="M50 22 L54 15 L43 19 Z" fill="#46A302"/>
   <circle cx="24" cy="33" r="11" fill="#fff"/>
   <circle cx="40" cy="33" r="11" fill="#fff"/>
   <circle cx="24" cy="33" r="6" fill="#1a1a1a"/>
@@ -584,7 +607,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.8.5';
+var APP_VERSION = '1.9.0';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -799,6 +822,8 @@ function applyRemoteDoc(data) {
     localStorage.setItem('rules_v2', JSON.stringify(R));
     if (Array.isArray(data.histBrian)) localStorage.setItem('hist_brian', JSON.stringify(data.histBrian));
     if (Array.isArray(data.histLinden)) localStorage.setItem('hist_linden', JSON.stringify(data.histLinden));
+    if (data.habitLogBrian && typeof data.habitLogBrian === 'object') localStorage.setItem('habitlog_brian', JSON.stringify(data.habitLogBrian));
+    if (data.habitLogLinden && typeof data.habitLogLinden === 'object') localStorage.setItem('habitlog_linden', JSON.stringify(data.habitLogLinden));
     if (data.stateBrian && typeof data.stateBrian === 'object') state.brian = Object.assign(makeState(), data.stateBrian);
     if (data.stateLinden && typeof data.stateLinden === 'object') state.linden = Object.assign(makeState(), data.stateLinden);
     updateRuleLabels();
@@ -942,6 +967,96 @@ function cloudAttachListener() {
   tryServerGet(0);
 }
 
+// ============ HABIT LOG（读书分钟 / 多邻国单元，按日快照，云同步） ============
+function getHabitLogKey(kid) {
+  return 'habitlog_' + kid;
+}
+function getHabitLog(kid) {
+  var raw = localStorage.getItem(getHabitLogKey(kid));
+  if (!raw) return {};
+  try {
+    var o = JSON.parse(raw);
+    return o && typeof o === 'object' ? o : {};
+  } catch (e) {
+    return {};
+  }
+}
+function writeHabitLogToDisk(kid, log) {
+  localStorage.setItem(getHabitLogKey(kid), JSON.stringify(log));
+}
+function pruneHabitLog(log) {
+  var d = new Date();
+  d.setDate(d.getDate() - 150);
+  var ck = dateKeyFromDate(d);
+  Object.keys(log).forEach(function(k) {
+    if (k < ck) delete log[k];
+  });
+}
+function persistHabitSnapshotForKid(kid) {
+  if (!kid || (kid !== 'brian' && kid !== 'linden')) return;
+  var s = state[kid];
+  if (!s) return;
+  var log = getHabitLog(kid);
+  var tkey = getTodayKey();
+  log[tkey] = {
+    cn: Math.max(0, parseInt(s.cnMin, 10) || 0),
+    en: Math.max(0, parseInt(s.enMin, 10) || 0),
+    jp: Math.max(0, parseInt(s.jpUnit, 10) || 0),
+    canto: Math.max(0, parseInt(s.cantoUnit, 10) || 0)
+  };
+  pruneHabitLog(log);
+  writeHabitLogToDisk(kid, log);
+}
+function habitSnapForKidDay(kid, dateKey) {
+  var tkey = getTodayKey();
+  if (dateKey === tkey) {
+    var s = state[kid];
+    return {
+      cn: Math.max(0, parseInt(s.cnMin, 10) || 0),
+      en: Math.max(0, parseInt(s.enMin, 10) || 0),
+      jp: Math.max(0, parseInt(s.jpUnit, 10) || 0),
+      canto: Math.max(0, parseInt(s.cantoUnit, 10) || 0)
+    };
+  }
+  var e = getHabitLog(kid)[dateKey];
+  if (!e) return { cn: 0, en: 0, jp: 0, canto: 0 };
+  return {
+    cn: Math.max(0, parseInt(e.cn, 10) || 0),
+    en: Math.max(0, parseInt(e.en, 10) || 0),
+    jp: Math.max(0, parseInt(e.jp, 10) || 0),
+    canto: Math.max(0, parseInt(e.canto, 10) || 0)
+  };
+}
+function weekHabitTotalsForKid(kid) {
+  var now = new Date();
+  var mon = startOfWeekMonday(now);
+  var readM = 0, duoU = 0;
+  for (var i = 0; i < 7; i++) {
+    var dt = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i);
+    var key = dateKeyFromDate(dt);
+    var sn = habitSnapForKidDay(kid, key);
+    readM += sn.cn + sn.en;
+    duoU += sn.jp + sn.canto;
+  }
+  return { readMin: readM, duoUnits: duoU, combo: readM + duoU };
+}
+function updateHabitAchievementUI() {
+  var kid = currentKid;
+  var w = weekHabitTotalsForKid(kid);
+  var t = habitSnapForKidDay(kid, getTodayKey());
+  var elW = document.getElementById('habit-hero-week');
+  var elT = document.getElementById('habit-hero-today');
+  if (elW) elW.textContent = '本周读书 ' + w.readMin + ' 分钟 · 多邻国 ' + w.duoUnits + ' 单元 · 加总 ' + w.combo;
+  if (elT) elT.textContent = '今日：读书 ' + (t.cn + t.en) + ' 分钟（中' + t.cn + '+英' + t.en + '）· 多邻国 ' + (t.jp + t.canto) + ' 单元（日' + t.jp + '+粤' + t.canto + '）';
+}
+function updateHabitInlineStats() {
+  var s = get();
+  var rEl = document.getElementById('stat-read-day');
+  var dEl = document.getElementById('stat-duo-day');
+  if (rEl) rEl.textContent = '今日读书：中 ' + s.cnMin + ' + 英 ' + s.enMin + ' = ' + (s.cnMin + s.enMin) + ' 分钟';
+  if (dEl) dEl.textContent = '今日多邻国：日 ' + s.jpUnit + ' + 粤 ' + s.cantoUnit + ' = ' + (s.jpUnit + s.cantoUnit) + ' 单元';
+}
+
 function scheduleCloudPush(immediate) {
   if (!cloudFamilyId || cloudApplyingRemote) return;
   if (!cloudConfigValid()) return;
@@ -955,6 +1070,9 @@ function scheduleCloudPush(immediate) {
     if (!cloudFamilyId || cloudApplyingRemote) return;
     ensureFirebaseLoaded(function() {
       if (!cloudFirebaseReady()) return;
+      KIDS.forEach(function(k) {
+        try { persistHabitSnapshotForKid(k); } catch (e) {}
+      });
       var db = firebase.firestore();
       var payload = JSON.parse(JSON.stringify({
         updatedAt: Date.now(),
@@ -962,6 +1080,8 @@ function scheduleCloudPush(immediate) {
         rules: R,
         histBrian: getHistory('brian'),
         histLinden: getHistory('linden'),
+        habitLogBrian: getHabitLog('brian'),
+        habitLogLinden: getHabitLog('linden'),
         stateBrian: state.brian,
         stateLinden: state.linden
       }));
@@ -1184,6 +1304,9 @@ function fmtDate(d) {
 
 // ============ SWITCH KID ============
 function switchKid(kid) {
+  if (kid !== currentKid) {
+    try { persistHabitSnapshotForKid(currentKid); } catch (e) {}
+  }
   currentKid = kid;
   var isB = (kid === 'brian');
   // topbar
@@ -1328,6 +1451,7 @@ function renderTodayUI() {
   renderCustomExtrasInToday();
   // award
   setAwardUI(s.award);
+  updateHabitInlineStats();
 }
 
 function renderCustomExtrasInToday() {
@@ -1528,6 +1652,7 @@ function grandTotalCombined() {
 }
 
 function updateBanner() {
+  try { persistHabitSnapshotForKid(currentKid); } catch (e) {}
   var todayNet = netForKidDay(currentKid, getTodayKey());
   var elToday = document.getElementById('disp-today-net');
   if (elToday) {
@@ -1538,6 +1663,8 @@ function updateBanner() {
   var comb = grandTotalCombined();
   var combEl = document.getElementById('disp-combined-total');
   if (combEl) combEl.textContent = (comb >= 0 ? '+' : '') + comb;
+  updateHabitAchievementUI();
+  updateHabitInlineStats();
   updateWeekSummary();
   scheduleCloudPush();
 }
@@ -1743,6 +1870,9 @@ function updateWeekSummary() {
   var tv = document.getElementById('week-total-val');
   tv.textContent = (total >= 0 ? '+' : '') + total;
   tv.className = total < 0 ? 'neg' : (total > 0 ? 'pos' : '');
+  var wh = weekHabitTotalsForKid(currentKid);
+  var whEl = document.getElementById('week-habit-bar');
+  if (whEl) whEl.textContent = '本周习惯：读书 ' + wh.readMin + ' 分钟 · 多邻国 ' + wh.duoUnits + ' 单元 · 加总 ' + wh.combo;
 }
 
 // ============ STORAGE ============
