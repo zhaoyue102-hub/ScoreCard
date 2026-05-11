@@ -1612,6 +1612,163 @@
 
         .writing-content {
             padding: 1.5rem;
+            position: relative;
+        }
+
+        /* Selection → Learner's Dictionary or Google Translate (see hint + JS) */
+        .dict-lookup-hint {
+            margin: 0 0 0.65rem;
+            padding: 0.5rem 0.65rem;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            color: var(--text-light);
+            background: var(--bg-sidebar);
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--primary);
+        }
+
+        .dict-lookup-hint strong {
+            color: var(--text);
+        }
+
+        .dict-lookup-popover-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            align-items: stretch;
+            min-width: 10.5rem;
+        }
+
+        .dict-lookup-mode-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+        }
+
+        .dict-lookup-popover {
+            position: fixed;
+            z-index: 2100;
+            padding: 0.45rem 0.55rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+        }
+
+        .dict-lookup-popover[hidden] {
+            display: none !important;
+        }
+
+        .dict-lookup-btn {
+            border: none;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 0.35rem 0.65rem;
+            border-radius: var(--radius-sm);
+            background: var(--primary);
+            color: #fff;
+            font-family: inherit;
+        }
+
+        .dict-lookup-btn:hover {
+            filter: brightness(1.05);
+        }
+
+        .dict-lookup-word {
+            font-size: 0.78rem;
+            color: var(--text);
+            max-width: 14rem;
+            max-height: 2.6em;
+            overflow: hidden;
+            line-height: 1.3;
+        }
+
+        .word-goal-custom-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.4rem 1.5rem 0.35rem;
+            background: var(--bg-sidebar);
+            border-top: 1px solid var(--border);
+        }
+
+        .word-goal-custom-row[hidden] {
+            display: none !important;
+        }
+
+        .word-goal-custom-row input[type="number"] {
+            width: 5.5rem;
+            padding: 0.35rem 0.45rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+        }
+
+        /* AI polish (mock) — sidebar card */
+        .ai-coach-card .ai-coach-loading {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 0.25rem 0;
+        }
+
+        .ai-coach-card .ai-coach-loading[hidden] {
+            display: none !important;
+        }
+
+        .ai-coach-spinner {
+            width: 1.1rem;
+            height: 1.1rem;
+            border: 2px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: ai-coach-spin 0.7s linear infinite;
+        }
+
+        @keyframes ai-coach-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .ai-coach-results[hidden] {
+            display: none !important;
+        }
+
+        .ai-coach-section {
+            margin-top: 0.65rem;
+            padding-top: 0.55rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .ai-coach-section:first-of-type {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        .ai-coach-section h4 {
+            margin: 0 0 0.35rem;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+        }
+
+        .ai-coach-section ul {
+            margin: 0;
+            padding-left: 1.1rem;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            color: var(--text-light);
+        }
+
+        .ai-coach-close {
+            margin-top: 0.75rem;
         }
 
         .writing-column-hint {
@@ -4176,7 +4333,7 @@
                 <span class="logo-title">WriteBoost</span>
                 <span class="logo-tagline">Narrative writing</span>
             </div>
-            <span class="version-badge" id="app-version">v4.3</span>
+            <span class="version-badge" id="app-version">v4.3.4</span>
         </div>
         <div class="header-stats" role="toolbar" aria-label="Your writing stats — tap a number to open Progress and Data">
             <div class="stat-item header-stat-clickable" role="button" tabindex="0" title="Essays — open essay library"
@@ -4321,6 +4478,7 @@
                         <div class="writing-toolbar">
                             <button type="button" class="toolbar-btn" onclick="openChallengeModal()"><span class="icon-btn"><i data-lucide="dice-5" aria-hidden="true"></i><span>Challenge</span></span></button>
                             <button type="button" class="toolbar-btn" onclick="openPowerWordsModal()"><span class="icon-btn"><i data-lucide="dumbbell" aria-hidden="true"></i><span>Power Words</span></span></button>
+                            <button type="button" class="toolbar-btn" id="ai-polish-btn" onclick="runAIPolishUI()" title="AI polish — preview suggestions (mock)"><span class="icon-btn"><i data-lucide="sparkles" aria-hidden="true"></i><span>AI polish</span></span></button>
                             <button class="btn btn-primary" id="submit-essay-btn" type="button" onclick="submitEssay()"><span class="icon-btn"><i data-lucide="upload" aria-hidden="true"></i><span>Submit</span></span></button>
                         </div>
                     </div>
@@ -4354,7 +4512,7 @@
                             <span><i data-lucide="timer" aria-hidden="true"></i> <span id="time-spent">0</span> min</span>
                         </div>
                         <div class="writing-stats-row writing-stats-subrow">
-                            <span class="draft-save-status" id="draft-save-status">Draft saves automatically after you pause typing.</span>
+                            <span class="draft-save-status" id="draft-save-status">Draft saves automatically after you pause typing (~0.5s).</span>
                             <label class="word-goal-inline" for="word-goal-select">
                                 <i data-lucide="target" aria-hidden="true"></i>
                                 <span class="sr-only">Word goal</span>
@@ -4364,8 +4522,21 @@
                                     <option value="100">100 words</option>
                                     <option value="200">200 words</option>
                                     <option value="300">300 words</option>
+                                    <option value="400">400 words</option>
+                                    <option value="500">500 words</option>
+                                    <option value="600">600 words</option>
+                                    <option value="750">750 words</option>
+                                    <option value="1000">1,000 words</option>
+                                    <option value="1500">1,500 words</option>
+                                    <option value="2000">2,000 words</option>
+                                    <option value="custom">Custom goal…</option>
                                 </select>
                             </label>
+                        </div>
+                        <div class="word-goal-custom-row" id="word-goal-custom-row" hidden>
+                            <span class="help-tip" style="margin:0;font-size:0.78rem;">Custom target (10–10,000):</span>
+                            <input type="number" id="word-goal-custom-input" min="10" max="10000" step="10" value="500" inputmode="numeric" aria-label="Custom word goal">
+                            <button type="button" class="btn btn-outline btn-sm" onclick="applyCustomWordGoal()">Set goal</button>
                         </div>
                     </div>
                     <div class="word-goal-bar-wrap" id="word-goal-bar-wrap" hidden>
@@ -4375,7 +4546,15 @@
                         <div class="word-goal-meta" id="word-goal-meta"></div>
                     </div>
                     <div class="writing-content">
+                        <p class="dict-lookup-hint" role="note"><strong>Dictionary:</strong> highlight a word or phrase, then tap the button that appears to open the dictionary.</p>
                         <textarea id="essay-input" placeholder="Write your story here. The box starts small and grows as you type."></textarea>
+                        <div id="dict-lookup-popover" class="dict-lookup-popover" hidden role="dialog" aria-label="Look up selection">
+                            <div class="dict-lookup-popover-inner">
+                                <div class="dict-lookup-mode-label" id="dict-lookup-mode-label"></div>
+                                <span class="dict-lookup-word" id="dict-lookup-word-preview"></span>
+                                <button type="button" class="dict-lookup-btn" id="dict-lookup-action-btn" onclick="executeDictPopoverAction()">Open</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="story-coaster">
@@ -4393,6 +4572,29 @@
 
                 <!-- Right: story-structure outline only (not writing tools) -->
                 <div class="sidebar-right">
+                    <div class="card ai-coach-card" id="ai-coach-card" hidden>
+                        <div class="card-title"><i data-lucide="sparkles" aria-hidden="true"></i> AI polish</div>
+                        <p class="help-tip" style="margin-top: 0;">Preview only — calls <code>processAIReview(text)</code> (mock). Use <strong>Submit</strong> for real scores.</p>
+                        <div class="ai-coach-loading" id="ai-coach-loading" hidden>
+                            <span class="ai-coach-spinner" aria-hidden="true"></span>
+                            <span>Analyzing your story…</span>
+                        </div>
+                        <div class="ai-coach-results" id="ai-coach-results" hidden>
+                            <div class="ai-coach-section">
+                                <h4>Grammar</h4>
+                                <ul id="ai-coach-grammar"></ul>
+                            </div>
+                            <div class="ai-coach-section">
+                                <h4>Vocabulary</h4>
+                                <ul id="ai-coach-vocabulary"></ul>
+                            </div>
+                            <div class="ai-coach-section">
+                                <h4>Imagery</h4>
+                                <ul id="ai-coach-imagery"></ul>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-ghost btn-sm ai-coach-close" onclick="closeAICoachCard()">Hide</button>
+                    </div>
                     <div class="card guide-card">
                         <h3 class="guide-side-heading"><i data-lucide="clipboard-list" aria-hidden="true"></i> Story structure</h3>
                         <p class="guide-side-note">Glance at these beats while you draft. Buttons you use are in the middle column.</p>
@@ -5120,7 +5322,7 @@
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.3';
+        const APP_VERSION = 'v4.3.4';
 
         let suggestionPopupHideTimer = null;
 
@@ -6445,6 +6647,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             loadCharacter();
             setupEventListeners();
             setupTextareaListener();
+            setupEssayDictionaryLookup();
             window.addEventListener('resize', () => {
                 clearTimeout(essayTextareaResizeTimer);
                 essayTextareaResizeTimer = setTimeout(adjustEssayTextareaHeight, 150);
@@ -7197,7 +7400,21 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             updateWordGoalUi();
         }
 
+        const WORD_GOAL_PRESETS = [0, 50, 100, 200, 300, 400, 500, 600, 750, 1000, 1500, 2000];
+
         function onWordGoalChange(raw) {
+            const row = document.getElementById('word-goal-custom-row');
+            if (raw === 'custom') {
+                if (row) row.hidden = false;
+                const inp = document.getElementById('word-goal-custom-input');
+                const cur = Math.max(0, parseInt(String(state.stats.wordGoal), 10) || 0);
+                if (inp) {
+                    if (cur > 0 && !WORD_GOAL_PRESETS.includes(cur)) inp.value = String(cur);
+                    else if (!inp.value || parseInt(inp.value, 10) < 10) inp.value = '500';
+                }
+                return;
+            }
+            if (row) row.hidden = true;
             const v = Math.max(0, parseInt(raw, 10) || 0);
             state.stats.wordGoal = v;
             saveState();
@@ -7205,11 +7422,44 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             refreshIcons();
         }
 
+        function applyCustomWordGoal() {
+            const inp = document.getElementById('word-goal-custom-input');
+            const raw = inp ? parseInt(String(inp.value).trim(), 10) : NaN;
+            const v = Number.isFinite(raw) ? Math.min(10000, Math.max(10, raw)) : 500;
+            state.stats.wordGoal = v;
+            saveState();
+            syncWordGoalSelectToState();
+            updateWordGoalUi();
+            refreshIcons();
+            showToast('Word goal set to ' + v + ' words.');
+        }
+
+        function syncWordGoalSelectToState() {
+            const g = Math.max(0, parseInt(String(state.stats.wordGoal), 10) || 0);
+            const sel = document.getElementById('word-goal-select');
+            const row = document.getElementById('word-goal-custom-row');
+            const inp = document.getElementById('word-goal-custom-input');
+            if (!sel) return;
+            if (WORD_GOAL_PRESETS.includes(g)) {
+                sel.value = String(g);
+                if (row) row.hidden = true;
+            } else if (g > 0) {
+                sel.value = 'custom';
+                if (row) row.hidden = false;
+                if (inp) inp.value = String(g);
+            } else {
+                sel.value = '0';
+                if (row) row.hidden = true;
+            }
+        }
+
         function updateWordGoalUi() {
             const g = Math.max(0, parseInt(String(state.stats.wordGoal), 10) || 0);
             const sel = document.getElementById('word-goal-select');
-            if (sel && document.activeElement !== sel) {
-                sel.value = String(g);
+            const ae = document.activeElement;
+            const aeId = ae && ae.id;
+            if (sel && ae !== sel && aeId !== 'word-goal-custom-input') {
+                syncWordGoalSelectToState();
             }
             const wrap = document.getElementById('word-goal-bar-wrap');
             const fill = document.getElementById('word-goal-fill');
@@ -7228,8 +7478,7 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
         }
 
         function initWordGoalAndDraftUi() {
-            const sel = document.getElementById('word-goal-select');
-            if (sel) sel.value = String(Math.max(0, parseInt(String(state.stats.wordGoal), 10) || 0));
+            syncWordGoalSelectToState();
             updateWordGoalUi();
         }
 
@@ -9037,67 +9286,306 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
 
         // ============ INIT ============
         let autoSaveTimer = null;
+        const DRAFT_AUTOSAVE_MS = 500;
+
+        function saveEssayDraftToLocalStorage() {
+            const textarea = document.getElementById('essay-input');
+            if (!textarea) return;
+            const titleEl = document.getElementById('current-prompt-title');
+            if (textarea.value.trim().length > 0) {
+                const draft = {
+                    text: textarea.value,
+                    promptTitle: titleEl ? titleEl.textContent : '',
+                    savedAt: new Date().toISOString()
+                };
+                try {
+                    localStorage.setItem('writeboost-draft', JSON.stringify(draft));
+                    updateDraftSavedTime(new Date());
+                } catch (e) { /* quota / private mode */ }
+            } else {
+                try {
+                    localStorage.removeItem('writeboost-draft');
+                } catch (e) {}
+                const ds = document.getElementById('draft-save-status');
+                if (ds) ds.textContent = 'Draft saves automatically after you pause typing (~' + (DRAFT_AUTOSAVE_MS / 1000) + 's).';
+            }
+        }
+
+        function scheduleDraftAutoSave() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                autoSaveTimer = null;
+                saveEssayDraftToLocalStorage();
+            }, DRAFT_AUTOSAVE_MS);
+        }
+
+        function flushDraftSaveImmediately() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = null;
+            saveEssayDraftToLocalStorage();
+        }
 
         function setupAutoSave() {
             const textarea = document.getElementById('essay-input');
             if (!textarea) return;
-
-            textarea.addEventListener('input', () => {
-                clearTimeout(autoSaveTimer);
-                autoSaveTimer = setTimeout(() => {
-                    if (textarea.value.trim().length > 0) {
-                        const draft = {
-                            text: textarea.value,
-                            promptTitle: document.getElementById('current-prompt-title').textContent,
-                            savedAt: new Date().toISOString()
-                        };
-                        localStorage.setItem('writeboost-draft', JSON.stringify(draft));
-                        updateDraftSavedTime(new Date());
-                    } else {
-                        localStorage.removeItem('writeboost-draft');
-                        const ds = document.getElementById('draft-save-status');
-                        if (ds) ds.textContent = 'Draft saves automatically after you pause typing.';
-                    }
-                }, 2000);
-            });
+            textarea.addEventListener('input', scheduleDraftAutoSave);
+            if (!window.__writeboostBeforeUnloadBound) {
+                window.__writeboostBeforeUnloadBound = true;
+                window.addEventListener('beforeunload', () => {
+                    flushDraftSaveImmediately();
+                });
+            }
         }
 
         function loadDraft() {
             const draftData = localStorage.getItem('writeboost-draft');
-            if (draftData) {
-                try {
-                    const draft = JSON.parse(draftData);
-                    const savedAt = new Date(draft.savedAt);
-                    const now = new Date();
-                    const hoursDiff = (now - savedAt) / (1000 * 60 * 60);
-
-                    // Only restore draft if less than 24 hours old
-                    if (hoursDiff < 24 && draft.text.trim().length > 20) {
-                        if (confirm('Found an unsaved draft from ' + savedAt.toLocaleString() + '.\n\nRestore it?')) {
-                            document.getElementById('essay-input').value = draft.text;
-                            if (draft.promptTitle) {
-                                document.getElementById('current-prompt-title').textContent = draft.promptTitle;
-                            }
-                            updateWordCount();
-                            drawStoryCoaster();
-                            analyzeFlatWords();
-                            adjustEssayTextareaHeight();
-                            updateDraftSavedTime(savedAt);
-                        } else {
-                            localStorage.removeItem('writeboost-draft');
-                        }
-                    } else {
-                        localStorage.removeItem('writeboost-draft');
-                    }
-                } catch (e) {
+            if (!draftData) return;
+            try {
+                const draft = JSON.parse(draftData);
+                const savedAt = new Date(draft.savedAt);
+                const now = new Date();
+                const hoursDiff = (now - savedAt) / (1000 * 60 * 60);
+                const ta = document.getElementById('essay-input');
+                if (!ta || typeof draft.text !== 'string') {
                     localStorage.removeItem('writeboost-draft');
+                    return;
                 }
+                if (hoursDiff >= 24 || draft.text.trim().length === 0) {
+                    localStorage.removeItem('writeboost-draft');
+                    return;
+                }
+                ta.value = draft.text;
+                if (draft.promptTitle) {
+                    const titleEl = document.getElementById('current-prompt-title');
+                    if (titleEl) titleEl.textContent = draft.promptTitle;
+                }
+                updateWordCount();
+                drawStoryCoaster();
+                analyzeFlatWords();
+                adjustEssayTextareaHeight();
+                updateDraftSavedTime(savedAt);
+                showToast('Draft restored from this device.');
+            } catch (e) {
+                localStorage.removeItem('writeboost-draft');
             }
         }
 
         // Clear draft when essay is submitted
         function clearDraft() {
             localStorage.removeItem('writeboost-draft');
+        }
+
+        // --- Dictionary / translate: selection → floating actions ---
+        function extractFirstDictionaryWord(slice) {
+            if (!slice) return '';
+            const t = slice.replace(/\u00a0/g, ' ').trim();
+            if (!t) return '';
+            const m = t.match(/[A-Za-z][A-Za-z'-]*/);
+            return m ? m[0] : '';
+        }
+
+        function selectionHasChinese(slice) {
+            return /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/.test(slice || '');
+        }
+
+        function extractChineseLookupText(slice) {
+            if (!slice) return '';
+            let t = slice.replace(/\u00a0/g, ' ').replace(/\r\n/g, '\n').trim();
+            if (!t) return '';
+            t = t.replace(/\n+/g, ' ').replace(/\s+/g, ' ');
+            return t.length > 500 ? t.slice(0, 500) : t;
+        }
+
+        /**
+         * @returns {{ mode: 'translate', query: string } | { mode: 'dict', query: string } | null}
+         */
+        function analyzeSelectionForLookup(slice) {
+            if (!slice || !slice.trim()) return null;
+            if (selectionHasChinese(slice)) {
+                const q = extractChineseLookupText(slice);
+                return q ? { mode: 'translate', query: q } : null;
+            }
+            const word = extractFirstDictionaryWord(slice);
+            return word ? { mode: 'dict', query: word } : null;
+        }
+
+        function positionDictPopoverNearClientPoint(pop, clientX, clientY) {
+            if (!pop) return;
+            const pad = 8;
+            pop.style.position = 'fixed';
+            pop.style.left = '0px';
+            pop.style.top = '0px';
+            requestAnimationFrame(() => {
+                const w = pop.offsetWidth || 160;
+                const h = pop.offsetHeight || 40;
+                let x = (typeof clientX === 'number' ? clientX : window.innerWidth / 2) - w / 2;
+                let y = (typeof clientY === 'number' ? clientY : window.innerHeight / 2) - h - 12;
+                x = Math.max(pad, Math.min(x, window.innerWidth - w - pad));
+                y = Math.max(pad, Math.min(y, window.innerHeight - h - pad));
+                pop.style.left = x + 'px';
+                pop.style.top = y + 'px';
+            });
+        }
+
+        function hideDictLookupPopover() {
+            const pop = document.getElementById('dict-lookup-popover');
+            if (pop) pop.hidden = true;
+        }
+
+        function executeDictPopoverAction() {
+            const pop = document.getElementById('dict-lookup-popover');
+            const mode = pop && pop.dataset.mode ? pop.dataset.mode : '';
+            const q = pop && pop.dataset.query ? String(pop.dataset.query).trim() : '';
+            if (!q) return;
+            let url = '';
+            if (mode === 'translate') {
+                url = 'https://translate.google.com/?sl=auto&tl=en&text=' + encodeURIComponent(q) + '&op=translate';
+            } else {
+                url = 'https://www.learnersdictionary.com/definition/' + encodeURIComponent(q.toLowerCase());
+            }
+            window.open(url, '_blank', 'noopener,noreferrer');
+            hideDictLookupPopover();
+        }
+
+        function setupEssayDictionaryLookup() {
+            const ta = document.getElementById('essay-input');
+            const pop = document.getElementById('dict-lookup-popover');
+            if (!ta || !pop || window.__writeboostDictLookupBound) return;
+            window.__writeboostDictLookupBound = true;
+
+            function refreshPopover(ev) {
+                const start = ta.selectionStart;
+                const end = ta.selectionEnd;
+                if (start == null || end == null || start === end) {
+                    hideDictLookupPopover();
+                    return;
+                }
+                const a = Math.min(start, end);
+                const b = Math.max(start, end);
+                const slice = ta.value.slice(a, b);
+                const info = analyzeSelectionForLookup(slice);
+                if (!info) {
+                    hideDictLookupPopover();
+                    return;
+                }
+                pop.dataset.mode = info.mode;
+                pop.dataset.query = info.query;
+                const labelEl = document.getElementById('dict-lookup-mode-label');
+                const btn = document.getElementById('dict-lookup-action-btn');
+                const prev = document.getElementById('dict-lookup-word-preview');
+                if (info.mode === 'translate') {
+                    if (labelEl) {
+                        labelEl.textContent = '';
+                        labelEl.style.display = 'none';
+                    }
+                    if (btn) {
+                        btn.textContent = 'Dictionary';
+                        btn.title = 'Opens in a new tab';
+                    }
+                    if (prev) {
+                        const show = info.query.length > 80 ? info.query.slice(0, 80) + '…' : info.query;
+                        prev.textContent = show;
+                    }
+                } else {
+                    if (labelEl) {
+                        labelEl.textContent = '';
+                        labelEl.style.display = 'none';
+                    }
+                    if (btn) {
+                        btn.textContent = 'Dictionary';
+                        btn.title = 'Opens in a new tab';
+                    }
+                    if (prev) prev.textContent = info.query;
+                }
+                pop.hidden = false;
+                const cx = ev && typeof ev.clientX === 'number' ? ev.clientX : undefined;
+                const cy = ev && typeof ev.clientY === 'number' ? ev.clientY : undefined;
+                positionDictPopoverNearClientPoint(pop, cx, cy);
+                refreshIcons();
+            }
+
+            ta.addEventListener('mouseup', refreshPopover);
+            ta.addEventListener('select', refreshPopover);
+            ta.addEventListener('keyup', (e) => {
+                const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Shift'];
+                if (keys.includes(e.key) || e.shiftKey) refreshPopover(e);
+            });
+
+            document.addEventListener('mousedown', (ev) => {
+                if (pop.hidden) return;
+                if (ev.target === ta || pop.contains(ev.target)) return;
+                hideDictLookupPopover();
+            }, true);
+        }
+
+        /**
+         * Reserved async hook for AI story review (mock). Replace body with real API later.
+         * @param {string} text
+         * @returns {Promise<{ grammar: string[], vocabulary: string[], imagery: string[] }>}
+         */
+        async function processAIReview(text) {
+            await new Promise((r) => setTimeout(r, 900));
+            const n = (text || '').trim().split(/\s+/).filter(Boolean).length;
+            return {
+                grammar: [
+                    'Preview: check subject–verb agreement in long sentences.',
+                    n < 40 ? 'Try adding one more complete sentence before you submit.' : 'Sentence length looks varied — good for rhythm.'
+                ],
+                vocabulary: [
+                    n < 80 ? 'Add 2–3 stronger verbs (e.g. whispered, stumbled) where you used “said” or “went.”' : 'Word count is healthy — swap one plain adjective for a sensory one.',
+                    'Circle three “telling” lines and rewrite them as actions the reader can see.'
+                ],
+                imagery: [
+                    'Add one smell or texture in your opening scene.',
+                    'Where you name an emotion, show it with hands, breath, or voice instead.'
+                ]
+            };
+        }
+
+        function renderAICoachLists(data) {
+            const g = document.getElementById('ai-coach-grammar');
+            const v = document.getElementById('ai-coach-vocabulary');
+            const i = document.getElementById('ai-coach-imagery');
+            const fill = (el, items) => {
+                if (!el) return;
+                const list = Array.isArray(items) ? items : [];
+                el.innerHTML = list.map((t) => '<li>' + escapeHtml(String(t)) + '</li>').join('');
+            };
+            fill(g, data.grammar);
+            fill(v, data.vocabulary);
+            fill(i, data.imagery);
+        }
+
+        async function runAIPolishUI() {
+            const ta = document.getElementById('essay-input');
+            const card = document.getElementById('ai-coach-card');
+            const load = document.getElementById('ai-coach-loading');
+            const res = document.getElementById('ai-coach-results');
+            if (!ta || !card || !load || !res) return;
+            const raw = ta.value.trim();
+            if (!raw) {
+                showToast('Write a little first, then tap AI polish.');
+                return;
+            }
+            card.hidden = false;
+            load.hidden = false;
+            res.hidden = true;
+            refreshIcons();
+            try {
+                const feedback = await processAIReview(ta.value);
+                renderAICoachLists(feedback);
+                res.hidden = false;
+            } catch (err) {
+                showToast('AI preview failed: ' + (err && err.message ? err.message : 'unknown'));
+            } finally {
+                load.hidden = true;
+                refreshIcons();
+            }
+        }
+
+        function closeAICoachCard() {
+            const card = document.getElementById('ai-coach-card');
+            if (card) card.hidden = true;
         }
 
         // ============ TEMPLATES ============
