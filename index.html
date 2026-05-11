@@ -754,6 +754,31 @@
             color: var(--text-muted);
         }
 
+        .dashboard-quickstart-hint .dashboard-quickstart-guide-link {
+            display: inline;
+            margin: 0;
+            padding: 0;
+            border: none;
+            background: none;
+            font: inherit;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            cursor: pointer;
+            text-align: inherit;
+        }
+
+        .dashboard-quickstart-hint .dashboard-quickstart-guide-link:hover {
+            color: var(--primary-dark);
+        }
+
+        .dashboard-quickstart-hint .dashboard-quickstart-guide-link:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
         @media (min-width: 600px) {
             .dashboard-start-steps {
                 flex-direction: row;
@@ -4151,7 +4176,7 @@
                 <span class="logo-title">WriteBoost</span>
                 <span class="logo-tagline">Narrative writing</span>
             </div>
-            <span class="version-badge" id="app-version">v4.2.20</span>
+            <span class="version-badge" id="app-version">v4.3</span>
         </div>
         <div class="header-stats" role="toolbar" aria-label="Your writing stats — tap a number to open Progress and Data">
             <div class="stat-item header-stat-clickable" role="button" tabindex="0" title="Essays — open essay library"
@@ -4181,7 +4206,7 @@
             </div>
         </div>
         <div class="header-actions" role="toolbar" aria-label="Help and backup">
-            <button class="btn btn-secondary btn-sm header-icon-btn" type="button" onclick="openHelpModal()" title="How to use" aria-label="How to use"><i data-lucide="circle-help" aria-hidden="true"></i></button>
+            <button class="btn btn-secondary btn-sm header-icon-btn" type="button" onclick="openHelpModal()" title="How to use — Quick Start" aria-label="How to use — Quick Start"><i data-lucide="circle-help" aria-hidden="true"></i></button>
             <button class="btn btn-secondary btn-sm header-icon-btn" type="button" onclick="exportData()" title="Export data backup" aria-label="Export data backup"><i data-lucide="download" aria-hidden="true"></i></button>
         </div>
     </header>
@@ -4205,7 +4230,7 @@
                 <strong>WriteBoost</strong> is built for <strong>narrative writing</strong> — scenes, characters, voice, and tension on the page. Use it to sharpen hooks, sensory detail, and dialogue; it is <strong>not</strong> for formal argument papers or research reports.
             </p>
 
-            <p class="dashboard-quickstart-hint"><strong>Quick Start</strong> on each load until you opt out. More detail: <strong>?</strong></p>
+            <p class="dashboard-quickstart-hint"><strong>Quick Start</strong> on each load until you opt out. For more detail, <button type="button" class="dashboard-quickstart-guide-link" onclick="openHelpModal()" title="How to use — Quick Start" aria-label="Open Quick Start help (same as the header help button)">open Quick Start</button>.</p>
 
             <div class="prompts-section">
                 <div class="prompts-section-header">
@@ -4997,7 +5022,7 @@
                     Never show again
                 </label>
                 <div class="quick-start-footer-actions">
-                    <button type="button" class="btn btn-outline" onclick="openFullGuideFromQuickStart()"><span class="icon-btn"><i data-lucide="circle-help" aria-hidden="true"></i><span>Full guide</span></span></button>
+                    <button type="button" class="btn btn-outline" onclick="openFullGuideFromQuickStart()"><span class="icon-btn"><i data-lucide="circle-help" aria-hidden="true"></i><span>Quick Start</span></span></button>
                     <button type="button" class="btn btn-primary" onclick="closeQuickStartModalFromGotIt()">Got it</button>
                 </div>
             </div>
@@ -5005,10 +5030,10 @@
     </div>
 
     <!-- Help Modal -->
-    <div class="modal-overlay" id="help-modal">
+    <div class="modal-overlay" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
         <div class="modal help-guide-modal">
             <div class="modal-header">
-                <div class="modal-title"><i data-lucide="circle-help" aria-hidden="true"></i> Full guide</div>
+                <div class="modal-title" id="help-modal-title"><i data-lucide="circle-help" aria-hidden="true"></i> Quick Start</div>
                 <button class="modal-close" onclick="closeHelpModal()">×</button>
             </div>
             <div class="modal-body">
@@ -5095,7 +5120,7 @@
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-        const APP_VERSION = 'v4.2.20';
+        const APP_VERSION = 'v4.3';
 
         let suggestionPopupHideTimer = null;
 
@@ -7236,6 +7261,8 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
                 } else if (overlayId === 'help-modal') {
                     const overlay = document.getElementById('help-modal');
                     el = overlay?.querySelector('.modal-footer .btn-primary') || overlay?.querySelector('.modal-close');
+                    el?.focus?.({ preventScroll: true });
+                    return;
                 } else {
                     const overlay = document.getElementById(overlayId);
                     el = overlay?.querySelector('.modal-close') || overlay?.querySelector('button');
@@ -7714,12 +7741,25 @@ Heat seeped through the ceramic into my palms. Outside, rain began to stitch its
             document.getElementById('power-words-modal').classList.remove('active');
         }
 
+        function resetHelpModalScroll() {
+            const overlay = document.getElementById('help-modal');
+            if (!overlay) return;
+            const modal = overlay.querySelector('.modal');
+            const body = overlay.querySelector('.modal-body');
+            if (modal) modal.scrollTop = 0;
+            if (body) body.scrollTop = 0;
+        }
+
         function openHelpModal() {
             closeQuickStartModal(false);
-            const modal = document.getElementById('help-modal');
-            if (modal) modal.classList.add('active');
+            const overlay = document.getElementById('help-modal');
+            if (overlay) {
+                overlay.classList.add('active');
+                resetHelpModalScroll();
+            }
             refreshIcons();
             focusFirstModalControl('help-modal');
+            setTimeout(() => resetHelpModalScroll(), 50);
         }
 
         function closeHelpModal() {
