@@ -29,15 +29,13 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 .score-banner { padding: 16px; transition: background 0.3s; }
 .score-banner-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
 .score-banner-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
-.habit-hero { max-width: 720px; margin: 0 auto 12px; padding: 12px 14px; background: rgba(255,255,255,0.2); border-radius: 14px; border: 1px solid rgba(255,255,255,0.32); backdrop-filter: blur(4px); }
+.habit-hero { max-width: 720px; margin: 12px auto 0; padding: 12px 14px; background: rgba(255,255,255,0.2); border-radius: 14px; border: 1px solid rgba(255,255,255,0.32); backdrop-filter: blur(4px); }
 .habit-hero-inner { display: flex; gap: 12px; align-items: flex-start; }
 .habit-hero-emoji { font-size: 28px; line-height: 1; flex-shrink: 0; }
 .habit-hero-title { color: rgba(255,255,255,0.92); font-size: 11px; font-weight: 800; letter-spacing: 0.08em; margin-bottom: 5px; }
 .habit-hero-line { color: white; font-size: 15px; font-weight: 800; line-height: 1.45; }
 .habit-hero-today { color: rgba(255,255,255,0.84); font-size: 12px; font-weight: 600; margin-top: 6px; line-height: 1.5; }
 .week-habit-bar { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.22); font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.93); line-height: 1.5; text-align: center; }
-.habit-inline { font-size: 12px; color: #4a5568; margin-top: 8px; padding: 8px 10px; background: #f7fafc; border-radius: 10px; line-height: 1.5; border: 1px solid #edf2f7; }
-.task-card.col > .habit-inline { align-self: stretch; text-align: center; }
 .score-cards { display: grid; grid-template-columns: 1fr; gap: 10px; max-width: 720px; margin: 0 auto; }
 @media (min-width: 520px) {
   .score-cards { grid-template-columns: repeat(3, 1fr); }
@@ -119,6 +117,96 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 .mini-card .mc-val { font-size: 22px; font-weight: 800; color: #2d3748; margin-bottom: 6px; }
 .mini-card .mc-val span { font-size: 12px; font-weight: 400; color: #718096; }
 .mini-btns { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
+
+/* 读书 / 多邻国：单行条 + 紧凑控件 */
+.task-card-read { align-items: flex-start; }
+.task-card-read > .t-icon { margin-top: 2px; flex-shrink: 0; }
+.task-card-read > .t-icon-duo { margin-top: 2px; }
+.read-stack { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.read-grid { display: flex; flex-direction: column; gap: 8px; }
+.read-lang-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  background: #f7fafc;
+  border-radius: 10px;
+  padding: 7px 10px;
+  border: 1px solid #edf2f7;
+}
+.read-lang-row .read-lang-meta { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.read-lang-row .read-lang-meta .mc-lang-ic { font-size: 14px; line-height: 1; color: #5b6bc4; }
+.read-lang-row .read-lang-meta .lang-pill { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; background: #edf2f7; color: #4a5568; letter-spacing: 0.02em; }
+.read-lang-row .read-lang-meta .lang-pill.jp { background: #fff5f5; color: #c53030; }
+.read-lang-row .read-lang-meta .lang-pill.yue { background: #ebf8ff; color: #2b6cb0; }
+.read-lang-row .mc-val { font-size: 18px; font-weight: 800; color: #2d3748; line-height: 1.1; margin: 0; white-space: nowrap; }
+.read-lang-row .mc-val span { font-size: 11px; font-weight: 600; color: #718096; }
+.read-lang-row .mini-btns { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+
+/* 选修加分：统一布局（左图标 + 中间说明 + 右侧「预计得分」+ 操作） */
+.task-card-bonus {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.task-card-bonus > .t-icon { flex-shrink: 0; }
+.task-card-bonus .bonus-mid {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.task-card-bonus .bonus-mid .t-name { font-size: 15px; font-weight: 600; color: #2d3748; line-height: 1.3; }
+.task-card-bonus .bonus-mid .t-sub { font-size: 12px; color: #718096; line-height: 1.35; margin: 0; }
+.task-card-bonus .bonus-right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.task-card-bonus .bonus-right--row {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.task-card-bonus .bonus-pill {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: linear-gradient(165deg, #ecfdf5 0%, #d1fae5 100%);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.38);
+  box-shadow: 0 1px 3px rgba(15, 118, 110, 0.12);
+  white-space: nowrap;
+  line-height: 1.2;
+}
+.task-card-bonus.task-card-bonus-col {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+.task-card-bonus .bonus-award-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.task-card-bonus .bonus-award-head .t-name { flex: 1; min-width: 0; font-size: 15px; font-weight: 600; color: #2d3748; line-height: 1.3; }
+.task-card-bonus .award-btns { margin-top: 0; }
+
+/* 英文写作：与选修卡同一套 bonus 布局 */
+.task-card-write.task-card-bonus { align-items: center; }
+.write-score-wrap { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.write-score-lbl { font-size: 11px; color: #718096; font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+.write-score-lbl .ph { font-size: 14px; color: #5b6bc4; }
+.write-score-inp {
+  width: 76px; padding: 8px 8px; font-size: 17px; font-weight: 800; color: #2d3748;
+  border: 1.5px solid #e2e8f0; border-radius: 10px; background: white; outline: none; text-align: center;
+  transition: border-color 0.2s;
+}
+.write-score-inp:focus { border-color: #667eea; }
 .mini-btn { padding: 4px 8px; border-radius: 8px; border: 1.5px solid #e2e8f0; background: white; font-size: 12px; font-weight: 600; cursor: pointer; color: #2d3748; transition: all 0.12s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
 .mini-btn .ph { font-size: 14px; line-height: 1; }
 .mini-btn:hover { border-color: #667eea; color: #667eea; }
@@ -295,16 +383,6 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 </div>
 
 <div class="score-banner score-banner-brian" id="score-banner">
-  <div class="habit-hero" id="habit-hero">
-    <div class="habit-hero-inner">
-      <span class="habit-hero-emoji" aria-hidden="true">🏆</span>
-      <div style="min-width:0;flex:1">
-        <div class="habit-hero-title">习惯成就</div>
-        <div class="habit-hero-line" id="habit-hero-week">本周读书 0 分钟 · 多邻国 0 单元 · 加总 0</div>
-        <div class="habit-hero-today" id="habit-hero-today">今日：读书 0 分钟（中0+英0）· 多邻国 0 单元（日0+粤0）</div>
-      </div>
-    </div>
-  </div>
   <div class="score-cards">
     <div class="score-card"><div class="sc-label">今日得分</div><div class="sc-val sc-zero" id="disp-today-net">0</div></div>
     <div class="score-card"><div class="sc-label">个人累计</div><div class="sc-val" id="disp-total">0</div></div>
@@ -317,6 +395,16 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
     </div>
     <div class="week-days" id="week-days"></div>
     <div class="week-habit-bar" id="week-habit-bar">本周习惯：读书 0 分钟 · 多邻国 0 单元 · 加总 0</div>
+  </div>
+  <div class="habit-hero" id="habit-hero">
+    <div class="habit-hero-inner">
+      <span class="habit-hero-emoji" aria-hidden="true">🏆</span>
+      <div style="min-width:0;flex:1">
+        <div class="habit-hero-title">习惯成就</div>
+        <div class="habit-hero-line" id="habit-hero-week">本周读书 0 分钟 · 多邻国 0 单元 · 加总 0</div>
+        <div class="habit-hero-today" id="habit-hero-today">今日：读书 0 分钟（中0+英0）· 多邻国 0 单元（日0+粤0）</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -345,64 +433,62 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
     </div>
   </div>
 
-  <div class="task-card col">
-    <div class="row">
-      <i class="t-icon ph ph-book-open" aria-hidden="true"></i>
-      <div class="t-info">
+  <div class="task-card task-card-read">
+    <i class="t-icon ph ph-book-open" aria-hidden="true"></i>
+    <div class="read-stack">
+      <div>
         <div class="t-head"><div class="t-name" id="lbl-read">每天读书 1 小时</div><span class="badge badge-neutral" id="badge-read">0分</span></div>
         <div class="t-sub" id="lbl-read-sub">中文30分 + 英文30分；每少10分钟 −1分</div>
       </div>
-    </div>
-    <div class="two-col">
-      <div class="mini-card">
-        <div class="mc-lang"><i class="mc-lang-ic ph ph-article" aria-hidden="true"></i><span class="lang-pill">中文</span></div>
-        <div class="mc-val" id="disp-cn">0<span> 分钟</span></div>
-        <div class="mini-btns">
-          <button class="mini-btn" onclick="addMin('cn',-10)">−10</button>
-          <button class="mini-btn" onclick="addMin('cn',10)">+10</button>
-          <button class="mini-btn" onclick="setMin('cn',30)"><i class="ph ph-check" aria-hidden="true"></i>30</button>
+      <div class="read-grid">
+        <div class="read-lang-row">
+          <div class="read-lang-meta"><i class="mc-lang-ic ph ph-article" aria-hidden="true"></i><span class="lang-pill">中文</span></div>
+          <div class="mc-val" id="disp-cn">0<span> 分钟</span></div>
+          <div class="mini-btns">
+            <button class="mini-btn" onclick="addMin('cn',-10)">−10</button>
+            <button class="mini-btn" onclick="addMin('cn',10)">+10</button>
+            <button class="mini-btn" onclick="setMin('cn',30)"><i class="ph ph-check" aria-hidden="true"></i>30</button>
+          </div>
+        </div>
+        <div class="read-lang-row">
+          <div class="read-lang-meta"><i class="mc-lang-ic ph ph-book" aria-hidden="true"></i><span class="lang-pill">英文</span></div>
+          <div class="mc-val" id="disp-en">0<span> 分钟</span></div>
+          <div class="mini-btns">
+            <button class="mini-btn" onclick="addMin('en',-10)">−10</button>
+            <button class="mini-btn" onclick="addMin('en',10)">+10</button>
+            <button class="mini-btn" onclick="setMin('en',30)"><i class="ph ph-check" aria-hidden="true"></i>30</button>
+          </div>
         </div>
       </div>
-      <div class="mini-card">
-        <div class="mc-lang"><i class="mc-lang-ic ph ph-book" aria-hidden="true"></i><span class="lang-pill">英文</span></div>
-        <div class="mc-val" id="disp-en">0<span> 分钟</span></div>
-        <div class="mini-btns">
-          <button class="mini-btn" onclick="addMin('en',-10)">−10</button>
-          <button class="mini-btn" onclick="addMin('en',10)">+10</button>
-          <button class="mini-btn" onclick="setMin('en',30)"><i class="ph ph-check" aria-hidden="true"></i>30</button>
-        </div>
-      </div>
     </div>
-    <div class="habit-inline" id="stat-read-day">今日读书：中 0 + 英 0 = 0 分钟</div>
   </div>
 
-  <div class="task-card col">
-    <div class="row">
-      <span class="t-icon t-icon-duo" id="duo-icon-slot" aria-hidden="true"></span>
-      <div class="t-info">
+  <div class="task-card task-card-read">
+    <span class="t-icon t-icon-duo" id="duo-icon-slot" aria-hidden="true"></span>
+    <div class="read-stack">
+      <div>
         <div class="t-head"><div class="t-name" id="lbl-duo">多邻国打卡</div><span class="badge badge-neutral" id="badge-duo">0分</span></div>
         <div class="t-sub" id="lbl-duo-sub">日语 + 广东话各1单元；每少1单元 −2分</div>
       </div>
-    </div>
-    <div class="two-col">
-      <div class="mini-card">
-        <div class="mc-lang"><i class="mc-lang-ic ph ph-globe-hemisphere-east" aria-hidden="true"></i><span class="lang-pill jp">日语</span></div>
-        <div class="mc-val" id="disp-jp">0<span> 单元</span></div>
-        <div class="mini-btns">
-          <button class="mini-btn" onclick="addUnit('jp',-1)">−1</button>
-          <button class="mini-btn" onclick="addUnit('jp',1)">+1</button>
+      <div class="read-grid">
+        <div class="read-lang-row">
+          <div class="read-lang-meta"><i class="mc-lang-ic ph ph-globe-hemisphere-east" aria-hidden="true"></i><span class="lang-pill jp">日语</span></div>
+          <div class="mc-val" id="disp-jp">0<span> 单元</span></div>
+          <div class="mini-btns">
+            <button class="mini-btn" onclick="addUnit('jp',-1)">−1</button>
+            <button class="mini-btn" onclick="addUnit('jp',1)">+1</button>
+          </div>
+        </div>
+        <div class="read-lang-row">
+          <div class="read-lang-meta"><i class="mc-lang-ic ph ph-globe" aria-hidden="true"></i><span class="lang-pill yue">粤语</span></div>
+          <div class="mc-val" id="disp-canto">0<span> 单元</span></div>
+          <div class="mini-btns">
+            <button class="mini-btn" onclick="addUnit('canto',-1)">−1</button>
+            <button class="mini-btn" onclick="addUnit('canto',1)">+1</button>
+          </div>
         </div>
       </div>
-      <div class="mini-card">
-        <div class="mc-lang"><i class="mc-lang-ic ph ph-globe" aria-hidden="true"></i><span class="lang-pill yue">粤语</span></div>
-        <div class="mc-val" id="disp-canto">0<span> 单元</span></div>
-        <div class="mini-btns">
-          <button class="mini-btn" onclick="addUnit('canto',-1)">−1</button>
-          <button class="mini-btn" onclick="addUnit('canto',1)">+1</button>
-        </div>
-      </div>
     </div>
-    <div class="habit-inline" id="stat-duo-day">今日多邻国：日 0 + 粤 0 = 0 单元</div>
   </div>
 
   <div class="task-card">
@@ -445,65 +531,75 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 
   <div class="sec-hdr" style="margin-top:24px">选修任务（加分项）</div>
 
-  <div class="task-card">
+  <div class="task-card task-card-bonus">
     <i class="t-icon ph ph-washing-machine" aria-hidden="true"></i>
-    <div class="t-info">
-      <div class="t-head"><div class="t-name" id="lbl-laundry">洗内裤</div><span class="badge badge-plus" id="badge-laundry">+0分</span></div>
+    <div class="bonus-mid">
+      <div class="t-name" id="lbl-laundry">洗内裤</div>
       <div class="t-sub">每次 +1分</div>
     </div>
-    <div class="stepper">
-      <button class="step-btn" onclick="addCount('laundry',-1)">−</button>
-      <div class="step-val" id="cnt-laundry">0</div>
-      <button class="step-btn" onclick="addCount('laundry',1)">+</button>
-    </div>
-  </div>
-
-  <div class="task-card">
-    <i class="t-icon ph ph-bowl-food" aria-hidden="true"></i>
-    <div class="t-info">
-      <div class="t-head"><div class="t-name" id="lbl-dishes">饭后收拾碗筷</div><span class="badge badge-plus" id="badge-dishes">+0分</span></div>
-      <div class="t-sub">每次 +1分</div>
-    </div>
-    <div class="stepper">
-      <button class="step-btn" onclick="addCount('dishes',-1)">−</button>
-      <div class="step-val" id="cnt-dishes">0</div>
-      <button class="step-btn" onclick="addCount('dishes',1)">+</button>
-    </div>
-  </div>
-
-  <div class="task-card col">
-    <div class="row">
-      <i class="t-icon ph ph-pencil-line" aria-hidden="true"></i>
-      <div class="t-info">
-        <div class="t-head"><div class="t-name" id="lbl-write">英文写作加分</div><span class="badge badge-plus" id="badge-write">+0分</span></div>
+    <div class="bonus-right bonus-right--row">
+      <span class="bonus-pill" id="badge-laundry">+0分</span>
+      <div class="stepper">
+        <button class="step-btn" onclick="addCount('laundry',-1)">−</button>
+        <div class="step-val" id="cnt-laundry">0</div>
+        <button class="step-btn" onclick="addCount('laundry',1)">+</button>
       </div>
     </div>
-    <div class="writing-single">
-      <div class="w-field"><label><i class="ph ph-text-aa" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>英文写作得分（0～100）</label><input type="number" id="input-enw" value="0" min="0" max="100" title="按老师/试卷分数填写" oninput="calcWriting()"></div>
+  </div>
+
+  <div class="task-card task-card-bonus">
+    <i class="t-icon ph ph-bowl-food" aria-hidden="true"></i>
+    <div class="bonus-mid">
+      <div class="t-name" id="lbl-dishes">饭后收拾碗筷</div>
+      <div class="t-sub">每次 +1分</div>
+    </div>
+    <div class="bonus-right bonus-right--row">
+      <span class="bonus-pill" id="badge-dishes">+0分</span>
+      <div class="stepper">
+        <button class="step-btn" onclick="addCount('dishes',-1)">−</button>
+        <div class="step-val" id="cnt-dishes">0</div>
+        <button class="step-btn" onclick="addCount('dishes',1)">+</button>
+      </div>
     </div>
   </div>
 
-  <div class="task-card">
+  <div class="task-card task-card-bonus task-card-write">
+    <i class="t-icon ph ph-pencil-line" aria-hidden="true"></i>
+    <div class="bonus-mid">
+      <div class="t-name" id="lbl-write">英文写作加分</div>
+    </div>
+    <div class="bonus-right bonus-right--row">
+      <span class="bonus-pill" id="badge-write">+0分</span>
+      <div class="write-score-wrap">
+        <label class="write-score-lbl" for="input-enw"><i class="ph ph-text-aa" aria-hidden="true"></i>得分 0–100</label>
+        <input type="number" class="write-score-inp" id="input-enw" value="0" min="0" max="100" title="按老师/试卷分数填写" oninput="calcWriting()">
+      </div>
+    </div>
+  </div>
+
+  <div class="task-card task-card-bonus">
     <i class="t-icon ph ph-basketball" aria-hidden="true"></i>
-    <div class="t-info">
-      <div class="t-head"><div class="t-name" id="lbl-bball">上篮球课</div><span class="badge badge-plus" id="badge-bball">+0分</span></div>
+    <div class="bonus-mid">
+      <div class="t-name" id="lbl-bball">上篮球课</div>
       <div class="t-sub">每节 +10分</div>
     </div>
-    <div class="stepper">
-      <button class="step-btn" onclick="addCount('bball',-1)">−</button>
-      <div class="step-val" id="cnt-bball">0</div>
-      <button class="step-btn" onclick="addCount('bball',1)">+</button>
+    <div class="bonus-right bonus-right--row">
+      <span class="bonus-pill" id="badge-bball">+0分</span>
+      <div class="stepper">
+        <button class="step-btn" onclick="addCount('bball',-1)">−</button>
+        <div class="step-val" id="cnt-bball">0</div>
+        <button class="step-btn" onclick="addCount('bball',1)">+</button>
+      </div>
     </div>
   </div>
 
   <div id="custom-extras-container"></div>
 
-  <div class="task-card col">
-    <div class="row">
+  <div class="task-card task-card-bonus task-card-bonus-col">
+    <div class="bonus-award-head">
       <i class="t-icon ph ph-trophy" aria-hidden="true"></i>
-      <div class="t-info">
-        <div class="t-head"><div class="t-name">比赛获奖（本周）</div><span class="badge badge-plus" id="badge-award">+0分</span></div>
-      </div>
+      <div class="t-name">比赛获奖（本周）</div>
+      <span class="bonus-pill" id="badge-award">+0分</span>
     </div>
     <div class="award-btns">
       <button class="award-opt" id="award-none" onclick="setAward('none')">— 无</button>
@@ -607,7 +703,7 @@ body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.9.0';
+var APP_VERSION = '1.9.2';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -1049,14 +1145,6 @@ function updateHabitAchievementUI() {
   if (elW) elW.textContent = '本周读书 ' + w.readMin + ' 分钟 · 多邻国 ' + w.duoUnits + ' 单元 · 加总 ' + w.combo;
   if (elT) elT.textContent = '今日：读书 ' + (t.cn + t.en) + ' 分钟（中' + t.cn + '+英' + t.en + '）· 多邻国 ' + (t.jp + t.canto) + ' 单元（日' + t.jp + '+粤' + t.canto + '）';
 }
-function updateHabitInlineStats() {
-  var s = get();
-  var rEl = document.getElementById('stat-read-day');
-  var dEl = document.getElementById('stat-duo-day');
-  if (rEl) rEl.textContent = '今日读书：中 ' + s.cnMin + ' + 英 ' + s.enMin + ' = ' + (s.cnMin + s.enMin) + ' 分钟';
-  if (dEl) dEl.textContent = '今日多邻国：日 ' + s.jpUnit + ' + 粤 ' + s.cantoUnit + ' = ' + (s.jpUnit + s.cantoUnit) + ' 单元';
-}
-
 function scheduleCloudPush(immediate) {
   if (!cloudFamilyId || cloudApplyingRemote) return;
   if (!cloudConfigValid()) return;
@@ -1451,7 +1539,6 @@ function renderTodayUI() {
   renderCustomExtrasInToday();
   // award
   setAwardUI(s.award);
-  updateHabitInlineStats();
 }
 
 function renderCustomExtrasInToday() {
@@ -1469,14 +1556,15 @@ function renderCustomExtrasInToday() {
     var id = rule.id;
     var cnt = s.customCounts[id] || 0;
     var pts = rule.plus || 0;
-    html += '<div class="task-card">';
+    html += '<div class="task-card task-card-bonus">';
     html += '<span class="t-icon" style="font-size:26px;line-height:1" aria-hidden="true">' + escapeHtml(rule.emoji || '✨') + '</span>';
-    html += '<div class="t-info"><div class="t-head"><div class="t-name">' + escapeHtml(rule.name) + '</div><span class="badge badge-plus" id="ce-badge-' + id + '">+' + (cnt * pts) + '分</span></div><div class="t-sub">' + escapeHtml(rule.sub) + '</div></div>';
+    html += '<div class="bonus-mid"><div class="t-name">' + escapeHtml(rule.name) + '</div><div class="t-sub">' + escapeHtml(rule.sub) + '</div></div>';
+    html += '<div class="bonus-right bonus-right--row"><span class="bonus-pill" id="ce-badge-' + id + '">+' + (cnt * pts) + '分</span>';
     html += '<div class="stepper">';
     html += '<button type="button" class="step-btn" onclick="addCustomExtraCount(\'' + id + '\',-1)">−</button>';
     html += '<div class="step-val" id="ce-cnt-' + id + '">' + cnt + '</div>';
     html += '<button type="button" class="step-btn" onclick="addCustomExtraCount(\'' + id + '\',1)">+</button>';
-    html += '</div></div>';
+    html += '</div></div></div>';
   });
   el.innerHTML = html;
 }
@@ -1664,7 +1752,6 @@ function updateBanner() {
   var combEl = document.getElementById('disp-combined-total');
   if (combEl) combEl.textContent = (comb >= 0 ? '+' : '') + comb;
   updateHabitAchievementUI();
-  updateHabitInlineStats();
   updateWeekSummary();
   scheduleCloudPush();
 }
