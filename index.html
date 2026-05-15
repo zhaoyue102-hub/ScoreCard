@@ -432,6 +432,17 @@ body {
 .he-del-btn:active { transform: scale(0.96); }
 .hist-edit-btn { font-size: 12px; padding: 4px 12px; border-radius: 10px; border: 1.5px solid #EE5802; background: #fff; color: #EE5802; font-weight: 700; cursor: pointer; flex-shrink: 0; }
 .hist-edit-btn:active { opacity: 0.88; background: #FFF0E6; }
+.makeup-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; padding: 10px 12px; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
+.makeup-bar-text { font-size: 12px; color: #4a5568; line-height: 1.45; flex: 1; min-width: 0; }
+.makeup-bar-btn { padding: 8px 14px; border-radius: 12px; border: none; font-size: 13px; font-weight: 800; color: white; cursor: pointer; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+.makeup-bar-btn-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
+.makeup-bar-btn-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
+.makeup-missing { margin-bottom: 14px; }
+.makeup-missing-title { font-size: 11px; font-weight: 800; color: #718096; letter-spacing: 0.04em; margin-bottom: 8px; }
+.makeup-missing-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.makeup-chip { padding: 6px 10px; border-radius: 999px; border: 1.5px dashed #cbd5e0; background: #f7fafc; font-size: 12px; font-weight: 700; color: #4a5568; cursor: pointer; }
+.makeup-chip:active { opacity: 0.88; }
+.hist-makeup-tag { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; background: rgba(255,255,255,0.25); color: rgba(255,255,255,0.95); margin-left: 6px; vertical-align: middle; }
 
 @media (max-width: 420px) {
   .two-col { grid-template-columns: 1fr; }
@@ -746,8 +757,13 @@ body {
 
 <div class="history-edit-overlay" id="history-edit-overlay" onclick="if(event.target===this)closeHistoryEdit()">
   <div class="history-edit-modal" onclick="event.stopPropagation()">
-    <h3>修改历史记录</h3>
-    <p class="cloud-hint" style="margin-top:-6px">日期：<strong id="history-edit-date"></strong></p>
+    <h3 id="history-edit-title">修改历史记录</h3>
+    <p class="cloud-hint" id="history-edit-hint" style="margin-top:-6px;display:none"></p>
+    <div class="he-field" id="history-edit-date-field" style="display:none">
+      <label for="history-edit-date-input">补卡日期（不可选未来）</label>
+      <input type="date" id="history-edit-date-input" class="cloud-input" style="margin-bottom:0" onchange="onMakeupDateInputChange()">
+    </div>
+    <p class="cloud-hint" id="history-edit-date-static" style="margin-top:-6px">日期：<strong id="history-edit-date"></strong></p>
     <div class="he-field">
       <label for="history-edit-net">当日净得分（由下方明细自动加总）</label>
       <input type="number" id="history-edit-net" class="cloud-input" style="margin-bottom:0" readonly title="修改各行分数后自动更新">
@@ -786,7 +802,7 @@ body {
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.9.4';
+var APP_VERSION = '1.9.5';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -2187,7 +2203,96 @@ function confirmSubmit() {
 }
 
 var historyEditDateStr = null;
+var historyEditMode = 'edit';
 var historyEditItemsListenerBound = false;
+
+function yesterdayDateKey() {
+  var d = new Date();
+  d.setDate(d.getDate() - 1);
+  return dateKeyFromDate(d);
+}
+
+function setupMakeupDateInputLimits() {
+  var inp = document.getElementById('history-edit-date-input');
+  if (!inp) return;
+  inp.max = getTodayKey();
+  if (!inp.value || inp.value > inp.max) inp.value = yesterdayDateKey();
+}
+
+function onMakeupDateInputChange() {
+  var inp = document.getElementById('history-edit-date-input');
+  if (!inp || !inp.value) return;
+  if (inp.value > getTodayKey()) {
+    inp.value = getTodayKey();
+    alert('不能选择未来的日期');
+  }
+  historyEditDateStr = inp.value;
+  var entry = historyEntryForDay(currentKid, historyEditDateStr);
+  var wrap = document.getElementById('history-edit-items');
+  wrap.innerHTML = '';
+  if (entry && entry.items && entry.items.length) {
+    entry.items.forEach(function(it) {
+      if (isHistorySepItem(it)) return;
+      historyEditAppendRow(it.name, it.score);
+    });
+  } else {
+    historyEditAppendRow('', 0);
+  }
+  if (!wrap.querySelector('.history-edit-item-row')) historyEditAppendRow('', 0);
+  historyEditRecalcNetFromDom();
+  var hint = document.getElementById('history-edit-hint');
+  if (hint) {
+    hint.style.display = entry ? 'block' : 'block';
+    hint.textContent = entry ? '该日已有记录，保存将覆盖原明细。' : '该日尚无记录，保存后将记入历史并计入累计分。';
+  }
+}
+
+function openMakeupCard(prefillDate) {
+  historyEditMode = 'makeup';
+  historyEditDateStr = prefillDate || yesterdayDateKey();
+  document.getElementById('history-edit-title').textContent = '补卡';
+  var dateField = document.getElementById('history-edit-date-field');
+  var dateStatic = document.getElementById('history-edit-date-static');
+  var hint = document.getElementById('history-edit-hint');
+  if (dateField) dateField.style.display = 'block';
+  if (dateStatic) dateStatic.style.display = 'none';
+  if (hint) hint.style.display = 'block';
+  var inp = document.getElementById('history-edit-date-input');
+  if (inp) {
+    inp.value = historyEditDateStr;
+    setupMakeupDateInputLimits();
+  }
+  onMakeupDateInputChange();
+  if (!historyEditItemsListenerBound) {
+    var wrap = document.getElementById('history-edit-items');
+    wrap.addEventListener('input', historyEditRecalcNetFromDom);
+    historyEditItemsListenerBound = true;
+  }
+  document.getElementById('history-edit-overlay').classList.add('show');
+}
+
+function getRecentMissingMakeupDates(kid, days) {
+  days = days || 14;
+  var out = [];
+  var tkey = getTodayKey();
+  for (var i = 1; i <= days; i++) {
+    var d = new Date();
+    d.setDate(d.getDate() - i);
+    var key = dateKeyFromDate(d);
+    if (key >= tkey) continue;
+    if (historyEntryForDay(kid, key)) continue;
+    out.push(key);
+  }
+  return out;
+}
+
+function sortHistoryByDateDesc(hist) {
+  hist.sort(function(a, b) {
+    if (a.date === b.date) return 0;
+    return a.date < b.date ? 1 : -1;
+  });
+  return hist;
+}
 
 function sumHistoryItemsScores(items) {
   var s = 0;
@@ -2213,9 +2318,17 @@ function historyEditRecalcNetFromDom() {
 }
 
 function openHistoryEdit(dateStr) {
+  historyEditMode = 'edit';
   historyEditDateStr = dateStr;
   var entry = historyEntryForDay(currentKid, dateStr);
   if (!entry) return;
+  document.getElementById('history-edit-title').textContent = '修改历史记录';
+  var dateField = document.getElementById('history-edit-date-field');
+  var dateStatic = document.getElementById('history-edit-date-static');
+  var hint = document.getElementById('history-edit-hint');
+  if (dateField) dateField.style.display = 'none';
+  if (dateStatic) dateStatic.style.display = 'block';
+  if (hint) hint.style.display = 'none';
   document.getElementById('history-edit-date').textContent = dateStr;
   var wrap = document.getElementById('history-edit-items');
   wrap.innerHTML = '';
@@ -2260,10 +2373,19 @@ function historyEditAppendRow(name, score) {
 function closeHistoryEdit() {
   document.getElementById('history-edit-overlay').classList.remove('show');
   historyEditDateStr = null;
+  historyEditMode = 'edit';
 }
 
 function saveHistoryEdit() {
+  if (historyEditMode === 'makeup') {
+    var inp = document.getElementById('history-edit-date-input');
+    if (inp && inp.value) historyEditDateStr = inp.value;
+  }
   if (!historyEditDateStr) return;
+  if (historyEditDateStr > getTodayKey()) {
+    alert('不能补未来的日期');
+    return;
+  }
   historyEditRecalcNetFromDom();
   var items = [];
   document.querySelectorAll('#history-edit-items .history-edit-item-row').forEach(function(row) {
@@ -2273,27 +2395,48 @@ function saveHistoryEdit() {
     if (isNaN(sc)) sc = 0;
     items.push({ name: n || '（项目）', score: sc });
   });
+  if (!items.length) {
+    alert('请至少填写一行明细（项目名称与分数）');
+    return;
+  }
   var net = sumHistoryItemsScores(items);
   var hist = getHistory(currentKid);
+  var idx = -1;
   for (var i = 0; i < hist.length; i++) {
-    if (hist[i].date === historyEditDateStr) {
-      hist[i].net = net;
-      hist[i].items = items;
-      if (hist[i].date === getTodayKey()) {
-        var ctEd = calcTodayForKid(currentKid);
-        hist[i]._lastFormNet = ctEd.net;
-        hist[i]._lastItemState = buildItemStateFromItems(items);
-      }
-      break;
+    if (hist[i].date === historyEditDateStr) { idx = i; break; }
+  }
+  var isNew = idx < 0;
+  if (isNew) {
+    var row = {
+      date: historyEditDateStr,
+      items: items,
+      net: net,
+      _makeup: true,
+      _lastFormNet: net,
+      _lastItemState: buildItemStateFromItems(items)
+    };
+    hist.push(row);
+    sortHistoryByDateDesc(hist);
+  } else {
+    hist[idx].net = net;
+    hist[idx].items = items;
+    if (historyEditMode === 'makeup') hist[idx]._makeup = true;
+    if (hist[idx].date === getTodayKey()) {
+      var ctEd = calcTodayForKid(currentKid);
+      hist[idx]._lastFormNet = ctEd.net;
+      hist[idx]._lastItemState = buildItemStateFromItems(items);
     }
   }
+  var savedDate = historyEditDateStr;
+  var savedMode = historyEditMode;
   saveHistory(currentKid, hist);
   closeHistoryEdit();
   renderHistory();
   refreshTotals();
   updateBanner();
   scheduleCloudPush(true);
-  alert('✅ 已保存修改');
+  var name = currentKid === 'brian' ? 'Brian' : 'Linden';
+  alert('✅ ' + (isNew ? (savedMode === 'makeup' ? '补卡已保存' : '已保存') : '已保存修改') + '\n' + name + ' · ' + savedDate + '\n当日净分：' + (net >= 0 ? '+' : '') + net + ' 分');
 }
 
 // ============ HISTORY ============
@@ -2301,16 +2444,30 @@ function renderHistory() {
   var hist = getHistory(currentKid);
   var container = document.getElementById('history-content');
   var name = currentKid === 'brian' ? 'Brian' : 'Linden';
+  var btnCls = 'makeup-bar-btn makeup-bar-btn-' + currentKid;
+  var html = '<div class="makeup-bar"><p class="makeup-bar-text">忘记打卡？选日期补记当日得分，会写入历史并计入累计。</p><button type="button" class="' + btnCls + '" onclick="openMakeupCard()">补卡</button></div>';
+  var missing = getRecentMissingMakeupDates(currentKid, 14);
+  if (missing.length) {
+    html += '<div class="makeup-missing"><div class="makeup-missing-title">近两周未打卡（点选补卡）</div><div class="makeup-missing-list">';
+    missing.forEach(function(key) {
+      var p = key.split('-');
+      var lbl = parseInt(p[1], 10) + '/' + parseInt(p[2], 10);
+      html += '<button type="button" class="makeup-chip" onclick="openMakeupCard(\'' + key + '\')">' + lbl + '</button>';
+    });
+    html += '</div></div>';
+  }
   if (!hist.length) {
-    container.innerHTML = '<div class="empty"><div class="ei">📅</div><p>' + name + ' 暂无记录</p></div>';
+    html += '<div class="empty"><div class="ei">📅</div><p>' + name + ' 暂无记录，可点上方「补卡」补记</p></div>';
+    container.innerHTML = html;
     return;
   }
   var total = grandTotalForKid(currentKid);
-  var html = '<div class="hist-summary hist-summary-' + currentKid + '"><div class="hs-label">' + name + ' 累计总分</div><div class="hs-val">' + (total>=0?'+':'') + total + ' 分</div></div>';
+  html += '<div class="hist-summary hist-summary-' + currentKid + '"><div class="hs-label">' + name + ' 累计总分</div><div class="hs-val">' + (total>=0?'+':'') + total + ' 分</div></div>';
   hist.forEach(function(day) {
     var dt = new Date(day.date + 'T00:00:00');
     var dispNet = day.date === getTodayKey() ? netForKidDay(currentKid, day.date) : day.net;
     var col = dispNet >= 0 ? (currentKid === 'brian' ? '#EE5802' : '#48bb78') : '#e53e3e';
+    var makeupTag = day._makeup ? '<span class="hist-makeup-tag">补卡</span>' : '';
     var rows = '';
     (day.items || []).forEach(function(it) {
       var isSep = isHistorySepItem(it);
@@ -2321,7 +2478,7 @@ function renderHistory() {
       rows += '<div class="hi"><span>' + escapeHtml(it.name) + '</span><span style="font-weight:700;color:' + (it.score>=0?'#28a745':'#e53e3e') + '">' + (it.score>=0?'+':'') + it.score + '分</span></div>';
     });
     if (!rows) rows = '<div style="color:#aaa;font-size:13px;padding:6px 0">无详细记录</div>';
-    html += '<div class="hist-day"><div class="hd-header"><span class="hd-date">' + fmtDate(dt) + '</span><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="hd-score" style="color:' + col + '">' + (dispNet>=0?'+':'') + dispNet + '分</span><button type="button" class="hist-edit-btn" onclick="openHistoryEdit(\'' + day.date + '\')">修改</button></div></div><div class="hd-body">' + rows + '</div></div>';
+    html += '<div class="hist-day"><div class="hd-header"><span class="hd-date">' + fmtDate(dt) + makeupTag + '</span><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="hd-score" style="color:' + col + '">' + (dispNet>=0?'+':'') + dispNet + '分</span><button type="button" class="hist-edit-btn" onclick="openHistoryEdit(\'' + day.date + '\')">修改</button></div></div><div class="hd-body">' + rows + '</div></div>';
   });
   container.innerHTML = html;
 }
