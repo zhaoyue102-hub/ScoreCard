@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
 <meta name="format-detection" content="telephone=no">
-<meta name="theme-color" content="#EE5802">
+<meta name="theme-color" content="#C2410C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>每日积分打卡</title>
@@ -22,25 +22,16 @@ body {
 }
 
 :root {
-  --topbar-base: 44px;
-  --topbar-h: calc(var(--topbar-base) + env(safe-area-inset-top, 0px));
+  --topbar-base: 0px;
+  --topbar-h: env(safe-area-inset-top, 0px);
   --kidbar-h: 40px;
   --tabs-sticky-top: calc(var(--topbar-h) + var(--kidbar-h));
 }
 
 .topbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: env(safe-area-inset-top, 0px) max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px));
-  min-height: var(--topbar-h);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 1px 8px rgba(0,0,0,0.08);
-  transition: background 0.3s;
+  display: none;
 }
-.topbar-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
+.topbar-brian { background: linear-gradient(135deg, #F97316, #C2410C); }
 .topbar-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
 .topbar-title { color: white; font-size: 15px; font-weight: 800; letter-spacing: 0.01em; }
 .topbar-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0; text-align: right; line-height: 1.2; }
@@ -49,7 +40,7 @@ body {
 
 .kid-switcher {
   background: white;
-  padding: 6px max(12px, env(safe-area-inset-right, 0px)) 6px max(12px, env(safe-area-inset-left, 0px));
+  padding: calc(6px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 6px max(12px, env(safe-area-inset-left, 0px));
   display: flex;
   gap: 8px;
   align-items: stretch;
@@ -81,31 +72,30 @@ body {
 .kid-btn .avatar.ph { font-size: 22px; }
 .kid-btn > span:nth-of-type(2) { font-size: 13px; font-weight: 800; }
 .kid-btn .total { font-size: 10px; font-weight: 600; margin-left: auto; white-space: nowrap; }
-.kid-btn.active-brian { border-color: #EE5802; background: #FFF0E6; color: #EE5802; }
+.kid-btn.active-brian { border-color: #C2410C; background: #FFEDD5; color: #C2410C; }
 .kid-btn.active-linden { border-color: #48bb78; background: #e6f7ee; color: #48bb78; }
 
 .score-banner { padding: 10px max(12px, env(safe-area-inset-right, 0px)) 10px max(12px, env(safe-area-inset-left, 0px)); transition: background 0.3s; }
-.score-banner-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
+.score-banner-brian { background: linear-gradient(135deg, #F97316, #C2410C); }
 .score-banner-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
-.habit-hero { max-width: 720px; margin: 8px auto 0; padding: 8px 10px; background: rgba(255,255,255,0.2); border-radius: 11px; border: 1px solid rgba(255,255,255,0.28); backdrop-filter: blur(4px); }
+.habit-hero { max-width: 720px; margin: 8px auto 0; padding: 8px 10px; background: rgba(255,255,255,0.24); border-radius: 11px; border: 1px solid rgba(255,255,255,0.34); backdrop-filter: blur(4px); }
 .habit-hero-inner { display: flex; gap: 8px; align-items: flex-start; }
 .habit-hero-emoji { font-size: 22px; line-height: 1; flex-shrink: 0; }
 .habit-hero-title { color: rgba(255,255,255,0.92); font-size: 10px; font-weight: 800; letter-spacing: 0.07em; margin-bottom: 3px; }
 .habit-hero-line { color: white; font-size: 12px; font-weight: 800; line-height: 1.4; }
 .habit-hero-today { color: rgba(255,255,255,0.84); font-size: 10px; font-weight: 600; margin-top: 4px; line-height: 1.45; }
-.week-habit-bar { margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.92); line-height: 1.45; text-align: center; }
 .score-cards { display: grid; grid-template-columns: 1fr; gap: 6px; max-width: 720px; margin: 0 auto; }
 @media (min-width: 520px) {
   .score-cards { grid-template-columns: repeat(3, 1fr); }
 }
-.score-card { background: rgba(255,255,255,0.16); border-radius: 11px; padding: 8px 6px; text-align: center; backdrop-filter: blur(4px); }
-.score-card .sc-label { color: rgba(255,255,255,0.78); font-size: 10px; margin-bottom: 2px; font-weight: 700; }
+.score-card { background: rgba(255,255,255,0.24); border-radius: 11px; padding: 8px 6px; text-align: center; backdrop-filter: blur(4px); }
+.score-card .sc-label { color: rgba(255,255,255,0.88); font-size: 10px; margin-bottom: 2px; font-weight: 800; }
 .score-card .sc-val { color: white; font-size: 18px; font-weight: 800; line-height: 1.15; }
 .score-card .sc-val.sc-neg { color: #fecaca; }
 .score-card .sc-val.sc-pos { color: #ecfdf5; }
 .score-card .sc-val.sc-zero { color: rgba(255,255,255,0.92); }
 
-.week-summary { max-width: 720px; margin: 8px auto 0; padding: 8px 8px; background: rgba(255,255,255,0.12); border-radius: 11px; backdrop-filter: blur(4px); }
+.week-summary { max-width: 720px; margin: 8px auto 0; padding: 8px 8px; background: rgba(255,255,255,0.2); border-radius: 11px; backdrop-filter: blur(4px); }
 .week-summary-hd { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
 .week-summary-title { color: rgba(255,255,255,0.95); font-size: 11px; font-weight: 800; }
 .week-summary-range { color: rgba(255,255,255,0.7); font-size: 10px; font-weight: 600; }
@@ -125,7 +115,7 @@ body {
 .section-tabs { background: white; border-bottom: 2px solid #e2e8f0; position: sticky; top: var(--tabs-sticky-top); z-index: 98; padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
 .section-tabs-inner { max-width: 720px; margin: 0 auto; display: flex; }
 .section-tab { flex: 1; padding: 9px 6px; text-align: center; font-size: 12px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; user-select: none; }
-.section-tab.active-brian { color: #EE5802; border-bottom-color: #EE5802; }
+.section-tab.active-brian { color: #C2410C; border-bottom-color: #C2410C; }
 .section-tab.active-linden { color: #48bb78; border-bottom-color: #48bb78; }
 
 .kid-btn, .step-btn, .chk, .mini-btn, .section-tab, .submit-btn, .sync-bar-btn, .award-opt {
@@ -294,7 +284,7 @@ body {
 
 .award-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 .award-opt { padding: 7px 14px; border-radius: 20px; border: 2px solid #e2e8f0; font-size: 13px; font-weight: 600; cursor: pointer; background: white; color: #718096; transition: all 0.15s; }
-.award-opt.sel-brian { border-color: #EE5802; background: #FFF0E6; color: #EE5802; }
+.award-opt.sel-brian { border-color: #C2410C; background: #FFEDD5; color: #C2410C; }
 .award-opt.sel-linden { border-color: #48bb78; background: #e6f7ee; color: #48bb78; }
 
 .submit-row { padding: 16px; max-width: 720px; margin: 0 auto; position: sticky; bottom: 0; background: linear-gradient(to top, #f4f6fb 65%, transparent); padding-top: 30px; }
@@ -309,7 +299,7 @@ body {
 }
 .submit-btn { width: 100%; padding: 16px; border-radius: 16px; color: white; font-size: 17px; font-weight: 700; border: none; cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 20px rgba(0,0,0,0.18); }
 .submit-btn:hover { opacity: 0.9; }
-.submit-btn-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
+.submit-btn-brian { background: linear-gradient(135deg, #F97316, #C2410C); }
 .submit-btn-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
 
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
@@ -318,12 +308,12 @@ body {
 .overlay.show .modal { transform: translateY(0); }
 .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
 .modal-preview { border-radius: 14px; padding: 14px 16px; margin-bottom: 20px; }
-.modal-preview-brian { background: #FFF0E6; }
+.modal-preview-brian { background: #FFEDD5; }
 .modal-preview-linden { background: #e6f7ee; }
 .m-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px; border-bottom: 1px solid rgba(0,0,0,0.06); }
 .m-row:last-child { border: none; }
 .m-total { display: flex; justify-content: space-between; padding-top: 10px; margin-top: 4px; font-size: 18px; font-weight: 800; border-top: 2px solid currentColor; }
-.m-total-brian { color: #EE5802; border-color: #EE5802; }
+.m-total-brian { color: #C2410C; border-color: #C2410C; }
 .m-total-linden { color: #48bb78; border-color: #48bb78; }
 .btn-row { display: flex; gap: 12px; }
 .btn { flex: 1; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.15s; }
@@ -338,7 +328,7 @@ body {
 .page.active { display: block; }
 
 .hist-summary { border-radius: 16px; padding: 16px 20px; margin-bottom: 16px; color: white; }
-.hist-summary-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
+.hist-summary-brian { background: linear-gradient(135deg, #F97316, #C2410C); }
 .hist-summary-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
 .hist-summary .hs-label { font-size: 13px; opacity: 0.8; margin-bottom: 4px; }
 .hist-summary .hs-val { font-size: 38px; font-weight: 900; }
@@ -354,12 +344,12 @@ body {
 .rules-card { background: white; border-radius: 16px; padding: 20px 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .rules-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
 .rules-card-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
-.rules-add-custom-btn { font-size: 13px; padding: 8px 16px; border-radius: 20px; border: none; background: linear-gradient(135deg, #FF8F4A, #EE5802); color: white; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(238,88,2,0.35); }
+.rules-add-custom-btn { font-size: 13px; padding: 8px 16px; border-radius: 20px; border: none; background: linear-gradient(135deg, #F97316, #C2410C); color: white; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(194,65,12,0.35); }
 .rules-add-custom-btn:active { opacity: 0.92; transform: scale(0.98); }
 .rules-card-title { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
 .rules-edit-btn { font-size: 13px; padding: 5px 14px; border-radius: 20px; border: 1.5px solid #e2e8f0; background: white; cursor: pointer; font-weight: 600; color: #718096; transition: all 0.15s; }
-.rules-edit-btn:hover { border-color: #EE5802; color: #EE5802; }
-.rules-edit-btn.editing { background: #EE5802; border-color: #EE5802; color: white; }
+.rules-edit-btn:hover { border-color: #C2410C; color: #C2410C; }
+.rules-edit-btn.editing { background: #C2410C; border-color: #C2410C; color: white; }
 .rules-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
 .rules-row:last-child { border-bottom: none; }
 .rules-icon-cell { flex-shrink: 0; margin-top: 2px; width: 28px; display: flex; align-items: flex-start; justify-content: center; }
@@ -392,14 +382,15 @@ body {
 .rules-award-pts { font-weight: 700; color: #6b46c1; }
 
 .rules-input { border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 4px 6px; font-size: 13px; outline: none; }
-.rules-input:focus { border-color: #EE5802; }
+.rules-input:focus { border-color: #C2410C; }
 
 .sync-bar { background: linear-gradient(180deg, #eef2ff 0%, #e8ecf4 100%); border-bottom: 1px solid #c3d0e8; padding: 5px max(12px, env(safe-area-inset-right, 0px)) 5px max(12px, env(safe-area-inset-left, 0px)); }
 .sync-bar-inner { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 8px; font-size: 11px; color: #4a5568; }
-.sync-bar-inner .ph-cloud { font-size: 16px; color: #EE5802; flex-shrink: 0; }
+.sync-bar-inner .ph-cloud { font-size: 16px; color: #C2410C; flex-shrink: 0; }
 .sync-bar-text { flex: 1; min-width: 0; line-height: 1.35; }
-.sync-bar-btn { padding: 6px 14px; border-radius: 10px; border: 1.5px solid #EE5802; background: white; color: #EE5802; font-weight: 700; cursor: pointer; font-size: 12px; flex-shrink: 0; }
-.sync-bar-btn:hover { background: #FFF0E6; }
+.sync-version { font-size: 10px; color: #718096; font-weight: 700; white-space: nowrap; }
+.sync-bar-btn { padding: 6px 14px; border-radius: 10px; border: 1.5px solid #C2410C; background: white; color: #C2410C; font-weight: 700; cursor: pointer; font-size: 12px; flex-shrink: 0; }
+.sync-bar-btn:hover { background: #FFEDD5; }
 
 .cloud-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; }
 .cloud-overlay.show { display: flex; }
@@ -408,10 +399,10 @@ body {
 .cloud-hint { font-size: 13px; color: #718096; margin-bottom: 14px; line-height: 1.5; }
 .cloud-modal label { display: block; font-size: 12px; font-weight: 700; color: #4a5568; margin-bottom: 6px; }
 .cloud-input { width: 100%; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 15px; margin-bottom: 14px; outline: none; }
-.cloud-input:focus { border-color: #EE5802; }
+.cloud-input:focus { border-color: #C2410C; }
 .cloud-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 .cloud-btns button { flex: 1; min-width: 100px; padding: 10px; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; font-size: 14px; }
-.cloud-btns .btn-primary { background: #EE5802; color: white; }
+.cloud-btns .btn-primary { background: #C2410C; color: white; }
 .cloud-btns .btn-secondary { background: #edf2f7; color: #4a5568; }
 .cloud-btns .btn-disconnect { background: #fff5f5; color: #c53030; border: 1.5px solid #feb2b2; flex: 1 1 100%; }
 .cloud-setup-details { font-size: 12px; color: #4a5568; line-height: 1.55; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; background: #f7fafc; }
@@ -430,12 +421,12 @@ body {
 .he-del-btn { flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid rgba(229,62,62,0.45); background: rgba(255,255,255,0.95); color: #c53030; font-size: 18px; line-height: 1; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
 .he-del-btn:hover { background: #fff5f5; border-color: #e53e3e; }
 .he-del-btn:active { transform: scale(0.96); }
-.hist-edit-btn { font-size: 12px; padding: 4px 12px; border-radius: 10px; border: 1.5px solid #EE5802; background: #fff; color: #EE5802; font-weight: 700; cursor: pointer; flex-shrink: 0; }
-.hist-edit-btn:active { opacity: 0.88; background: #FFF0E6; }
+.hist-edit-btn { font-size: 12px; padding: 4px 12px; border-radius: 10px; border: 1.5px solid #C2410C; background: #fff; color: #C2410C; font-weight: 700; cursor: pointer; flex-shrink: 0; }
+.hist-edit-btn:active { opacity: 0.88; background: #FFEDD5; }
 .makeup-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; padding: 10px 12px; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
 .makeup-bar-text { font-size: 12px; color: #4a5568; line-height: 1.45; flex: 1; min-width: 0; }
 .makeup-bar-btn { padding: 8px 14px; border-radius: 12px; border: none; font-size: 13px; font-weight: 800; color: white; cursor: pointer; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
-.makeup-bar-btn-brian { background: linear-gradient(135deg, #FF8F4A, #EE5802); }
+.makeup-bar-btn-brian { background: linear-gradient(135deg, #F97316, #C2410C); }
 .makeup-bar-btn-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
 .makeup-missing { margin-bottom: 14px; }
 .makeup-missing-title { font-size: 11px; font-weight: 800; color: #718096; letter-spacing: 0.04em; margin-bottom: 8px; }
@@ -443,6 +434,17 @@ body {
 .makeup-chip { padding: 6px 10px; border-radius: 999px; border: 1.5px dashed #cbd5e0; background: #f7fafc; font-size: 12px; font-weight: 700; color: #4a5568; cursor: pointer; }
 .makeup-chip:active { opacity: 0.88; }
 .hist-makeup-tag { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; background: rgba(255,255,255,0.25); color: rgba(255,255,255,0.95); margin-left: 6px; vertical-align: middle; }
+.game-spend-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; padding: 12px; color: white; border-radius: 14px; box-shadow: 0 3px 12px rgba(0,0,0,0.12); }
+.game-spend-bar-brian { background: linear-gradient(135deg, #F97316, #C2410C); }
+.game-spend-bar-linden { background: linear-gradient(135deg, #48bb78, #2f855a); }
+.game-spend-main { flex: 1; min-width: 0; }
+.game-spend-title { font-size: 13px; font-weight: 900; margin-bottom: 3px; }
+.game-spend-sub { font-size: 11px; color: rgba(255,255,255,0.86); line-height: 1.45; }
+.game-spend-mins { font-size: 24px; font-weight: 900; line-height: 1; margin-right: 2px; }
+.game-spend-btn { padding: 8px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.65); background: rgba(255,255,255,0.95); font-size: 13px; font-weight: 900; cursor: pointer; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+.game-spend-btn-brian { color: #C2410C; }
+.game-spend-btn-linden { color: #2f855a; }
+.hist-game-tag { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; background: #edf2f7; color: #4a5568; margin-left: 6px; vertical-align: middle; }
 
 @media (max-width: 420px) {
   .two-col { grid-template-columns: 1fr; }
@@ -455,7 +457,6 @@ body {
   <div class="topbar-title" id="topbar-title">Brian 的积分</div>
   <div class="topbar-right">
     <div class="topbar-date" id="topbar-date"></div>
-    <div class="app-version" id="app-version" title="当前页面版本"></div>
   </div>
 </div>
 
@@ -472,6 +473,7 @@ body {
   <div class="sync-bar-inner">
     <i class="ph ph-cloud" aria-hidden="true"></i>
     <span class="sync-bar-text" id="sync-bar-text">云同步：加载中…</span>
+    <span class="sync-version" id="app-version" title="当前页面版本"></span>
     <button type="button" class="sync-bar-btn" onclick="openCloudSettings()">设置</button>
   </div>
 </div>
@@ -488,7 +490,6 @@ body {
       <div class="week-summary-total">合计 <span id="week-total-val">0</span> 分</div>
     </div>
     <div class="week-days" id="week-days"></div>
-    <div class="week-habit-bar" id="week-habit-bar">本周习惯：读书 0 分钟 · 多邻国 0 单元 · 加总 0</div>
   </div>
   <div class="habit-hero" id="habit-hero">
     <div class="habit-hero-inner">
@@ -723,7 +724,7 @@ body {
     <div class="modal-preview modal-preview-brian" id="modal-preview"></div>
     <div class="btn-row">
       <button class="btn btn-cancel" onclick="closeModal()">取消</button>
-      <button class="btn" id="modal-ok" style="background:#EE5802;color:white;" onclick="confirmSubmit()">确认提交</button>
+      <button class="btn" id="modal-ok" style="background:#C2410C;color:white;" onclick="confirmSubmit()">确认提交</button>
     </div>
   </div>
 </div>
@@ -802,7 +803,7 @@ body {
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.9.5';
+var APP_VERSION = '1.9.8';
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -2056,9 +2057,6 @@ function updateWeekSummary() {
   var tv = document.getElementById('week-total-val');
   tv.textContent = (total >= 0 ? '+' : '') + total;
   tv.className = total < 0 ? 'neg' : (total > 0 ? 'pos' : '');
-  var wh = weekHabitTotalsForKid(currentKid);
-  var whEl = document.getElementById('week-habit-bar');
-  if (whEl) whEl.textContent = '本周习惯：读书 ' + wh.readMin + ' 分钟 · 多邻国 ' + wh.duoUnits + ' 单元 · 加总 ' + wh.combo;
 }
 
 // ============ STORAGE ============
@@ -2143,7 +2141,7 @@ function openModal() {
   }
   document.getElementById('modal-preview').innerHTML = html;
   document.getElementById('modal-preview').className = 'modal-preview modal-preview-' + currentKid;
-  document.getElementById('modal-ok').style.background = currentKid === 'brian' ? '#EE5802' : '#48bb78';
+  document.getElementById('modal-ok').style.background = currentKid === 'brian' ? '#C2410C' : '#48bb78';
   document.getElementById('overlay').classList.add('show');
 }
 function closeModal() { document.getElementById('overlay').classList.remove('show'); }
@@ -2292,6 +2290,77 @@ function sortHistoryByDateDesc(hist) {
     return a.date < b.date ? 1 : -1;
   });
   return hist;
+}
+
+function getAvailableGameMinutes(kid) {
+  return Math.max(0, grandTotalForKid(kid));
+}
+
+function appendHistoryItemForDay(kid, dateKey, item, opts) {
+  opts = opts || {};
+  var hist = getHistory(kid);
+  var idx = -1;
+  for (var i = 0; i < hist.length; i++) {
+    if (hist[i].date === dateKey) { idx = i; break; }
+  }
+  if (idx < 0) {
+    hist.push({
+      date: dateKey,
+      items: [item],
+      net: Number(item.score) || 0,
+      _lastFormNet: 0,
+      _lastItemState: {}
+    });
+    if (opts.gameSpend) hist[hist.length - 1]._gameSpend = true;
+    sortHistoryByDateDesc(hist);
+  } else {
+    var ex = hist[idx];
+    if (opts.separator) ex.items = (ex.items || []).concat([{ name: opts.separator, score: 0 }]);
+    ex.items = (ex.items || []).concat([item]);
+    ex.net = sumHistoryItemsScores(ex.items);
+    if (opts.gameSpend) ex._gameSpend = true;
+  }
+  saveHistory(kid, hist);
+}
+
+function redeemGameTime() {
+  var kid = currentKid;
+  var name = kid === 'brian' ? 'Brian' : 'Linden';
+  var available = getAvailableGameMinutes(kid);
+  if (available <= 0) {
+    alert(name + ' 当前没有可兑换的积分。');
+    return;
+  }
+  var today = new Date();
+  if (today.getDay() !== 0) {
+    if (!confirm('通常周日兑换游戏时间。今天不是周日，仍然要兑换吗？')) return;
+  }
+  var raw = prompt(name + ' 当前可兑换 ' + available + ' 分钟游戏时间。\n请输入这次兑换的分钟数：', Math.min(30, available));
+  if (raw == null) return;
+  var mins = parseInt(raw, 10);
+  if (isNaN(mins) || mins <= 0) {
+    alert('请输入大于 0 的分钟数。');
+    return;
+  }
+  if (mins > available) {
+    alert('可用积分不足：最多可兑换 ' + available + ' 分钟。');
+    return;
+  }
+  var tstr = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  appendHistoryItemForDay(kid, getTodayKey(), {
+    key: 'game:' + Date.now(),
+    name: '游戏时间 ' + mins + ' 分钟',
+    score: -mins,
+    gameMinutes: mins
+  }, {
+    gameSpend: true,
+    separator: '—— 兑换游戏时间（' + tstr + '）——'
+  });
+  renderHistory();
+  refreshTotals();
+  updateBanner();
+  scheduleCloudPush(true);
+  alert('✅ 已兑换 ' + mins + ' 分钟游戏时间\n' + name + ' 剩余可用积分：' + getAvailableGameMinutes(kid) + ' 分');
 }
 
 function sumHistoryItemsScores(items) {
@@ -2444,8 +2513,11 @@ function renderHistory() {
   var hist = getHistory(currentKid);
   var container = document.getElementById('history-content');
   var name = currentKid === 'brian' ? 'Brian' : 'Linden';
+  var available = getAvailableGameMinutes(currentKid);
+  var gameBtnCls = 'game-spend-btn game-spend-btn-' + currentKid;
+  var html = '<div class="game-spend-bar game-spend-bar-' + currentKid + '"><div class="game-spend-main"><div class="game-spend-title">游戏时间兑换</div><div class="game-spend-sub"><span class="game-spend-mins">' + available + '</span> 可用分钟 · 1 分 = 1 分钟，没用完会继续累计</div></div><button type="button" class="' + gameBtnCls + '" onclick="redeemGameTime()">兑换</button></div>';
   var btnCls = 'makeup-bar-btn makeup-bar-btn-' + currentKid;
-  var html = '<div class="makeup-bar"><p class="makeup-bar-text">忘记打卡？选日期补记当日得分，会写入历史并计入累计。</p><button type="button" class="' + btnCls + '" onclick="openMakeupCard()">补卡</button></div>';
+  html += '<div class="makeup-bar"><p class="makeup-bar-text">忘记打卡？选日期补记当日得分，会写入历史并计入累计。</p><button type="button" class="' + btnCls + '" onclick="openMakeupCard()">补卡</button></div>';
   var missing = getRecentMissingMakeupDates(currentKid, 14);
   if (missing.length) {
     html += '<div class="makeup-missing"><div class="makeup-missing-title">近两周未打卡（点选补卡）</div><div class="makeup-missing-list">';
@@ -2466,8 +2538,9 @@ function renderHistory() {
   hist.forEach(function(day) {
     var dt = new Date(day.date + 'T00:00:00');
     var dispNet = day.date === getTodayKey() ? netForKidDay(currentKid, day.date) : day.net;
-    var col = dispNet >= 0 ? (currentKid === 'brian' ? '#EE5802' : '#48bb78') : '#e53e3e';
+    var col = dispNet >= 0 ? (currentKid === 'brian' ? '#C2410C' : '#48bb78') : '#e53e3e';
     var makeupTag = day._makeup ? '<span class="hist-makeup-tag">补卡</span>' : '';
+    var gameTag = day._gameSpend ? '<span class="hist-game-tag">游戏</span>' : '';
     var rows = '';
     (day.items || []).forEach(function(it) {
       var isSep = isHistorySepItem(it);
@@ -2478,7 +2551,7 @@ function renderHistory() {
       rows += '<div class="hi"><span>' + escapeHtml(it.name) + '</span><span style="font-weight:700;color:' + (it.score>=0?'#28a745':'#e53e3e') + '">' + (it.score>=0?'+':'') + it.score + '分</span></div>';
     });
     if (!rows) rows = '<div style="color:#aaa;font-size:13px;padding:6px 0">无详细记录</div>';
-    html += '<div class="hist-day"><div class="hd-header"><span class="hd-date">' + fmtDate(dt) + makeupTag + '</span><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="hd-score" style="color:' + col + '">' + (dispNet>=0?'+':'') + dispNet + '分</span><button type="button" class="hist-edit-btn" onclick="openHistoryEdit(\'' + day.date + '\')">修改</button></div></div><div class="hd-body">' + rows + '</div></div>';
+    html += '<div class="hist-day"><div class="hd-header"><span class="hd-date">' + fmtDate(dt) + makeupTag + gameTag + '</span><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="hd-score" style="color:' + col + '">' + (dispNet>=0?'+':'') + dispNet + '分</span><button type="button" class="hist-edit-btn" onclick="openHistoryEdit(\'' + day.date + '\')">修改</button></div></div><div class="hd-body">' + rows + '</div></div>';
   });
   container.innerHTML = html;
 }
