@@ -247,6 +247,34 @@ body {
   white-space: nowrap;
   line-height: 1.2;
 }
+.custom-score-wrap { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.custom-score-label { font-size: 11px; color: #718096; font-weight: 700; white-space: nowrap; }
+.custom-score-input {
+  width: 64px;
+  padding: 7px 7px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  color: #2d3748;
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+}
+.custom-score-input:focus { border-color: #667eea; }
+.custom-extra-emoji-fallback { font-size: 22px; line-height: 1; display: inline-flex; }
+.custom-icon-picker { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.custom-icon-btn {
+  width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid #e2e8f0; background: #fff;
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  font-size: 20px; color: #5b6bc4; padding: 0;
+}
+.custom-icon-btn:hover { border-color: #667eea; background: #f7fafc; }
+.custom-icon-btn.selected { border-color: #C2410C; background: #FFEDD5; color: #C2410C; box-shadow: 0 0 0 2px rgba(194,65,12,0.25); }
+.rules-custom-icon-preview {
+  width: 40px; height: 40px; border-radius: 12px; background: #f7fafc; border: 1.5px solid #e2e8f0;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 24px; color: #5b6bc4; margin-bottom: 6px;
+}
 .task-card-bonus.task-card-bonus-col {
   flex-direction: column;
   align-items: stretch;
@@ -803,7 +831,16 @@ body {
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.9.8';
+var APP_VERSION = '1.9.10';
+
+var CUSTOM_EXTRA_ICONS = [
+  'sparkle', 'star', 'heart', 'medal', 'trophy', 'gift', 'thumbs-up', 'hand-heart', 'smiley',
+  'book-open', 'books', 'pencil-line', 'graduation-cap', 'paint-brush', 'microphone-stage',
+  'basketball', 'soccer-ball', 'tennis-ball', 'barbell', 'bicycle', 'person-simple-run',
+  'music-note', 'guitar', 'piano-keys', 'game-controller', 'puzzle-piece',
+  'fork-knife', 'bowl-food', 'washing-machine', 'house', 'tree', 'flower-lotus', 'sun', 'moon', 'cloud-sun',
+  'dog', 'cat', 'car', 'airplane-tilt', 'globe-hemisphere-east', 'camera', 'palette', 'coins', 'lightning', 'crown', 'flag-banner'
+];
 
 /*
   云同步：控制台若给出 import { initializeApp } + const firebaseConfig = {...}，
@@ -1343,7 +1380,7 @@ function makeState() {
   return { hw: null, cnMin: 0, enMin: 0, jpUnit: 0, cantoUnit: 0,
            outdoor: null, meal: null, sleep9: null,
            laundry: 0, dishes: 0, enWriteScore: 0, bball: 0,
-           customCounts: {},
+           customCounts: {}, customScores: {},
            award: 'none' };
 }
 var state = { brian: makeState(), linden: makeState() };
@@ -1651,15 +1688,18 @@ function renderCustomExtrasInToday() {
   }
   var s = get();
   if (!s.customCounts) s.customCounts = {};
+  if (!s.customScores) s.customScores = {};
   var html = '<div class="sec-hdr" style="margin-top:24px">自定义加分</div>';
   rules.forEach(function(rule) {
     var id = rule.id;
     var cnt = s.customCounts[id] || 0;
     var pts = rule.plus || 0;
+    var score = customExtraScoreForRule(s, rule);
     html += '<div class="task-card task-card-bonus">';
-    html += '<span class="t-icon" style="font-size:26px;line-height:1" aria-hidden="true">' + escapeHtml(rule.emoji || '✨') + '</span>';
+    html += '<span class="t-icon" style="font-size:26px;line-height:1" aria-hidden="true">' + customExtraIconHtml(rule, 't-icon') + '</span>';
     html += '<div class="bonus-mid"><div class="t-name">' + escapeHtml(rule.name) + '</div><div class="t-sub">' + escapeHtml(rule.sub) + '</div></div>';
-    html += '<div class="bonus-right bonus-right--row"><span class="bonus-pill" id="ce-badge-' + id + '">+' + (cnt * pts) + '分</span>';
+    html += '<div class="bonus-right bonus-right--row"><span class="bonus-pill" id="ce-badge-' + id + '">+' + score + '分</span>';
+    html += '<div class="custom-score-wrap"><label class="custom-score-label" for="ce-score-' + id + '">本次</label><input type="number" class="custom-score-input" id="ce-score-' + id + '" value="' + score + '" min="0" oninput="setCustomExtraScore(\'' + id + '\',this.value)"></div>';
     html += '<div class="stepper">';
     html += '<button type="button" class="step-btn" onclick="addCustomExtraCount(\'' + id + '\',-1)">−</button>';
     html += '<div class="step-val" id="ce-cnt-' + id + '">' + cnt + '</div>';
@@ -1669,10 +1709,75 @@ function renderCustomExtrasInToday() {
   el.innerHTML = html;
 }
 
+function customExtraRuleById(id) {
+  var rules = R.customExtras || [];
+  for (var i = 0; i < rules.length; i++) if (rules[i].id === id) return rules[i];
+  return null;
+}
+
+function normalizeCustomExtraIcon(icon) {
+  if (!icon) return '';
+  var s = String(icon).trim().toLowerCase().replace(/^ph-/, '').replace(/^ph\s+/, '');
+  return /^[a-z0-9-]+$/.test(s) ? s : '';
+}
+
+function customExtraIconHtml(rule, extraClass) {
+  var slug = normalizeCustomExtraIcon(rule.icon);
+  if (slug) {
+    return '<i class="ph ph-' + escapeAttr(slug) + (extraClass ? ' ' + extraClass : '') + '" aria-hidden="true"></i>';
+  }
+  return '<span class="custom-extra-emoji-fallback" aria-hidden="true">' + escapeHtml(rule.emoji || '✨') + '</span>';
+}
+
+function customIconPickerHtml(ruleId, selectedIcon) {
+  var html = '';
+  CUSTOM_EXTRA_ICONS.forEach(function(slug) {
+    var sel = slug === selectedIcon ? ' selected' : '';
+    html += '<button type="button" class="custom-icon-btn' + sel + '" data-icon="' + slug + '" title="' + slug + '" onclick="pickCustomExtraIcon(\'' + ruleId + '\',\'' + slug + '\')"><i class="ph ph-' + slug + '" aria-hidden="true"></i></button>';
+  });
+  return html;
+}
+
+function pickCustomExtraIcon(ruleId, iconId) {
+  var rule = customExtraRuleById(ruleId);
+  if (!rule) return;
+  rule.icon = iconId;
+  var elI = document.getElementById('ce-icon-' + ruleId);
+  if (elI) elI.value = iconId;
+  renderRules();
+  renderTodayUI();
+}
+
+function customExtraScoreForRule(s, rule) {
+  if (!s.customScores) s.customScores = {};
+  if (!s.customCounts) s.customCounts = {};
+  var id = rule.id;
+  if (s.customScores[id] !== undefined && s.customScores[id] !== null && s.customScores[id] !== '') {
+    return Math.max(0, parseInt(s.customScores[id], 10) || 0);
+  }
+  return Math.max(0, (parseInt(s.customCounts[id], 10) || 0) * (parseInt(rule.plus, 10) || 0));
+}
+
+function setCustomExtraScore(id, val) {
+  var s = get();
+  if (!s.customScores) s.customScores = {};
+  var n = parseInt(val, 10);
+  s.customScores[id] = isNaN(n) ? 0 : Math.max(0, n);
+  var badge = document.getElementById('ce-badge-' + id);
+  if (badge) badge.textContent = '+' + s.customScores[id] + '分';
+  updateBanner();
+}
+
 function addCustomExtraCount(id, delta) {
   var s = get();
   if (!s.customCounts) s.customCounts = {};
+  if (!s.customScores) s.customScores = {};
+  var rule = customExtraRuleById(id);
+  var per = rule ? (parseInt(rule.plus, 10) || 0) : 0;
   s.customCounts[id] = Math.max(0, (s.customCounts[id] || 0) + delta);
+  var cur = s.customScores[id];
+  if (cur === undefined || cur === null || cur === '') cur = ((s.customCounts[id] - delta) || 0) * per;
+  s.customScores[id] = Math.max(0, (parseInt(cur, 10) || 0) + delta * per);
   renderCustomExtrasInToday();
   updateBanner();
 }
@@ -1681,9 +1786,10 @@ function addCustomExtraRule() {
   if (!Array.isArray(R.customExtras)) R.customExtras = [];
   R.customExtras.push({
     id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 9),
+    icon: 'sparkle',
     emoji: '✨',
     name: '新加分项',
-    sub: '每次 +1 分（可在下方改说明与分数）',
+    sub: '默认 +1 分；今天可直接填写本次加分',
     plus: 1
   });
   renderRules();
@@ -1707,6 +1813,8 @@ function removeCustomExtraRule(id) {
   R.customExtras = R.customExtras.filter(function(r) { return r.id !== id; });
   if (state.brian.customCounts) delete state.brian.customCounts[id];
   if (state.linden.customCounts) delete state.linden.customCounts[id];
+  if (state.brian.customScores) delete state.brian.customScores[id];
+  if (state.linden.customScores) delete state.linden.customScores[id];
   renderRules();
   renderTodayUI();
   updateBanner();
@@ -1870,8 +1978,7 @@ function calcToday() {
   plus += s.laundry * pts.laundry + s.dishes * pts.dishes + calcWriteScore() + s.bball * pts.bball;
   plus += (R.awardPts[s.award] || 0);
   (R.customExtras || []).forEach(function(rule) {
-    var cnt = (s.customCounts && s.customCounts[rule.id]) || 0;
-    plus += cnt * (rule.plus || 0);
+    plus += customExtraScoreForRule(s, rule);
   });
   return { plus: plus, minus: ded, net: plus - ded };
 }
@@ -2101,7 +2208,11 @@ function buildItems() {
   if (s.bball > 0) items.push({ key: 'bball', name: R.optional[3].name + '×' + s.bball, score: s.bball * R.optional[3].plus });
   (R.customExtras || []).forEach(function(rule) {
     var cnt = (s.customCounts && s.customCounts[rule.id]) || 0;
-    if (cnt > 0 && (rule.plus || 0) > 0) items.push({ key: 'custom:' + rule.id, name: rule.name + '×' + cnt, score: cnt * rule.plus });
+    var score = customExtraScoreForRule(s, rule);
+    if (score > 0) {
+      var label = cnt > 0 ? rule.name + '×' + cnt : rule.name;
+      items.push({ key: 'custom:' + rule.id, name: label, score: score });
+    }
   });
   if (s.award !== 'none') items.push({ key: 'award', name: '获奖：' + R.awardLabels[s.award], score: R.awardPts[s.award] });
   /** 与横幅/本周用的 calcToday().net 必须一致，否则多次提交时 delta 与 netForKidDay 会算错 */
@@ -2607,24 +2718,28 @@ function renderRules() {
     html += '<button type="button" class="rules-add-custom-btn" onclick="enterRulesEditAndAddCustomExtra()">➕ 添加自定义加分项</button>';
   }
   html += '</div></div>';
-  html += '<p style="font-size:12px;color:#718096;margin:-6px 0 12px;line-height:1.45">自定义规则会出现在「今天」最下方「自定义加分」里，用 ± 计次数；改完后点顶部「✅ 保存」写入并云同步。</p>';
+  html += '<p style="font-size:12px;color:#718096;margin:-6px 0 12px;line-height:1.45">自定义规则会出现在「今天」最下方「自定义加分」里；编辑时可点选图标。规则里的“每次分值”作为默认值，今天可直接填写本次加多少分，± 只是快捷增减。</p>';
   var cex = R.customExtras || [];
   if (!cex.length && !rulesEditing) {
     html += '<p style="color:#a0aec0;font-size:13px;padding:4px 0">还没有自定义项。点右侧橙色按钮即可新增一条（会自动进入编辑模式）。</p>';
   }
   cex.forEach(function(rule) {
+    var iconSlug = normalizeCustomExtraIcon(rule.icon);
     if (rulesEditing) {
       html += '<div class="rules-row" style="background:#fffbeb;border-radius:8px;padding:8px;flex-wrap:wrap">';
-      html += '<div class="rules-emoji"><input class="rules-input" id="ce-emoji-' + rule.id + '" value="' + escapeAttr(rule.emoji || '') + '" style="width:44px;text-align:center" title="图标/emoji"></div>';
-      html += '<div class="rules-body" style="flex:1;min-width:200px">';
-      html += '名称：<input class="rules-input" id="ce-name-' + rule.id + '" value="' + escapeAttr(rule.name) + '" style="width:95%;margin-bottom:4px;display:block;">';
+      html += '<div class="rules-body" style="flex:1;min-width:100%">';
+      html += '<div class="rules-detail" style="margin-bottom:4px">图标</div>';
+      html += '<div class="rules-custom-icon-preview">' + customExtraIconHtml(rule) + '</div>';
+      html += '<div class="custom-icon-picker">' + customIconPickerHtml(rule.id, iconSlug) + '</div>';
+      html += '<input type="hidden" id="ce-icon-' + rule.id + '" value="' + escapeAttr(iconSlug) + '">';
+      html += '名称：<input class="rules-input" id="ce-name-' + rule.id + '" value="' + escapeAttr(rule.name) + '" style="width:95%;margin-bottom:4px;display:block;margin-top:8px">';
       html += '说明：<input class="rules-input" id="ce-sub-' + rule.id + '" value="' + escapeAttr(rule.sub) + '" style="width:95%;margin-bottom:4px;display:block;">';
       html += '每次 <input class="rules-input" id="ce-plus-' + rule.id + '" type="number" min="0" step="1" value="' + (rule.plus || 0) + '" style="width:52px;"> 分';
       html += '</div>';
       html += '<button type="button" class="rules-edit-btn" style="align-self:center;margin-top:8px" onclick="removeCustomExtraRule(\'' + rule.id + '\')">删除</button>';
       html += '</div>';
     } else {
-      html += '<div class="rules-row"><div class="rules-emoji">' + escapeHtml(rule.emoji || '✨') + '</div><div class="rules-body"><div class="rules-name">' + escapeHtml(rule.name) + '</div><div class="rules-detail">' + escapeHtml(rule.sub) + '</div></div>';
+      html += '<div class="rules-row"><div class="rules-emoji">' + customExtraIconHtml(rule) + '</div><div class="rules-body"><div class="rules-name">' + escapeHtml(rule.name) + '</div><div class="rules-detail">' + escapeHtml(rule.sub) + '</div></div>';
       html += '<span class="rules-score rs-plus">+' + (rule.plus || 0) + '分/次</span></div>';
     }
   });
@@ -2707,11 +2822,11 @@ function toggleRulesEdit() {
       if (o.plus > 0) { var v = parseFloat(document.getElementById('oe-plus-' + i).value); if (!isNaN(v)) o.plus = v; }
     });
     (R.customExtras || []).forEach(function(rule) {
-      var elE = document.getElementById('ce-emoji-' + rule.id);
+      var elI = document.getElementById('ce-icon-' + rule.id);
       var elN = document.getElementById('ce-name-' + rule.id);
       var elS = document.getElementById('ce-sub-' + rule.id);
       var elP = document.getElementById('ce-plus-' + rule.id);
-      if (elE) rule.emoji = elE.value.trim() || '✨';
+      if (elI) rule.icon = normalizeCustomExtraIcon(elI.value);
       if (elN) rule.name = elN.value;
       if (elS) rule.sub = elS.value;
       if (elP) { var pv = parseFloat(elP.value); if (!isNaN(pv) && pv >= 0) rule.plus = pv; }
