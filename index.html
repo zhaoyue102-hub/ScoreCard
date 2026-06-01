@@ -508,7 +508,7 @@ body {
 
 <div class="score-banner score-banner-brian" id="score-banner">
   <div class="score-cards">
-    <div class="score-card"><div class="sc-label">今日得分</div><div class="sc-val sc-zero" id="disp-today-net">0</div></div>
+    <div class="score-card"><div class="sc-label" id="disp-today-label">今日得分</div><div class="sc-val sc-zero" id="disp-today-net">0</div></div>
     <div class="score-card"><div class="sc-label">个人累计</div><div class="sc-val" id="disp-total">0</div></div>
     <div class="score-card"><div class="sc-label">两人合计</div><div class="sc-val" id="disp-combined-total">0</div></div>
   </div>
@@ -831,7 +831,7 @@ body {
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.9.10';
+var APP_VERSION = '1.9.11';
 
 var CUSTOM_EXTRA_ICONS = [
   'sparkle', 'star', 'heart', 'medal', 'trophy', 'gift', 'thumbs-up', 'hand-heart', 'smiley',
@@ -1949,12 +1949,16 @@ function grandTotalCombined() {
 
 function updateBanner() {
   try { persistHabitSnapshotForKid(currentKid); } catch (e) {}
-  var todayNet = netForKidDay(currentKid, getTodayKey());
+  var tkey = getTodayKey();
+  var hasTodayLedger = !!historyEntryForDay(currentKid, tkey);
+  var todayNet = hasTodayLedger ? netForKidDay(currentKid, tkey) : calcTodayForKid(currentKid).net;
   var elToday = document.getElementById('disp-today-net');
   if (elToday) {
     elToday.textContent = (todayNet >= 0 ? '+' : '') + todayNet;
     elToday.className = 'sc-val ' + (todayNet > 0 ? 'sc-pos' : (todayNet < 0 ? 'sc-neg' : 'sc-zero'));
   }
+  var elTodayLbl = document.getElementById('disp-today-label');
+  if (elTodayLbl) elTodayLbl.textContent = hasTodayLedger ? '今日得分' : '今日得分（预估）';
   document.getElementById('disp-total').textContent = (grandTotalForKid(currentKid) >= 0 ? '+' : '') + grandTotalForKid(currentKid);
   var comb = grandTotalCombined();
   var combEl = document.getElementById('disp-combined-total');
@@ -2114,7 +2118,12 @@ function diffItemStateAgainstForm(prevState, newItems) {
   return { deltas: deltas, nextState: next };
 }
 
-/** 今日：历史累计分 +（当前表单净分 − 上次提交时的表单净分）。其它日期：历史记录。 */
+/** 今日是否已有历史账本（提交、补卡、兑换游戏、修改历史任一写入即算） */
+function hasTodayLedgerEntry(kid) {
+  return !!historyEntryForDay(kid, getTodayKey());
+}
+
+/** 今日：历史累计分 +（当前表单净分 − 上次提交时的表单净分）。其它日期：历史记录。未提交时返回表单预估。 */
 function netForKidDay(kid, key) {
   var tkey = getTodayKey();
   if (key !== tkey) {
@@ -2128,6 +2137,7 @@ function netForKidDay(kid, key) {
   return ex.net + (formN - lastF);
 }
 
+/** 个人累计：过去各日 + 今日已入账部分；未点「提交今日记录」前，今日预估不计入。 */
 function grandTotalForKid(kid) {
   var tkey = getTodayKey();
   var hist = getHistory(kid);
@@ -2135,6 +2145,7 @@ function grandTotalForKid(kid) {
   hist.forEach(function(d) {
     if (d.date !== tkey) past += (d.net || 0);
   });
+  if (!hasTodayLedgerEntry(kid)) return past;
   return past + netForKidDay(kid, tkey);
 }
 
@@ -2151,8 +2162,13 @@ function updateWeekSummary() {
   for (var i = 0; i < 7; i++) {
     var dt = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i);
     var key = dateKeyFromDate(dt);
-    var net = netForKidDay(currentKid, key);
-    total += net;
+    var net;
+    if (key === tkey && !hasTodayLedgerEntry(currentKid)) {
+      net = calcTodayForKid(currentKid).net;
+    } else {
+      net = netForKidDay(currentKid, key);
+      total += net;
+    }
     var isToday = key === tkey;
     var cls = 'zero';
     if (net > 0) cls = 'pos';
@@ -2231,7 +2247,9 @@ function openModal() {
   if (!res.items.length) html = '<div style="color:#aaa;padding:8px 0">今日无记录</div>';
   html += '<div class="m-total m-total-' + currentKid + '"><span>本次表单净分</span><span>' + (formNet>=0?'+':'') + formNet + '分</span></div>';
   var exToday = historyEntryForDay(currentKid, getTodayKey());
-  if (exToday) {
+  if (!exToday) {
+    html += '<div style="font-size:12px;color:#718096;margin-top:10px;line-height:1.5">提交后，今日得分才会计入<strong>个人累计</strong>和可兑换游戏时间；顶栏「今日得分（预估）」在此之前仅作参考。</div>';
+  } else {
     var lastF = effectiveLastFormNetForBridge(exToday, formNet);
     var delta = formNet - lastF;
     var nextTot = exToday.net + delta;
