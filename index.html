@@ -473,6 +473,23 @@ body {
 .game-spend-btn-brian { color: #C2410C; }
 .game-spend-btn-linden { color: #2f855a; }
 .hist-game-tag { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; background: #edf2f7; color: #4a5568; margin-left: 6px; vertical-align: middle; }
+.archive-bar { margin-bottom: 14px; padding: 12px; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.archive-bar-hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.archive-bar-title { font-size: 14px; font-weight: 900; color: #2d3748; }
+.archive-bar-sub { font-size: 11px; color: #718096; line-height: 1.45; margin-top: 3px; max-width: 520px; }
+.archive-bar-actions { display: flex; flex-wrap: wrap; gap: 6px; flex-shrink: 0; }
+.archive-act-btn { padding: 7px 11px; border-radius: 10px; border: 1.5px solid #e2e8f0; background: #f7fafc; font-size: 12px; font-weight: 800; color: #4a5568; cursor: pointer; }
+.archive-act-btn.primary { background: #FFEDD5; border-color: #FDBA74; color: #9A3412; }
+.archive-act-btn:active { opacity: 0.88; }
+.archive-list { display: flex; flex-direction: column; gap: 6px; }
+.archive-list-title { font-size: 11px; font-weight: 800; color: #718096; letter-spacing: 0.03em; margin: 4px 0 2px; }
+.archive-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding: 8px 10px; border-radius: 10px; background: #f7fafc; border: 1px solid #edf2f7; }
+.archive-row-meta { font-size: 12px; color: #4a5568; line-height: 1.4; min-width: 0; flex: 1; }
+.archive-row-meta strong { color: #2d3748; }
+.archive-row-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.archive-mini-btn { padding: 5px 9px; border-radius: 8px; border: 1.5px solid #e2e8f0; background: #fff; font-size: 11px; font-weight: 800; color: #4a5568; cursor: pointer; }
+.archive-mini-btn.restore { border-color: #C2410C; color: #C2410C; background: #fff7ed; }
+.archive-empty { font-size: 12px; color: #a0aec0; padding: 4px 0; }
 
 @media (max-width: 420px) {
   .two-col { grid-template-columns: 1fr; }
@@ -741,6 +758,7 @@ body {
 
 <!-- HISTORY -->
 <div id="page-history" class="page"><div class="main-content" id="history-content"></div></div>
+<input type="file" id="archive-import-input" accept=".json,application/json" style="display:none" onchange="onArchiveImportFile(this)">
 
 <!-- RULES -->
 <div id="page-rules" class="page"><div class="main-content rules-page" id="rules-content"></div></div>
@@ -760,7 +778,7 @@ body {
 <div class="cloud-overlay" id="cloud-overlay" onclick="if(event.target===this)closeCloudSettings()">
   <div class="cloud-modal" onclick="event.stopPropagation()">
     <div class="cloud-modal-title">云同步（Firebase）</div>
-    <p class="cloud-hint">家长与孩子使用<strong>同一家庭码</strong>即可共用一份数据：规则、历史记录、今日未提交的草稿会实时同步。历史按<strong>日期合并</strong>（不会用较短的那份覆盖较长的），同一天以明细更完整或更新更晚的为准。托管在 <strong>GitHub Pages</strong> 时也是用 <code>https://…</code> 打开（不要用 <code>file://</code>）。</p>
+    <p class="cloud-hint">家长与孩子使用<strong>同一家庭码</strong>即可共用一份数据。历史在云端<strong>按天分开存储</strong>（改一天不会冲掉其它天）；旧版整包历史会自动迁移，<strong>不会删除</strong> Firebase 里原有字段。托管在 <strong>GitHub Pages</strong> 时也是用 <code>https://…</code> 打开（不要用 <code>file://</code>）。</p>
     <label for="cloud-family-input">家庭码（4～64 位，仅字母、数字、下划线、连字符）</label>
     <input type="text" id="cloud-family-input" class="cloud-input" placeholder="例如 myfamily2026" autocomplete="off">
     <div class="cloud-btns">
@@ -778,7 +796,7 @@ body {
         <li>在本页源码中搜索 <code>FIREBASE_CONFIG</code>，把占位内容换成你的配置并提交到仓库（公开仓库里也会看到配置，这是 Firebase 网页应用的常态，请靠 <strong>Firestore 规则 + 保密的家庭码</strong> 保护数据）。</li>
         <li>全家人在上方「家庭码」里填<strong>完全相同</strong>的一串字符（建议较长、勿公开）。</li>
       </ol>
-      <p style="margin:10px 0 0;font-size:11px;word-break:break-all;background:#fff;padding:8px;border-radius:6px;border:1px solid #e2e8f0"><strong>Firestore 规则示例</strong>（控制台 → 规则）— 知道家庭码的人可读写，请把家庭码当作密码：<br><code style="user-select:all">match /family_score/{id} { allow read, write: if id.size() &gt;= 4 &amp;&amp; id.size() &lt;= 64; }</code></p>
+      <p style="margin:10px 0 0;font-size:11px;word-break:break-all;background:#fff;padding:8px;border-radius:6px;border:1px solid #e2e8f0"><strong>Firestore 规则示例</strong>（控制台 → 规则）— 知道家庭码的人可读写，请把家庭码当作密码：<br><code style="user-select:all">match /family_score/{id} { allow read, write: if id.size() &gt;= 4 &amp;&amp; id.size() &lt;= 64; match /days/{dayId} { allow read, write: if id.size() &gt;= 4 &amp;&amp; id.size() &lt;= 64; } }</code></p>
     </details>
     <p class="cloud-err" id="cloud-err"></p>
   </div>
@@ -831,7 +849,14 @@ body {
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.10.0';
+var APP_VERSION = '1.12.0';
+
+var ARCHIVE_STORAGE_KEY = 'scorecard_archives_v1';
+var ARCHIVE_MAX_LOCAL = 15;
+var ARCHIVE_MAX_CLOUD = 8;
+var archiveSaveTimer = null;
+var lastArchiveFingerprint = '';
+var lastArchiveAt = 0;
 
 var CUSTOM_EXTRA_ICONS = [
   'sparkle', 'star', 'heart', 'medal', 'trophy', 'gift', 'thumbs-up', 'hand-heart', 'smiley',
@@ -871,6 +896,7 @@ var lastMergedRemoteAt = 0;
 var cloudServerSynced = false;
 var cloudPushPending = false;
 var cloudPushWantsImmediate = false;
+var cloudDaysUnsub = null;
 var firebaseLoadCallbacks = [];
 
 function cloudConfigValid() {
@@ -1022,6 +1048,10 @@ function disconnectCloud() {
     cloudUnsub();
     cloudUnsub = null;
   }
+  if (cloudDaysUnsub) {
+    try { cloudDaysUnsub(); } catch (e) {}
+    cloudDaysUnsub = null;
+  }
   cloudFamilyId = null;
   localStorage.removeItem('cloud_family_id');
   cloudServerSynced = false;
@@ -1074,17 +1104,474 @@ function touchHistoryDaySavedAt(day) {
   if (day && typeof day === 'object') day._savedAt = Date.now();
 }
 
-function applyRemoteDoc(data) {
+function archiveHistFingerprint(histBrian, histLinden) {
+  function fp(h) {
+    return (h || []).map(function(d) {
+      return (d.date || '') + ':' + (d.net || 0) + ':' + ((d.items || []).length);
+    }).join('|');
+  }
+  return fp(histBrian) + '||' + fp(histLinden);
+}
+
+function collectArchivePayload(label, trigger) {
+  return {
+    format: 1,
+    appVersion: APP_VERSION,
+    savedAt: Date.now(),
+    label: label || '存档',
+    trigger: trigger || 'manual',
+    histBrian: getHistory('brian'),
+    histLinden: getHistory('linden'),
+    rules: JSON.parse(JSON.stringify(R)),
+    habitLogBrian: getHabitLog('brian'),
+    habitLogLinden: getHabitLog('linden'),
+    stateBrian: JSON.parse(JSON.stringify(state.brian)),
+    stateLinden: JSON.parse(JSON.stringify(state.linden))
+  };
+}
+
+function readLocalArchives() {
+  try {
+    var raw = localStorage.getItem(ARCHIVE_STORAGE_KEY);
+    if (!raw) return [];
+    var arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function writeLocalArchives(arr) {
+  while (arr.length > ARCHIVE_MAX_LOCAL) arr.pop();
+  try {
+    localStorage.setItem(ARCHIVE_STORAGE_KEY, JSON.stringify(arr));
+  } catch (e) {
+    while (arr.length > 3 && e) {
+      arr.pop();
+      try {
+        localStorage.setItem(ARCHIVE_STORAGE_KEY, JSON.stringify(arr));
+        e = null;
+      } catch (e2) { e = e2; }
+    }
+    console.warn('archive storage full', e);
+  }
+}
+
+function pushLocalArchive(payload) {
+  if (!payload || !payload.savedAt) return;
+  var fp = archiveHistFingerprint(payload.histBrian, payload.histLinden);
+  if (fp === lastArchiveFingerprint && payload.savedAt - lastArchiveAt < 120000) return;
+  lastArchiveFingerprint = fp;
+  lastArchiveAt = payload.savedAt;
+  var list = readLocalArchives();
+  if (list[0] && archiveHistFingerprint(list[0].histBrian, list[0].histLinden) === fp && payload.savedAt - list[0].savedAt < 120000) return;
+  payload.id = 'a' + payload.savedAt + '_' + Math.random().toString(36).slice(2, 7);
+  list.unshift(payload);
+  writeLocalArchives(list);
+}
+
+function createLocalArchive(label, trigger) {
+  var payload = collectArchivePayload(label, trigger);
+  pushLocalArchive(payload);
+  if (document.getElementById('page-history').classList.contains('active')) renderHistory();
+  return payload;
+}
+
+function scheduleArchiveAfterSave() {
+  clearTimeout(archiveSaveTimer);
+  archiveSaveTimer = setTimeout(function() {
+    archiveSaveTimer = null;
+    createLocalArchive('自动（保存后）', 'auto-post-save');
+  }, 45000);
+}
+
+function archiveBeforeCloudApply() {
+  createLocalArchive('自动（云同步前）', 'auto-pre-cloud');
+}
+
+function formatArchiveTime(ts) {
+  var d = new Date(ts);
+  return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+}
+
+function archiveDayCount(hist) {
+  return Array.isArray(hist) ? hist.length : 0;
+}
+
+function validateArchivePayload(data) {
+  return data && typeof data === 'object' && (Array.isArray(data.histBrian) || Array.isArray(data.histLinden));
+}
+
+function buildArchivesForCloudPush(serverArchives, histBrian, histLinden) {
+  var archives = Array.isArray(serverArchives) ? serverArchives.slice() : [];
+  var snap = {
+    savedAt: Date.now(),
+    label: '云端自动',
+    trigger: 'cloud-push',
+    histBrian: histBrian || [],
+    histLinden: histLinden || []
+  };
+  var fp = archiveHistFingerprint(histBrian, histLinden);
+  if (archives[0] && archives[0].savedAt > snap.savedAt - 300000 && archiveHistFingerprint(archives[0].histBrian, archives[0].histLinden) === fp) {
+    return archives.slice(0, ARCHIVE_MAX_CLOUD);
+  }
+  archives.unshift(snap);
+  return archives.slice(0, ARCHIVE_MAX_CLOUD);
+}
+
+function applyArchiveSnapshot(snap, mode) {
+  if (!validateArchivePayload(snap)) {
+    alert('存档格式无效');
+    return false;
+  }
+  createLocalArchive('恢复前备份', 'pre-restore');
+  if (mode === 'replace-hist') {
+    localStorage.setItem('hist_brian', JSON.stringify(snap.histBrian || []));
+    localStorage.setItem('hist_linden', JSON.stringify(snap.histLinden || []));
+  } else {
+    localStorage.setItem('hist_brian', JSON.stringify(mergeHistoryByDate(getHistory('brian'), snap.histBrian)));
+    localStorage.setItem('hist_linden', JSON.stringify(mergeHistoryByDate(getHistory('linden'), snap.histLinden)));
+  }
+  if (mode === 'full') {
+    if (snap.rules) {
+      replaceRFromObject(snap.rules);
+      localStorage.setItem('rules_v2', JSON.stringify(R));
+    }
+    if (snap.habitLogBrian) localStorage.setItem('habitlog_brian', JSON.stringify(snap.habitLogBrian));
+    if (snap.habitLogLinden) localStorage.setItem('habitlog_linden', JSON.stringify(snap.habitLogLinden));
+    if (snap.stateBrian) state.brian = Object.assign(makeState(), snap.stateBrian);
+    if (snap.stateLinden) state.linden = Object.assign(makeState(), snap.stateLinden);
+  }
+  updateRuleLabels();
+  renderTodayUI();
+  renderRules();
+  refreshTotals();
+  updateBanner();
+  renderHistory();
+  scheduleCloudPush(true);
+  return true;
+}
+
+function restoreLocalArchive(id) {
+  var list = readLocalArchives();
+  var snap = null;
+  for (var i = 0; i < list.length; i++) if (list[i].id === id) { snap = list[i]; break; }
+  if (!snap) { alert('找不到该存档'); return; }
+  var msg = '恢复存档「' + (snap.label || '存档') + '」\n' + formatArchiveTime(snap.savedAt) + '\nBrian ' + archiveDayCount(snap.histBrian) + ' 天 · Linden ' + archiveDayCount(snap.histLinden) + ' 天\n\n将与当前历史按日期合并（保留更完整的记录）。继续？';
+  if (!confirm(msg)) return;
+  applyArchiveSnapshot(snap, 'merge');
+  alert('✅ 已从本机存档恢复（历史已合并）');
+}
+
+function restoreCloudArchive(index) {
+  fetchCloudArchives(function(archives) {
+    var snap = archives[index];
+    if (!snap) { alert('找不到该云端存档'); return; }
+    var msg = '恢复云端存档「' + (snap.label || '存档') + '」\n' + formatArchiveTime(snap.savedAt) + '\nBrian ' + archiveDayCount(snap.histBrian) + ' 天 · Linden ' + archiveDayCount(snap.histLinden) + ' 天\n\n将与当前历史按日期合并。继续？';
+    if (!confirm(msg)) return;
+    applyArchiveSnapshot(snap, 'merge');
+    alert('✅ 已从云端存档恢复（历史已合并）');
+  });
+}
+
+function manualCreateArchive() {
+  createLocalArchive('手动存档', 'manual');
+  alert('✅ 已保存本机存档\n可在下方列表中恢复或导出 JSON 文件备份到 iCloud/微信文件。');
+}
+
+function exportArchiveById(id) {
+  var list = readLocalArchives();
+  var snap = null;
+  for (var i = 0; i < list.length; i++) if (list[i].id === id) { snap = list[i]; break; }
+  if (!snap) { alert('找不到该存档'); return; }
+  exportArchivePayload(snap);
+}
+
+function exportCurrentArchiveFile() {
+  exportArchivePayload(collectArchivePayload('手动导出', 'export'));
+}
+
+function exportArchivePayload(snap) {
+  try {
+    var blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'ScoreCard-backup-' + (snap.savedAt || Date.now()) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function() { URL.revokeObjectURL(url); }, 500);
+  } catch (e) {
+    alert('导出失败：' + (e.message || e));
+  }
+}
+
+function openArchiveImportPicker() {
+  var el = document.getElementById('archive-import-input');
+  if (el) el.click();
+}
+
+function onArchiveImportFile(input) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function() {
+    try {
+      var data = JSON.parse(reader.result);
+      if (!validateArchivePayload(data)) {
+        alert('不是有效的 ScoreCard 存档文件');
+        return;
+      }
+      var msg = '导入文件：' + file.name + '\nBrian ' + archiveDayCount(data.histBrian) + ' 天 · Linden ' + archiveDayCount(data.histLinden) + ' 天\n\n';
+      if (!confirm(msg + '确定导入？将先自动备份当前数据。')) return;
+      var full = confirm('是否同时恢复规则、习惯记录与今日草稿？\n\n确定 = 全部恢复\n取消 = 仅合并历史记录');
+      applyArchiveSnapshot(data, full ? 'full' : 'merge');
+      pushLocalArchive(data);
+      alert('✅ 导入完成');
+    } catch (e) {
+      alert('文件无法解析：' + (e.message || e));
+    }
+    input.value = '';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function fetchCloudArchives(cb) {
+  cb = cb || function() {};
+  if (!cloudFamilyId || !cloudConfigValid()) { cb([]); return; }
+  ensureFirebaseLoaded(function() {
+    if (!cloudFirebaseReady()) { cb([]); return; }
+    firebase.firestore().collection('family_score').doc(cloudFamilyId).get({ source: 'server' }).then(function(snap) {
+      var archives = snap.exists && snap.data() && Array.isArray(snap.data().archives) ? snap.data().archives : [];
+      cb(archives);
+    }).catch(function() {
+      firebase.firestore().collection('family_score').doc(cloudFamilyId).get().then(function(snap) {
+        var archives = snap.exists && snap.data() && Array.isArray(snap.data().archives) ? snap.data().archives : [];
+        cb(archives);
+      }).catch(function() { cb([]); });
+    });
+  });
+}
+
+var cloudArchivesCache = null;
+
+function renderArchiveBarHtml() {
+  var list = readLocalArchives();
+  var html = '<div class="archive-bar"><div class="archive-bar-hd"><div><div class="archive-bar-title">📦 历史存档</div>';
+  html += '<div class="archive-bar-sub">自动在本机保留最近 ' + ARCHIVE_MAX_LOCAL + ' 份快照；可导出 JSON。云端历史已改为<strong>按天分开存</strong>，并保留 ' + ARCHIVE_MAX_CLOUD + ' 份整包快照作兜底。</div></div>';
+  html += '<div class="archive-bar-actions">';
+  html += '<button type="button" class="archive-act-btn primary" onclick="manualCreateArchive()">立即存档</button>';
+  html += '<button type="button" class="archive-act-btn" onclick="exportCurrentArchiveFile()">导出文件</button>';
+  html += '<button type="button" class="archive-act-btn" onclick="openArchiveImportPicker()">从文件恢复</button>';
+  html += '</div></div>';
+  html += '<div class="archive-list-title">本机存档</div><div class="archive-list">';
+  if (!list.length) {
+    html += '<div class="archive-empty">暂无本机存档；点「立即存档」或等待自动保存。</div>';
+  } else {
+    list.forEach(function(snap) {
+      html += '<div class="archive-row"><div class="archive-row-meta"><strong>' + escapeHtml(snap.label || '存档') + '</strong><br>' + formatArchiveTime(snap.savedAt) + ' · Brian ' + archiveDayCount(snap.histBrian) + ' 天 · Linden ' + archiveDayCount(snap.histLinden) + ' 天</div>';
+      html += '<div class="archive-row-btns"><button type="button" class="archive-mini-btn restore" onclick="restoreLocalArchive(\'' + snap.id + '\')">恢复</button>';
+      html += '<button type="button" class="archive-mini-btn" onclick="exportArchiveById(\'' + snap.id + '\')">导出</button></div></div>';
+    });
+  }
+  html += '</div><div class="archive-list-title" style="margin-top:10px">云端存档</div><div class="archive-list" id="cloud-archive-list">';
+  if (cloudArchivesCache === null) {
+    html += '<div class="archive-empty">加载中…</div>';
+  } else if (!cloudArchivesCache.length) {
+    html += '<div class="archive-empty">暂无云端存档（连接家庭码并成功同步后会自动保留）。</div>';
+  } else {
+    cloudArchivesCache.forEach(function(snap, idx) {
+      html += '<div class="archive-row"><div class="archive-row-meta"><strong>' + escapeHtml(snap.label || '云端存档') + '</strong><br>' + formatArchiveTime(snap.savedAt) + ' · Brian ' + archiveDayCount(snap.histBrian) + ' 天 · Linden ' + archiveDayCount(snap.histLinden) + ' 天</div>';
+      html += '<div class="archive-row-btns"><button type="button" class="archive-mini-btn restore" onclick="restoreCloudArchive(' + idx + ')">恢复</button></div></div>';
+    });
+  }
+  html += '</div></div>';
+  return html;
+}
+
+function refreshCloudArchiveList() {
+  fetchCloudArchives(function(archives) {
+    cloudArchivesCache = archives;
+    if (document.getElementById('page-history').classList.contains('active')) renderHistory();
+  });
+}
+
+// ============ CLOUD: 历史按天存储（family_score/{家庭码}/days/{孩子_日期}） ============
+function cloudDayDocId(kid, date) {
+  return kid + '_' + date;
+}
+
+function historyDayToCloudDoc(kid, day) {
+  return {
+    kid: kid,
+    date: day.date,
+    net: day.net || 0,
+    items: day.items || [],
+    _savedAt: day._savedAt || Date.now(),
+    _lastFormNet: day._lastFormNet,
+    _lastItemState: day._lastItemState,
+    _makeup: day._makeup,
+    _gameSpend: day._gameSpend,
+    updatedAt: Date.now(),
+    clientId: cloudClientId
+  };
+}
+
+function cloudDocToHistoryDay(docData) {
+  return {
+    date: docData.date,
+    net: docData.net,
+    items: docData.items || [],
+    _savedAt: docData._savedAt,
+    _lastFormNet: docData._lastFormNet,
+    _lastItemState: docData._lastItemState,
+    _makeup: docData._makeup,
+    _gameSpend: docData._gameSpend
+  };
+}
+
+function cloudDayWritesFromHistoryArrays(histBrian, histLinden, ref) {
+  var writes = [];
+  KIDS.forEach(function(kid) {
+    var arr = kid === 'brian' ? histBrian : histLinden;
+    if (!Array.isArray(arr)) return;
+    arr.forEach(function(day) {
+      if (!day || !day.date) return;
+      writes.push({
+        ref: ref.collection('days').doc(cloudDayDocId(kid, day.date)),
+        data: historyDayToCloudDoc(kid, day)
+      });
+    });
+  });
+  return writes;
+}
+
+function cloudCommitDayWritesBatched(writes, done) {
+  if (!writes.length) { if (done) done(); return Promise.resolve(); }
+  var CHUNK = 400;
+  var idx = 0;
+  function next() {
+    if (idx >= writes.length) { if (done) done(); return Promise.resolve(); }
+    var batch = firebase.firestore().batch();
+    var end = Math.min(idx + CHUNK, writes.length);
+    for (; idx < end; idx++) {
+      batch.set(writes[idx].ref, writes[idx].data, { merge: true });
+    }
+    return batch.commit().then(next);
+  }
+  return next();
+}
+
+/** 把主文档里的旧版 histBrian/histLinden 复制到 days 子集合；不删除主文档原字段；已有按天记录不覆盖。 */
+function cloudMigrateLegacyHistOnServer(ref, mainData) {
+  mainData = mainData || {};
+  var legacyWrites = cloudDayWritesFromHistoryArrays(mainData.histBrian, mainData.histLinden, ref);
+  if (!legacyWrites.length) return Promise.resolve();
+  return ref.collection('days').get().then(function(existing) {
+    var have = {};
+    existing.forEach(function(doc) { have[doc.id] = true; });
+    var writes = legacyWrites.filter(function(w) { return !have[w.ref.id]; });
+    if (!writes.length) return Promise.resolve();
+    return cloudCommitDayWritesBatched(writes);
+  }).then(function() {
+    return ref.set({ historyMigratedV1: true, historyStorageV2: true }, { merge: true });
+  });
+}
+
+function cloudPushAllLocalDays(ref) {
+  var writes = cloudDayWritesFromHistoryArrays(getHistory('brian'), getHistory('linden'), ref);
+  return cloudCommitDayWritesBatched(writes);
+}
+
+function cloudLoadAndMergeAllDays(ref, mainData) {
+  archiveBeforeCloudApply();
+  function ingestSnap(snap) {
+    var fromDays = { brian: [], linden: [] };
+    snap.forEach(function(doc) {
+      var d = doc.data();
+      if (!d || !d.kid || !d.date) return;
+      var day = cloudDocToHistoryDay(d);
+      if (d.kid === 'brian') fromDays.brian.push(day);
+      else if (d.kid === 'linden') fromDays.linden.push(day);
+    });
+    var legacyBrian = mainData && Array.isArray(mainData.histBrian) ? mainData.histBrian : [];
+    var legacyLinden = mainData && Array.isArray(mainData.histLinden) ? mainData.histLinden : [];
+    var mergedBrian = mergeHistoryByDate(mergeHistoryByDate(getHistory('brian'), legacyBrian), fromDays.brian);
+    var mergedLinden = mergeHistoryByDate(mergeHistoryByDate(getHistory('linden'), legacyLinden), fromDays.linden);
+    localStorage.setItem('hist_brian', JSON.stringify(mergedBrian));
+    localStorage.setItem('hist_linden', JSON.stringify(mergedLinden));
+    refreshTotals();
+    updateBanner();
+    cloudArchivesCache = null;
+    if (document.getElementById('page-history').classList.contains('active')) renderHistory();
+  }
+  return ref.collection('days').get({ source: 'server' }).then(ingestSnap).catch(function() {
+    return ref.collection('days').get().then(ingestSnap);
+  });
+}
+
+function cloudMergeRemoteDayIntoLocal(kid, day) {
+  if (!kid || !day || !day.date) return false;
+  var merged = mergeHistoryByDate(getHistory(kid), [day]);
+  localStorage.setItem('hist_' + kid, JSON.stringify(merged));
+  return true;
+}
+
+function cloudSubscribeDaysChanges(ref, familyAtStart) {
+  if (cloudDaysUnsub) {
+    try { cloudDaysUnsub(); } catch (e) {}
+    cloudDaysUnsub = null;
+  }
+  cloudDaysUnsub = ref.collection('days').onSnapshot(function(snap) {
+    if (cloudFamilyId !== familyAtStart) return;
+    var changed = false;
+    snap.docChanges().forEach(function(change) {
+      if (change.type === 'removed') return;
+      var d = change.doc.data();
+      if (!d || !d.kid || !d.date) return;
+      if (d.clientId === cloudClientId && change.doc.metadata.hasPendingWrites) return;
+      cloudApplyingRemote = true;
+      try {
+        if (cloudMergeRemoteDayIntoLocal(d.kid, cloudDocToHistoryDay(d))) changed = true;
+      } finally {
+        cloudApplyingRemote = false;
+      }
+    });
+    if (changed) {
+      refreshTotals();
+      updateBanner();
+      if (document.getElementById('page-history').classList.contains('active')) renderHistory();
+    }
+  }, function(err) {
+    console.error(err);
+    cloudUpdateStatusUI('按天历史监听失败：' + formatCloudFirestoreError(err));
+  });
+}
+
+function cloudAfterMainDocHydrate(ref, familyAtStart, mainData) {
+  cloudMigrateLegacyHistOnServer(ref, mainData).then(function() {
+    return cloudLoadAndMergeAllDays(ref, mainData);
+  }).then(function() {
+    cloudServerSynced = true;
+    cloudAfterInitialHydrate();
+    cloudSubscribeDocChanges(ref, familyAtStart);
+    cloudSubscribeDaysChanges(ref, familyAtStart);
+  }).catch(function(err) {
+    console.error(err);
+    cloudUpdateStatusUI('历史按天同步异常：' + formatCloudFirestoreError(err));
+    cloudServerSynced = true;
+    cloudAfterInitialHydrate();
+    cloudSubscribeDocChanges(ref, familyAtStart);
+    cloudSubscribeDaysChanges(ref, familyAtStart);
+  });
+}
+
+function applyRemoteDocMain(data) {
   cloudApplyingRemote = true;
   try {
     if (data.rules) replaceRFromObject(data.rules);
     localStorage.setItem('rules_v2', JSON.stringify(R));
-    if (Array.isArray(data.histBrian)) {
-      localStorage.setItem('hist_brian', JSON.stringify(mergeHistoryByDate(getHistory('brian'), data.histBrian)));
-    }
-    if (Array.isArray(data.histLinden)) {
-      localStorage.setItem('hist_linden', JSON.stringify(mergeHistoryByDate(getHistory('linden'), data.histLinden)));
-    }
     if (data.habitLogBrian && typeof data.habitLogBrian === 'object') localStorage.setItem('habitlog_brian', JSON.stringify(data.habitLogBrian));
     if (data.habitLogLinden && typeof data.habitLogLinden === 'object') localStorage.setItem('habitlog_linden', JSON.stringify(data.habitLogLinden));
     if (data.stateBrian && typeof data.stateBrian === 'object') state.brian = Object.assign(makeState(), data.stateBrian);
@@ -1101,6 +1588,20 @@ function applyRemoteDoc(data) {
   } finally {
     cloudApplyingRemote = false;
   }
+}
+
+/** 兼容旧版：主文档若仍带 hist 数组，合并进本机（按天存储上线后的兜底）。 */
+function applyRemoteDoc(data) {
+  applyRemoteDocMain(data);
+  if (Array.isArray(data.histBrian)) {
+    localStorage.setItem('hist_brian', JSON.stringify(mergeHistoryByDate(getHistory('brian'), data.histBrian)));
+  }
+  if (Array.isArray(data.histLinden)) {
+    localStorage.setItem('hist_linden', JSON.stringify(mergeHistoryByDate(getHistory('linden'), data.histLinden)));
+  }
+  refreshTotals();
+  updateBanner();
+  if (document.getElementById('page-history').classList.contains('active')) renderHistory();
 }
 
 function cloudSubscribeDocChanges(ref, familyAtStart) {
@@ -1120,7 +1621,7 @@ function cloudSubscribeDocChanges(ref, familyAtStart) {
     }
     if (data.updatedAt <= lastMergedRemoteAt) return;
     lastMergedRemoteAt = data.updatedAt;
-    applyRemoteDoc(data);
+    applyRemoteDocMain(data);
   }, function(err) {
     console.error(err);
     cloudUpdateStatusUI('监听失败：' + formatCloudFirestoreError(err));
@@ -1132,25 +1633,23 @@ function cloudSubscribeDocChanges(ref, familyAtStart) {
  */
 function cloudFinishHydrateFromSnapshot(ref, familyAtStart, snap, allowSeedEmpty) {
   if (cloudFamilyId !== familyAtStart) return;
-  if (snap.exists) {
-    var data = snap.data();
-    if (data && typeof data.updatedAt === 'number') {
-      if (data.clientId === cloudClientId && data.updatedAt === lastPushedTs) {
-        lastMergedRemoteAt = Math.max(lastMergedRemoteAt, data.updatedAt);
-      } else if (data.updatedAt > lastMergedRemoteAt) {
-        lastMergedRemoteAt = data.updatedAt;
-        applyRemoteDoc(data);
+  var mainData = snap.exists ? snap.data() : null;
+  if (snap.exists && mainData) {
+    if (typeof mainData.updatedAt === 'number') {
+      if (mainData.clientId === cloudClientId && mainData.updatedAt === lastPushedTs) {
+        lastMergedRemoteAt = Math.max(lastMergedRemoteAt, mainData.updatedAt);
+      } else if (mainData.updatedAt > lastMergedRemoteAt) {
+        lastMergedRemoteAt = mainData.updatedAt;
+        applyRemoteDocMain(mainData);
       }
-    } else if (data && typeof data === 'object') {
-      lastMergedRemoteAt = Math.max(lastMergedRemoteAt, data.updatedAt || 0);
-      applyRemoteDoc(data);
+    } else {
+      lastMergedRemoteAt = Math.max(lastMergedRemoteAt, mainData.updatedAt || 0);
+      applyRemoteDocMain(mainData);
     }
   } else if (!allowSeedEmpty) {
     return;
   }
-  cloudServerSynced = true;
-  cloudAfterInitialHydrate();
-  cloudSubscribeDocChanges(ref, familyAtStart);
+  cloudAfterMainDocHydrate(ref, familyAtStart, mainData || {});
 }
 
 /** Cache says “no doc” but cloud may exist — wait for a server-backed snapshot instead of uploading empty state. */
@@ -1194,6 +1693,10 @@ function cloudAttachListener() {
   if (cloudUnsub) {
     try { cloudUnsub(); } catch (e) {}
     cloudUnsub = null;
+  }
+  if (cloudDaysUnsub) {
+    try { cloudDaysUnsub(); } catch (e) {}
+    cloudDaysUnsub = null;
   }
   cloudServerSynced = false;
   var db = firebase.firestore();
@@ -1340,10 +1843,15 @@ function scheduleCloudPush(immediate) {
         stateLinden: state.linden
       }));
       lastPushedTs = payload.updatedAt;
-      function finishUpload(histBrian, histLinden) {
-        payload.histBrian = histBrian;
-        payload.histLinden = histLinden;
-        ref.set(payload).then(function() {
+      function finishUpload(serverArchives) {
+        var histBrian = getHistory('brian');
+        var histLinden = getHistory('linden');
+        payload.archives = buildArchivesForCloudPush(serverArchives, histBrian, histLinden);
+        payload.historyStorageV2 = true;
+        ref.set(payload, { merge: true }).then(function() {
+          return cloudPushAllLocalDays(ref);
+        }).then(function() {
+          cloudArchivesCache = payload.archives || null;
           cloudUpdateStatusUI();
         }).catch(function(e) {
           console.error(e);
@@ -1352,18 +1860,12 @@ function scheduleCloudPush(immediate) {
       }
       ref.get({ source: 'server' }).then(function(snap) {
         var server = snap.exists ? snap.data() : {};
-        finishUpload(
-          mergeHistoryByDate(getHistory('brian'), server.histBrian),
-          mergeHistoryByDate(getHistory('linden'), server.histLinden)
-        );
+        finishUpload(server.archives);
       }).catch(function(e) {
         console.warn('cloud push: server get failed, merge with cache', e);
         ref.get().then(function(snap) {
           var server = snap.exists ? snap.data() : {};
-          finishUpload(
-            mergeHistoryByDate(getHistory('brian'), server.histBrian),
-            mergeHistoryByDate(getHistory('linden'), server.histLinden)
-          );
+          finishUpload(server.archives);
         }).catch(function(e2) {
           console.error(e2);
           cloudUpdateStatusUI('上传前无法读取云端，已跳过本次上传以防覆盖历史');
@@ -1571,6 +2073,9 @@ var rulesEditing = false;
   renderTodayUI();
   renderRules();
   updateBanner();
+  if (!readLocalArchives().length && (getHistory('brian').length || getHistory('linden').length)) {
+    createLocalArchive('首次自动存档', 'auto-init');
+  }
   cloudTryAutoConnect();
 })();
 
@@ -1623,7 +2128,10 @@ function switchSection(name) {
     t.classList.remove('active-brian','active-linden');
   });
   document.getElementById('tab-' + name).classList.add('active-' + currentKid);
-  if (name === 'history') renderHistory();
+  if (name === 'history') {
+    cloudArchivesCache = null;
+    renderHistory();
+  }
   if (name === 'rules') renderRules();
 }
 
@@ -2242,6 +2750,7 @@ function getHistory(kid) {
 }
 function saveHistory(kid, arr) {
   localStorage.setItem('hist_' + kid, JSON.stringify(arr));
+  scheduleArchiveAfterSave();
   scheduleCloudPush();
 }
 function refreshTotals() {
@@ -2703,7 +3212,8 @@ function renderHistory() {
   var name = currentKid === 'brian' ? 'Brian' : 'Linden';
   var available = getAvailableGameMinutes(currentKid);
   var gameBtnCls = 'game-spend-btn game-spend-btn-' + currentKid;
-  var html = '<div class="game-spend-bar game-spend-bar-' + currentKid + '"><div class="game-spend-main"><div class="game-spend-title">游戏时间兑换</div><div class="game-spend-sub"><span class="game-spend-mins">' + available + '</span> 可用分钟 · 1 分 = 1 分钟，没用完会继续累计</div></div><button type="button" class="' + gameBtnCls + '" onclick="redeemGameTime()">兑换</button></div>';
+  var html = renderArchiveBarHtml();
+  html += '<div class="game-spend-bar game-spend-bar-' + currentKid + '"><div class="game-spend-main"><div class="game-spend-title">游戏时间兑换</div><div class="game-spend-sub"><span class="game-spend-mins">' + available + '</span> 可用分钟 · 1 分 = 1 分钟，没用完会继续累计</div></div><button type="button" class="' + gameBtnCls + '" onclick="redeemGameTime()">兑换</button></div>';
   var btnCls = 'makeup-bar-btn makeup-bar-btn-' + currentKid;
   html += '<div class="makeup-bar"><p class="makeup-bar-text">忘记打卡？选日期补记当日得分，会写入历史并计入累计。</p><button type="button" class="' + btnCls + '" onclick="openMakeupCard()">补卡</button></div>';
   var missing = getRecentMissingMakeupDates(currentKid, 14);
@@ -2717,8 +3227,9 @@ function renderHistory() {
     html += '</div></div>';
   }
   if (!hist.length) {
-    html += '<div class="empty"><div class="ei">📅</div><p>' + name + ' 暂无记录，可点上方「补卡」补记</p></div>';
+    html += '<div class="empty"><div class="ei">📅</div><p>' + name + ' 暂无记录，可点上方「补卡」补记，或从「历史存档」恢复</p></div>';
     container.innerHTML = html;
+    if (cloudArchivesCache === null) refreshCloudArchiveList();
     return;
   }
   var total = grandTotalForKid(currentKid);
@@ -2742,6 +3253,7 @@ function renderHistory() {
     html += '<div class="hist-day"><div class="hd-header"><span class="hd-date">' + fmtDate(dt) + makeupTag + gameTag + '</span><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="hd-score" style="color:' + col + '">' + (dispNet>=0?'+':'') + dispNet + '分</span><button type="button" class="hist-edit-btn" onclick="openHistoryEdit(\'' + day.date + '\')">修改</button></div></div><div class="hd-body">' + rows + '</div></div>';
   });
   container.innerHTML = html;
+  if (cloudArchivesCache === null) refreshCloudArchiveList();
 }
 
 // ============ RULES PAGE ============
