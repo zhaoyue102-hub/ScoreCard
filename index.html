@@ -760,7 +760,7 @@ body {
 <div class="cloud-overlay" id="cloud-overlay" onclick="if(event.target===this)closeCloudSettings()">
   <div class="cloud-modal" onclick="event.stopPropagation()">
     <div class="cloud-modal-title">云同步（Firebase）</div>
-    <p class="cloud-hint">家长与孩子使用<strong>同一家庭码</strong>即可共用一份数据：规则、历史记录、今日未提交的草稿会实时同步（以最后写入为准）。托管在 <strong>GitHub Pages</strong> 时也是用 <code>https://…</code> 打开（不要用 <code>file://</code>）。</p>
+    <p class="cloud-hint">家长与孩子使用<strong>同一家庭码</strong>即可共用一份数据：规则、历史记录、今日未提交的草稿会实时同步。历史按<strong>日期合并</strong>（不会用较短的那份覆盖较长的），同一天以明细更完整或更新更晚的为准。托管在 <strong>GitHub Pages</strong> 时也是用 <code>https://…</code> 打开（不要用 <code>file://</code>）。</p>
     <label for="cloud-family-input">家庭码（4～64 位，仅字母、数字、下划线、连字符）</label>
     <input type="text" id="cloud-family-input" class="cloud-input" placeholder="例如 myfamily2026" autocomplete="off">
     <div class="cloud-btns">
@@ -831,7 +831,7 @@ body {
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.9.11';
+var APP_VERSION = '1.10.0';
 
 var CUSTOM_EXTRA_ICONS = [
   'sparkle', 'star', 'heart', 'medal', 'trophy', 'gift', 'thumbs-up', 'hand-heart', 'smiley',
@@ -1048,13 +1048,43 @@ function replaceRFromObject(obj) {
   Object.assign(R, d);
 }
 
+function historyDayMergeScore(day) {
+  if (!day || !day.date) return -1;
+  var items = (day.items || []).length;
+  var ts = day._savedAt || 0;
+  return items * 1000000 + ts;
+}
+
+/** 按日期合并两份历史：保留所有日期；同一天取明细更完整或更新更晚的记录。 */
+function mergeHistoryByDate(localArr, remoteArr) {
+  var map = {};
+  function consider(day) {
+    if (!day || !day.date) return;
+    var prev = map[day.date];
+    if (!prev || historyDayMergeScore(day) >= historyDayMergeScore(prev)) map[day.date] = day;
+  }
+  (remoteArr || []).forEach(consider);
+  (localArr || []).forEach(consider);
+  var out = Object.keys(map).map(function(k) { return map[k]; });
+  sortHistoryByDateDesc(out);
+  return out;
+}
+
+function touchHistoryDaySavedAt(day) {
+  if (day && typeof day === 'object') day._savedAt = Date.now();
+}
+
 function applyRemoteDoc(data) {
   cloudApplyingRemote = true;
   try {
     if (data.rules) replaceRFromObject(data.rules);
     localStorage.setItem('rules_v2', JSON.stringify(R));
-    if (Array.isArray(data.histBrian)) localStorage.setItem('hist_brian', JSON.stringify(data.histBrian));
-    if (Array.isArray(data.histLinden)) localStorage.setItem('hist_linden', JSON.stringify(data.histLinden));
+    if (Array.isArray(data.histBrian)) {
+      localStorage.setItem('hist_brian', JSON.stringify(mergeHistoryByDate(getHistory('brian'), data.histBrian)));
+    }
+    if (Array.isArray(data.histLinden)) {
+      localStorage.setItem('hist_linden', JSON.stringify(mergeHistoryByDate(getHistory('linden'), data.histLinden)));
+    }
     if (data.habitLogBrian && typeof data.habitLogBrian === 'object') localStorage.setItem('habitlog_brian', JSON.stringify(data.habitLogBrian));
     if (data.habitLogLinden && typeof data.habitLogLinden === 'object') localStorage.setItem('habitlog_linden', JSON.stringify(data.habitLogLinden));
     if (data.stateBrian && typeof data.stateBrian === 'object') state.brian = Object.assign(makeState(), data.stateBrian);
@@ -1299,23 +1329,45 @@ function scheduleCloudPush(immediate) {
         try { persistHabitSnapshotForKid(k); } catch (e) {}
       });
       var db = firebase.firestore();
+      var ref = db.collection('family_score').doc(cloudFamilyId);
       var payload = JSON.parse(JSON.stringify({
         updatedAt: Date.now(),
         clientId: cloudClientId,
         rules: R,
-        histBrian: getHistory('brian'),
-        histLinden: getHistory('linden'),
         habitLogBrian: getHabitLog('brian'),
         habitLogLinden: getHabitLog('linden'),
         stateBrian: state.brian,
         stateLinden: state.linden
       }));
       lastPushedTs = payload.updatedAt;
-      db.collection('family_score').doc(cloudFamilyId).set(payload).then(function() {
-        cloudUpdateStatusUI();
+      function finishUpload(histBrian, histLinden) {
+        payload.histBrian = histBrian;
+        payload.histLinden = histLinden;
+        ref.set(payload).then(function() {
+          cloudUpdateStatusUI();
+        }).catch(function(e) {
+          console.error(e);
+          cloudUpdateStatusUI('上传失败：' + formatCloudFirestoreError(e));
+        });
+      }
+      ref.get({ source: 'server' }).then(function(snap) {
+        var server = snap.exists ? snap.data() : {};
+        finishUpload(
+          mergeHistoryByDate(getHistory('brian'), server.histBrian),
+          mergeHistoryByDate(getHistory('linden'), server.histLinden)
+        );
       }).catch(function(e) {
-        console.error(e);
-        cloudUpdateStatusUI('上传失败：' + formatCloudFirestoreError(e));
+        console.warn('cloud push: server get failed, merge with cache', e);
+        ref.get().then(function(snap) {
+          var server = snap.exists ? snap.data() : {};
+          finishUpload(
+            mergeHistoryByDate(getHistory('brian'), server.histBrian),
+            mergeHistoryByDate(getHistory('linden'), server.histLinden)
+          );
+        }).catch(function(e2) {
+          console.error(e2);
+          cloudUpdateStatusUI('上传前无法读取云端，已跳过本次上传以防覆盖历史');
+        });
       });
     });
   }
@@ -2308,6 +2360,7 @@ function confirmSubmit() {
       ex.items = (ex.items || []).concat([sep]).concat(toAppend);
     }
     ex.net = sumHistoryItemsScores(ex.items);
+    touchHistoryDaySavedAt(ex);
     cumNet = ex.net;
   } else {
     hist.unshift({
@@ -2318,6 +2371,7 @@ function confirmSubmit() {
     });
     var lineSum = sumHistoryItemsScores(hist[0].items);
     hist[0].net = lineSum === formNet ? lineSum : formNet;
+    touchHistoryDaySavedAt(hist[0]);
     cumNet = hist[0].net;
   }
   saveHistory(currentKid, hist);
@@ -2433,13 +2487,15 @@ function appendHistoryItemForDay(kid, dateKey, item, opts) {
     if (hist[i].date === dateKey) { idx = i; break; }
   }
   if (idx < 0) {
-    hist.push({
+    var newDay = {
       date: dateKey,
       items: [item],
       net: Number(item.score) || 0,
       _lastFormNet: 0,
       _lastItemState: {}
-    });
+    };
+    touchHistoryDaySavedAt(newDay);
+    hist.push(newDay);
     if (opts.gameSpend) hist[hist.length - 1]._gameSpend = true;
     sortHistoryByDateDesc(hist);
   } else {
@@ -2448,6 +2504,7 @@ function appendHistoryItemForDay(kid, dateKey, item, opts) {
     ex.items = (ex.items || []).concat([item]);
     ex.net = sumHistoryItemsScores(ex.items);
     if (opts.gameSpend) ex._gameSpend = true;
+    touchHistoryDaySavedAt(ex);
   }
   saveHistory(kid, hist);
 }
@@ -2613,6 +2670,7 @@ function saveHistoryEdit() {
       _lastFormNet: net,
       _lastItemState: buildItemStateFromItems(items)
     };
+    touchHistoryDaySavedAt(row);
     hist.push(row);
     sortHistoryByDateDesc(hist);
   } else {
@@ -2624,6 +2682,7 @@ function saveHistoryEdit() {
       hist[idx]._lastFormNet = ctEd.net;
       hist[idx]._lastItemState = buildItemStateFromItems(items);
     }
+    touchHistoryDaySavedAt(hist[idx]);
   }
   var savedDate = historyEditDateStr;
   var savedMode = historyEditMode;
