@@ -849,7 +849,7 @@ body {
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.12.0';
+var APP_VERSION = '1.12.1';
 
 var ARCHIVE_STORAGE_KEY = 'scorecard_archives_v1';
 var ARCHIVE_MAX_LOCAL = 15;
@@ -1078,26 +1078,34 @@ function replaceRFromObject(obj) {
   Object.assign(R, d);
 }
 
+function dayHistoryTimestamp(day) {
+  if (!day) return 0;
+  return Math.max(day._savedAt || 0, day._cloudUpdatedAt || 0, day.updatedAt || 0);
+}
+
 function historyDayMergeScore(day) {
   if (!day || !day.date) return -1;
   var items = (day.items || []).length;
-  var ts = day._savedAt || 0;
-  return items * 1000000 + ts;
+  return items * 1000000000 + dayHistoryTimestamp(day);
 }
 
-/** 按日期合并两份历史：保留所有日期；同一天取明细更完整或更新更晚的记录。 */
-function mergeHistoryByDate(localArr, remoteArr) {
+/** 按日期合并：保留所有日期；同一天取明细更多或时间戳更新的记录（不偏向本机/云端）。 */
+function mergeHistoryByDate(a, b) {
   var map = {};
   function consider(day) {
     if (!day || !day.date) return;
     var prev = map[day.date];
-    if (!prev || historyDayMergeScore(day) >= historyDayMergeScore(prev)) map[day.date] = day;
+    if (!prev || historyDayMergeScore(day) > historyDayMergeScore(prev)) map[day.date] = day;
   }
-  (remoteArr || []).forEach(consider);
-  (localArr || []).forEach(consider);
+  (a || []).forEach(consider);
+  (b || []).forEach(consider);
   var out = Object.keys(map).map(function(k) { return map[k]; });
   sortHistoryByDateDesc(out);
   return out;
+}
+
+function dedupeHistoryArray(arr) {
+  return mergeHistoryByDate(arr, []);
 }
 
 function touchHistoryDaySavedAt(day) {
@@ -1424,6 +1432,7 @@ function cloudDocToHistoryDay(docData) {
     net: docData.net,
     items: docData.items || [],
     _savedAt: docData._savedAt,
+    _cloudUpdatedAt: docData.updatedAt || 0,
     _lastFormNet: docData._lastFormNet,
     _lastItemState: docData._lastItemState,
     _makeup: docData._makeup,
@@ -1456,7 +1465,7 @@ function cloudCommitDayWritesBatched(writes, done) {
     var batch = firebase.firestore().batch();
     var end = Math.min(idx + CHUNK, writes.length);
     for (; idx < end; idx++) {
-      batch.set(writes[idx].ref, writes[idx].data, { merge: true });
+      batch.set(writes[idx].ref, writes[idx].data);
     }
     return batch.commit().then(next);
   }
@@ -1484,30 +1493,71 @@ function cloudPushAllLocalDays(ref) {
   return cloudCommitDayWritesBatched(writes);
 }
 
-function cloudLoadAndMergeAllDays(ref, mainData) {
-  archiveBeforeCloudApply();
-  function ingestSnap(snap) {
-    var fromDays = { brian: [], linden: [] };
-    snap.forEach(function(doc) {
-      var d = doc.data();
-      if (!d || !d.kid || !d.date) return;
-      var day = cloudDocToHistoryDay(d);
-      if (d.kid === 'brian') fromDays.brian.push(day);
-      else if (d.kid === 'linden') fromDays.linden.push(day);
-    });
-    var legacyBrian = mainData && Array.isArray(mainData.histBrian) ? mainData.histBrian : [];
-    var legacyLinden = mainData && Array.isArray(mainData.histLinden) ? mainData.histLinden : [];
-    var mergedBrian = mergeHistoryByDate(mergeHistoryByDate(getHistory('brian'), legacyBrian), fromDays.brian);
-    var mergedLinden = mergeHistoryByDate(mergeHistoryByDate(getHistory('linden'), legacyLinden), fromDays.linden);
-    localStorage.setItem('hist_brian', JSON.stringify(mergedBrian));
-    localStorage.setItem('hist_linden', JSON.stringify(mergedLinden));
-    refreshTotals();
-    updateBanner();
-    cloudArchivesCache = null;
-    if (document.getElementById('page-history').classList.contains('active')) renderHistory();
+function daysFromFirestoreSnap(snap) {
+  var fromDays = { brian: [], linden: [] };
+  snap.forEach(function(doc) {
+    var d = doc.data();
+    if (!d || !d.kid || !d.date) return;
+    var day = cloudDocToHistoryDay(d);
+    if (d.kid === 'brian') fromDays.brian.push(day);
+    else if (d.kid === 'linden') fromDays.linden.push(day);
+  });
+  return fromDays;
+}
+
+function mergeHistoriesToLocal(mainData, fromDays) {
+  var legacyBrian = mainData && Array.isArray(mainData.histBrian) ? mainData.histBrian : [];
+  var legacyLinden = mainData && Array.isArray(mainData.histLinden) ? mainData.histLinden : [];
+  var mergedBrian = mergeHistoryByDate(mergeHistoryByDate(getHistory('brian'), legacyBrian), fromDays.brian);
+  var mergedLinden = mergeHistoryByDate(mergeHistoryByDate(getHistory('linden'), legacyLinden), fromDays.linden);
+  localStorage.setItem('hist_brian', JSON.stringify(mergedBrian));
+  localStorage.setItem('hist_linden', JSON.stringify(mergedLinden));
+}
+
+function cloudApplyDaysFromSnapshot(snap, mainData, skipArchive) {
+  if (!skipArchive) archiveBeforeCloudApply();
+  var fromDays = daysFromFirestoreSnap(snap);
+  cloudApplyingRemote = true;
+  try {
+    mergeHistoriesToLocal(mainData, fromDays);
+  } finally {
+    cloudApplyingRemote = false;
   }
-  return ref.collection('days').get({ source: 'server' }).then(ingestSnap).catch(function() {
-    return ref.collection('days').get().then(ingestSnap);
+  refreshTotals();
+  updateBanner();
+  cloudArchivesCache = null;
+  if (document.getElementById('page-history').classList.contains('active')) renderHistory();
+}
+
+function cloudLoadAndMergeAllDays(ref, mainData) {
+  return ref.collection('days').get({ source: 'server' }).then(function(snap) {
+    cloudApplyDaysFromSnapshot(snap, mainData, false);
+  }).catch(function() {
+    return ref.collection('days').get().then(function(snap) {
+      cloudApplyDaysFromSnapshot(snap, mainData, false);
+    });
+  });
+}
+
+function cloudRefreshDaysFromServer(done) {
+  done = done || function() {};
+  if (!cloudFamilyId || !cloudConfigValid() || !cloudServerSynced) { done(); return; }
+  ensureFirebaseLoaded(function() {
+    if (!cloudFirebaseReady()) { done(); return; }
+    var ref = firebase.firestore().collection('family_score').doc(cloudFamilyId);
+    var mainData = null;
+    ref.get({ source: 'server' }).catch(function() { return ref.get(); }).then(function(mainSnap) {
+      mainData = mainSnap.exists ? mainSnap.data() : {};
+      return ref.collection('days').get({ source: 'server' }).catch(function() {
+        return ref.collection('days').get();
+      });
+    }).then(function(daysSnap) {
+      cloudApplyDaysFromSnapshot(daysSnap, mainData, true);
+      done();
+    }).catch(function(e) {
+      console.warn('cloudRefreshDaysFromServer', e);
+      done();
+    });
   });
 }
 
@@ -1525,24 +1575,8 @@ function cloudSubscribeDaysChanges(ref, familyAtStart) {
   }
   cloudDaysUnsub = ref.collection('days').onSnapshot(function(snap) {
     if (cloudFamilyId !== familyAtStart) return;
-    var changed = false;
-    snap.docChanges().forEach(function(change) {
-      if (change.type === 'removed') return;
-      var d = change.doc.data();
-      if (!d || !d.kid || !d.date) return;
-      if (d.clientId === cloudClientId && change.doc.metadata.hasPendingWrites) return;
-      cloudApplyingRemote = true;
-      try {
-        if (cloudMergeRemoteDayIntoLocal(d.kid, cloudDocToHistoryDay(d))) changed = true;
-      } finally {
-        cloudApplyingRemote = false;
-      }
-    });
-    if (changed) {
-      refreshTotals();
-      updateBanner();
-      if (document.getElementById('page-history').classList.contains('active')) renderHistory();
-    }
+    if (snap.metadata.hasPendingWrites && !snap.metadata.fromCache) return;
+    cloudApplyDaysFromSnapshot(snap, null, true);
   }, function(err) {
     console.error(err);
     cloudUpdateStatusUI('按天历史监听失败：' + formatCloudFirestoreError(err));
@@ -2131,6 +2165,7 @@ function switchSection(name) {
   if (name === 'history') {
     cloudArchivesCache = null;
     renderHistory();
+    cloudRefreshDaysFromServer();
   }
   if (name === 'rules') renderRules();
 }
@@ -2749,7 +2784,8 @@ function getHistory(kid) {
   try { return JSON.parse(raw); } catch(e) { return []; }
 }
 function saveHistory(kid, arr) {
-  localStorage.setItem('hist_' + kid, JSON.stringify(arr));
+  var clean = dedupeHistoryArray(arr);
+  localStorage.setItem('hist_' + kid, JSON.stringify(clean));
   scheduleArchiveAfterSave();
   scheduleCloudPush();
 }
@@ -3207,7 +3243,7 @@ function saveHistoryEdit() {
 
 // ============ HISTORY ============
 function renderHistory() {
-  var hist = getHistory(currentKid);
+  var hist = dedupeHistoryArray(getHistory(currentKid));
   var container = document.getElementById('history-content');
   var name = currentKid === 'brian' ? 'Brian' : 'Linden';
   var available = getAvailableGameMinutes(currentKid);
