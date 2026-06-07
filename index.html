@@ -857,7 +857,7 @@ body {
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.12.2';
+var APP_VERSION = '1.12.3';
 
 var ARCHIVE_STORAGE_KEY = 'scorecard_archives_v1';
 var ARCHIVE_MAX_LOCAL = 15;
@@ -1435,20 +1435,26 @@ function cloudDayDocId(kid, date) {
   return kid + '_' + date;
 }
 
+/** Firestore rejects undefined; JSON round-trip drops those keys. */
+function firestoreSafe(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 function historyDayToCloudDoc(kid, day) {
-  return {
+  var doc = {
     kid: kid,
     date: day.date,
     net: day.net || 0,
     items: day.items || [],
     _savedAt: day._savedAt || Date.now(),
-    _lastFormNet: day._lastFormNet,
-    _lastItemState: day._lastItemState,
-    _makeup: day._makeup,
-    _gameSpend: day._gameSpend,
     updatedAt: Date.now(),
     clientId: cloudClientId
   };
+  if (day._lastFormNet != null) doc._lastFormNet = day._lastFormNet;
+  if (day._lastItemState != null) doc._lastItemState = day._lastItemState;
+  if (day._makeup) doc._makeup = true;
+  if (day._gameSpend != null) doc._gameSpend = day._gameSpend;
+  return doc;
 }
 
 function cloudDocToHistoryDay(docData) {
@@ -1490,7 +1496,7 @@ function cloudCommitDayWritesBatched(writes, done) {
     var batch = firebase.firestore().batch();
     var end = Math.min(idx + CHUNK, writes.length);
     for (; idx < end; idx++) {
-      batch.set(writes[idx].ref, writes[idx].data);
+      batch.set(writes[idx].ref, firestoreSafe(writes[idx].data));
     }
     return batch.commit().then(next);
   }
