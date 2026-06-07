@@ -2147,7 +2147,10 @@ function switchKid(kid) {
   }
   renderTodayUI();
   updateBanner();
-  if (document.getElementById('page-history').classList.contains('active')) renderHistory();
+  if (document.getElementById('page-history').classList.contains('active')) {
+    renderHistory();
+    cloudRefreshDaysFromServer();
+  }
   if (document.getElementById('page-rules').classList.contains('active')) renderRules();
 }
 
