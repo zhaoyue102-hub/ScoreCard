@@ -314,6 +314,14 @@ body {
 .award-opt { padding: 7px 14px; border-radius: 20px; border: 2px solid #e2e8f0; font-size: 13px; font-weight: 600; cursor: pointer; background: white; color: #718096; transition: all 0.15s; }
 .award-opt.sel-brian { border-color: #C2410C; background: #FFEDD5; color: #C2410C; }
 .award-opt.sel-linden { border-color: #48bb78; background: #e6f7ee; color: #48bb78; }
+.award-custom-wrap { display: none; align-items: center; gap: 8px; flex-wrap: wrap; }
+.award-custom-wrap.show { display: flex; }
+.award-custom-label { font-size: 12px; color: #718096; font-weight: 700; }
+.award-custom-input {
+  width: 86px; padding: 8px 8px; font-size: 17px; font-weight: 800; color: #2d3748;
+  border: 1.5px solid #e2e8f0; border-radius: 10px; background: white; outline: none; text-align: center;
+}
+.award-custom-input:focus { border-color: #667eea; }
 
 .submit-row { padding: 16px; max-width: 720px; margin: 0 auto; position: sticky; bottom: 0; background: linear-gradient(to top, #f4f6fb 65%, transparent); padding-top: 30px; }
 .today-submit-bar {
@@ -751,9 +759,13 @@ body {
     </div>
     <div class="award-btns">
       <button class="award-opt" id="award-none" onclick="setAward('none')">— 无</button>
-      <button class="award-opt" id="award-gold" onclick="setAward('gold')">一等奖/金奖 +10</button>
-      <button class="award-opt" id="award-special" onclick="setAward('special')">特等奖 +15</button>
-      <button class="award-opt" id="award-top" onclick="setAward('top')">状元 +20</button>
+      <button class="award-opt" id="award-gold" onclick="setAward('gold')">一等奖 +30</button>
+      <button class="award-opt" id="award-special" onclick="setAward('special')">其他奖</button>
+      <button class="award-opt" id="award-top" onclick="setAward('top')">状元奖 +100</button>
+    </div>
+    <div class="award-custom-wrap" id="award-custom-wrap">
+      <label class="award-custom-label" for="award-custom-score">其他奖加分</label>
+      <input type="number" class="award-custom-input" id="award-custom-score" min="0" step="1" value="0" oninput="setAwardOtherScore(this.value)">
     </div>
   </div>
 
@@ -857,7 +869,7 @@ body {
 <script>
 // ============ APP ============
 /** 发布新版本时只改这一处 */
-var APP_VERSION = '1.12.3';
+var APP_VERSION = '1.12.4';
 
 var ARCHIVE_STORAGE_KEY = 'scorecard_archives_v1';
 var ARCHIVE_MAX_LOCAL = 15;
@@ -906,6 +918,23 @@ var cloudPushPending = false;
 var cloudPushWantsImmediate = false;
 var cloudDaysUnsub = null;
 var firebaseLoadCallbacks = [];
+var RULES_UPDATED_AT_KEY = 'rules_updated_at';
+
+function getLocalRulesUpdatedAt() {
+  var n = parseInt(localStorage.getItem(RULES_UPDATED_AT_KEY), 10);
+  return isNaN(n) ? 0 : n;
+}
+
+function setLocalRulesUpdatedAt(ts) {
+  var n = parseInt(ts, 10);
+  if (!isNaN(n) && n > 0) localStorage.setItem(RULES_UPDATED_AT_KEY, String(n));
+}
+
+function markLocalRulesUpdated() {
+  var ts = Date.now();
+  setLocalRulesUpdatedAt(ts);
+  return ts;
+}
 
 function cloudConfigValid() {
   if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.apiKey || !FIREBASE_CONFIG.projectId) return false;
@@ -1084,6 +1113,7 @@ function replaceRFromObject(obj) {
   if (!Array.isArray(d.customExtras)) d.customExtras = [];
   Object.keys(R).forEach(function(k) { delete R[k]; });
   Object.assign(R, d);
+  normalizeAwardRules();
 }
 
 function dayHistoryTimestamp(day) {
@@ -1634,9 +1664,22 @@ function cloudAfterMainDocHydrate(ref, familyAtStart, mainData) {
 
 function applyRemoteDocMain(data) {
   cloudApplyingRemote = true;
+  var shouldPushLocalRules = false;
   try {
-    if (data.rules) replaceRFromObject(data.rules);
-    localStorage.setItem('rules_v2', JSON.stringify(R));
+    var remoteHasRulesUpdatedAt = data.rulesUpdatedAt !== undefined && data.rulesUpdatedAt !== null;
+    var remoteRulesUpdatedAt = parseInt(remoteHasRulesUpdatedAt ? data.rulesUpdatedAt : data.updatedAt, 10) || 0;
+    var localRulesUpdatedAt = getLocalRulesUpdatedAt();
+    var keepLocalRules = data.rules && localRulesUpdatedAt > 0 &&
+      (!remoteHasRulesUpdatedAt || (remoteRulesUpdatedAt > 0 && localRulesUpdatedAt > remoteRulesUpdatedAt));
+    if (data.rules && !keepLocalRules) {
+      replaceRFromObject(data.rules);
+      localStorage.setItem('rules_v2', JSON.stringify(R));
+      setLocalRulesUpdatedAt(remoteRulesUpdatedAt);
+    } else if (keepLocalRules) {
+      cloudPushPending = true;
+      cloudPushWantsImmediate = true;
+      shouldPushLocalRules = true;
+    }
     if (data.habitLogBrian && typeof data.habitLogBrian === 'object') localStorage.setItem('habitlog_brian', JSON.stringify(data.habitLogBrian));
     if (data.habitLogLinden && typeof data.habitLogLinden === 'object') localStorage.setItem('habitlog_linden', JSON.stringify(data.habitLogLinden));
     if (data.stateBrian && typeof data.stateBrian === 'object') state.brian = Object.assign(makeState(), data.stateBrian);
@@ -1652,6 +1695,7 @@ function applyRemoteDocMain(data) {
     cloudUpdateStatusUI('合并云端数据出错');
   } finally {
     cloudApplyingRemote = false;
+    if (shouldPushLocalRules) scheduleCloudPush(true);
   }
 }
 
@@ -1901,6 +1945,7 @@ function scheduleCloudPush(immediate) {
       var payload = JSON.parse(JSON.stringify({
         updatedAt: Date.now(),
         clientId: cloudClientId,
+        rulesUpdatedAt: getLocalRulesUpdatedAt() || Date.now(),
         rules: R,
         habitLogBrian: getHabitLog('brian'),
         habitLogLinden: getHabitLog('linden'),
@@ -2000,7 +2045,7 @@ function makeState() {
            outdoor: null, meal: null, sleep9: null,
            laundry: 0, dishes: 0, enWriteScore: 0, bball: 0,
            customCounts: {}, customScores: {},
-           award: 'none' };
+           award: 'none', awardOtherScore: 0 };
 }
 var state = { brian: makeState(), linden: makeState() };
 
@@ -2021,8 +2066,8 @@ function defaultRules() {
       { emoji: "✍️", name: "英文写作加分", sub: "60～79 分两档；80 分起有基础分，之后每 5 分多加 1 分（规则页可调）", plus: 0 },
       { emoji: "🏀", name: "上篮球课", sub: "每节 +10分", plus: 10 }
     ],
-    awardLabels: { gold: "一等奖/金奖（华夏杯/AMIO）", special: "特等奖", top: "状元" },
-    awardPts:    { gold: 10, special: 15, top: 20 },
+    awardLabels: { gold: "一等奖", special: "其他奖", top: "状元奖" },
+    awardPts:    { gold: 30, special: 0, top: 100 },
     awardWeeks:  { gold: 3,  special: 5,  top: 8 },
     writeEnThresh: [60, 70],
     writeEnPts:    [1, 2],
@@ -2045,13 +2090,28 @@ function loadRules() {
     return Object.assign(d, obj);
   } catch(e) { return d; }
 }
-function saveRulesToDisk(r) {
+function saveRulesToDisk(r, opts) {
+  opts = opts || {};
+  if (opts.userEdit) markLocalRulesUpdated();
   localStorage.setItem('rules_v2', JSON.stringify(r));
   scheduleCloudPush();
 }
 
 var R = loadRules();
 if (!Array.isArray(R.customExtras)) R.customExtras = [];
+
+function normalizeAwardRules() {
+  if (!R.awardLabels || typeof R.awardLabels !== 'object') R.awardLabels = {};
+  if (!R.awardPts || typeof R.awardPts !== 'object') R.awardPts = {};
+  if (!R.awardWeeks || typeof R.awardWeeks !== 'object') R.awardWeeks = {};
+  if (!R.awardLabels.gold || R.awardLabels.gold.indexOf('金奖') >= 0) R.awardLabels.gold = '一等奖';
+  if (!R.awardLabels.special || R.awardLabels.special === '特等奖') R.awardLabels.special = '其他奖';
+  if (!R.awardLabels.top || R.awardLabels.top === '状元') R.awardLabels.top = '状元奖';
+  R.awardPts.gold = 30;
+  R.awardPts.special = 0;
+  R.awardPts.top = 100;
+}
+normalizeAwardRules();
 
 /** 本地规则仍为 5 条必修时，追加第 6 条（就寝）；已是 6 条则不动 */
 (function ensureRequiredSleep9Rule() {
@@ -2560,13 +2620,32 @@ function setAward(val) {
   setAwardUI(val);
   updateBanner();
 }
+function calcAwardScore(s) {
+  s = s || get();
+  if (s.award === 'special') return Math.max(0, parseInt(s.awardOtherScore, 10) || 0);
+  return Math.max(0, parseInt(R.awardPts[s.award], 10) || 0);
+}
+function setAwardOtherScore(val) {
+  var s = get();
+  var n = parseInt(val, 10);
+  s.awardOtherScore = isNaN(n) ? 0 : Math.max(0, n);
+  if (s.award !== 'special') s.award = 'special';
+  setAwardUI(s.award);
+  updateBanner();
+}
 function setAwardUI(val) {
+  var s = get();
+  if (s.awardOtherScore == null || isNaN(s.awardOtherScore)) s.awardOtherScore = 0;
   ['none','gold','special','top'].forEach(function(v) {
     var el = document.getElementById('award-' + v);
     el.classList.remove('sel-brian','sel-linden');
     if (v === val) el.classList.add('sel-' + currentKid);
   });
-  document.getElementById('badge-award').textContent = '+' + (R.awardPts[val] || 0) + '分';
+  var customWrap = document.getElementById('award-custom-wrap');
+  var customInput = document.getElementById('award-custom-score');
+  if (customWrap) customWrap.classList.toggle('show', val === 'special');
+  if (customInput) customInput.value = s.awardOtherScore || 0;
+  document.getElementById('badge-award').textContent = '+' + calcAwardScore(s) + '分';
 }
 
 // ============ BANNER ============
@@ -2609,7 +2688,7 @@ function calcToday() {
   if (s.sleep9 !== true && s.sleep9 !== 'holiday' && m5 > 0) ded += m5;
   var pts = { laundry: R.optional[0].plus, dishes: R.optional[1].plus, bball: R.optional[3].plus };
   plus += s.laundry * pts.laundry + s.dishes * pts.dishes + calcWriteScore() + s.bball * pts.bball;
-  plus += (R.awardPts[s.award] || 0);
+  plus += calcAwardScore(s);
   (R.customExtras || []).forEach(function(rule) {
     plus += customExtraScoreForRule(s, rule);
   });
@@ -2861,7 +2940,8 @@ function buildItems() {
       items.push({ key: 'custom:' + rule.id, name: label, score: score });
     }
   });
-  if (s.award !== 'none') items.push({ key: 'award', name: '获奖：' + R.awardLabels[s.award], score: R.awardPts[s.award] });
+  var awardScore = calcAwardScore(s);
+  if (s.award !== 'none' && awardScore > 0) items.push({ key: 'award', name: '获奖：' + R.awardLabels[s.award], score: awardScore });
   /** 与横幅/本周用的 calcToday().net 必须一致，否则多次提交时 delta 与 netForKidDay 会算错 */
   return { items: items, net: calcToday().net };
 }
@@ -3440,24 +3520,9 @@ function renderRules() {
 
   // Awards
   html += '<div class="rules-card"><div class="rules-card-header"><div class="rules-card-title">🏆 比赛获奖加分</div></div>';
-  ['gold','special','top'].forEach(function(key) {
-    var bg = { gold:'award-bronze', special:'award-silver', top:'award-gold-bg' }[key];
-    var emoji = { gold:'🥉', special:'🥈', top:'🥇' }[key];
-    if (rulesEditing) {
-      html += '<div class="rules-award-row" style="background:#fffbeb;">';
-      html += '<span>' + emoji + '</span>';
-      html += '<input class="rules-input" id="ae-label-' + key + '" value="' + R.awardLabels[key] + '" style="flex:1;">';
-      html += '持续 <input class="rules-input" id="ae-weeks-' + key + '" type="number" value="' + R.awardWeeks[key] + '" style="width:40px;"> 周';
-      html += '每周 + <input class="rules-input" id="ae-pts-' + key + '" type="number" value="' + R.awardPts[key] + '" style="width:40px;"> 分';
-      html += '</div>';
-    } else {
-      html += '<div class="rules-award-row ' + bg + '">';
-      html += '<span>' + emoji + '</span>';
-      html += '<span class="rules-award-name">' + R.awardLabels[key] + '</span>';
-      html += '<span class="rules-award-pts">持续' + R.awardWeeks[key] + '周 每周+' + R.awardPts[key] + '分</span>';
-      html += '</div>';
-    }
-  });
+  html += '<div class="rules-award-row award-bronze"><span>🥉</span><span class="rules-award-name">一等奖</span><span class="rules-award-pts">+30分</span></div>';
+  html += '<div class="rules-award-row award-silver"><span>✨</span><span class="rules-award-name">其他奖</span><span class="rules-award-pts">当天自定义分数</span></div>';
+  html += '<div class="rules-award-row award-gold-bg"><span>🥇</span><span class="rules-award-name">状元奖</span><span class="rules-award-pts">+100分</span></div>';
   html += '</div>';
 
   container.innerHTML = html;
@@ -3505,13 +3570,8 @@ function toggleRulesEdit() {
     if (elAt80) { var vat = parseFloat(elAt80.value); if (!isNaN(vat) && vat >= 0) R.writeEnAt80 = vat; }
     if (elStep80) { var vst = parseFloat(elStep80.value); if (!isNaN(vst) && vst > 0) R.writeEnAbove80Step = vst; }
     if (elPer80) { var vper = parseFloat(elPer80.value); if (!isNaN(vper) && vper >= 0) R.writeEnAbove80Per = vper; }
-    // awards
-    ['gold','special','top'].forEach(function(key) {
-      R.awardLabels[key] = document.getElementById('ae-label-' + key).value;
-      var w = parseInt(document.getElementById('ae-weeks-' + key).value); if (!isNaN(w)) R.awardWeeks[key] = w;
-      var p = parseInt(document.getElementById('ae-pts-' + key).value); if (!isNaN(p)) R.awardPts[key] = p;
-    });
-    saveRulesToDisk(R);
+    normalizeAwardRules();
+    saveRulesToDisk(R, { userEdit: true });
     rulesEditing = false;
     renderRules();
     // update labels in today page
